@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<h1>Load from git courses list into db</h1>
+<h1>Load from git courses list into db to summarize current list in sortable/browsable form.  Currently picked up from a readme, but once API is available I'll switch to that </h1>
 
 <?php
 
