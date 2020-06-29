@@ -9,7 +9,7 @@ function myDatabase(){
     return"u544302174_GTBikeVRoutes";
 }   
 function myPassword(){
-    return "UserPassword";
+    return "";
 }
 function myConnection(){
 // parameters
