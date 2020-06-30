@@ -13,7 +13,7 @@
   <div class="topbanner">
   <!-- <style>body {background-image:URL("images/gtbv_banr.jpg");}</style> -->
     <h1 style="color:#C0D0C8;">GTBike V Routes</h1>
-    <p style="color:#C0D0C8;">Below you'll find the current tracked list of routes included in Matthias Urech's GTBike V course repository.<br>This site is super early and missing lots<br>such as callouts to all the awsome people making it possible<br><br><br><br><br><br></p>
+    <p style="color:#C0D0C8;">Below you'll find the current tracked list of routes included in Matthias Urech's GTBike V course repository.<br>This site is super early and missing lots<br>such as callouts to all the awesome people making it possible<br><br><br><br><br><br></p>
   </div>
 </div>
     <?php
