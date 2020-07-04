@@ -38,6 +38,8 @@
         $metsw = 'images/tg_off.png';
     }
 
+// ************ DON'T FORGET: NEED TO ADD SORT & FILTER OPTIONS
+
     // page displays either focused on a single route, or general of all routes.  This makes that distinction.
     $route = $_GET['route'];
     if($route === NULL) {
