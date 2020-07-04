@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="RTStyles.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -104,8 +104,15 @@
                     $mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"/></a>',$row["Map"]);
                     $mappic = str_replace('">Map</a>','',str_replace('<a href="','',$row["Map"]));
                     echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><a href="data:text/plain;charset=UTF-8,https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json" download="'.$row["RouteName"].'.json"><img src=/images/dl.png class="link" height="20px"></a></td><td>'.$mapstring.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
-                    echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
-                    echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
+					echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
+ 
+					// this is to demo route previews.  I only have a .gpx saved for the_tourist right now.
+					if($row["RouteName"] === "the_tourist") {
+						echo '<iframe src="MapPreview.php?route=the_tourist" class="embed-responsive-item" width="100%" height="1280px" allowtransparency="true" style="border:0px solid black;"></iframe>';
+					}
+					else {
+						echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
+					}
                     }
                     echo "</table>"; // table opener & header row
                 } else {
