@@ -78,8 +78,6 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			const xoffset = 169.9255; // this is offset to convert latlong to to pixels
 			const yfactor = -18200; // this is multipler to convert latlong to to pixels
 			const yoffset = 19.0305	; // this is offset to convert latlong to to pixels
-			const tfactor = 1; // this is multipler to convert ride time into seconds elapsed
-			const toffset = 0; // this is offset to convert ride time into seconds elapsed
 			const xhilim = 2007; // the map has wide boundaries with no roads
 			const xlolim = 41; // and limiting this makes some other stuff easier
 			const yhilim = 2007; // so we use 98% of 2048= 2007
@@ -91,6 +89,10 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			// --- changed Z to variable: can sub in imperial instead of metric based on URL parameter.
 			var zfactor = 1; // this is multipler for conversion to either metric or imperial
 			var zoffset = 0; // this is offset for conversion to either metric or imperial
+			var zfactor2 = 1;
+			var zoffset2 = 0;
+			var tfactor2 = 1;
+			var toffset2 = 0;
 			
 			// setting up all the vars
 			var zoomfactorx = 1; // handles x/y zoom for main panel
@@ -153,19 +155,30 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 
 			//parseTrack(this);
 			var i;
+			var lastTimestamp, thistimestamp
+			var cmlDist = 0;
 			var xmlDoc = xhttp.responseXML;
 			var x = xmlDoc.getElementsByTagName("trkpt");
 			for (i = 0; i < x.length; i++) { 
 				xarray.push(  ((x[i].getAttribute("lon") *1)+(xoffset*1))*xfactor);
 				yarray.push(  ((x[i].getAttribute("lat") *1)+(yoffset*1))*yfactor);
 				zarray.push(  ((x[i].getElementsByTagName("ele")[0].childNodes[0].nodeValue *1)+(zoffset*1))*zfactor);
-				tarray.push(  ((x[i].getElementsByTagName("time")[0].childNodes[0].nodeValue *1)+(toffset*1))*tfactor);
+				thisTimestamp = new Date(x[i].getElementsByTagName("time")[0].childNodes[0].nodeValue);
+				if(i===0) {
+					lastTimestamp = thisTimestamp;
+				} else {
+					cmlDist=cmlDist+Math.abs(thisTimestamp-lastTimestamp);
+					lastTimestamp = thisTimestamp;
+				}
+				tarray.push(cmlDist);
+				
 			// Now we identify ranges and then convert x/y into new range: 0,0 = top left corner, 2048,2048 = bottom right corner
 			// and z into meters, take min/max for scale on graph, then convert to 0-60 range for elevation chart.  Note: if Z variation is <20m, leave as is.
 			// it's a little redundant to cycle through the array twice, but the alternative would be to convert all values as
 			//  well as the min/max values...  If there's no load time issue this way is simpler :)
 			//  Basically, cycle through array to convert into preferred units (pixels & feet & seconds), then take min-max, then cycle through
 			//  again to handle scaling and zooming adjustments.
+			//  LATER: actually, turns out canvas just handles the scaling for me, so yay.
 				if(xarray[i] > xhilim) {xarray[i] = xhilim;};
 				if(xarray[i] < xlolim) {xarray[i] = xlolim;};
 				if(yarray[i] > yhilim) {yarray[i] = yhilim;};
@@ -184,10 +197,10 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			var tmin = Math.min.apply(null, tarray);
 			var tmax = Math.max.apply(null, tarray);
 
-			console.log("xmin:"+xmin);
-			console.log("xmax:"+xmax);
-			console.log("ymin:"+ymin);
-			console.log("ymax:"+ymax);
+			console.log("zmin:"+xmin);
+			console.log("zmax:"+xmax);
+			console.log("tmin:"+tmin);
+			console.log("tmax:"+tmax);
 			// determine convesion for z into pixel value (0-60)
 			if( (Math.max.apply(null, zarray) - Math.min.apply(null, zarray)) < 20 ) {
 				zfactor2 = 1;
@@ -253,10 +266,6 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			}
 
 
-			console.log(translatefactorx);
-			console.log(translatefactory);
-			console.log(zoomfactorxy);
-			
 			ctx.translate(translatefactorx,translatefactory);
 			ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
 			ctx.drawImage(img, 0, 0);
@@ -404,8 +413,30 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
             }
         }
 
+	function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+		var R = 6371; // Radius of the earth in km
+		var dLat = deg2rad(lat2-lat1);  // deg2rad below
+		var dLon = deg2rad(lon2-lon1); 
+		var a = 
+			Math.sin(dLat/2) * Math.sin(dLat/2) +
+			Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+			Math.sin(dLon/2) * Math.sin(dLon/2); 
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		var d = R * c; // Distance in km
+		return d;
+	}
+
+	function deg2rad(deg) {
+		return deg * (Math.PI/180)
+	}
+
 	</script>
 </body>
 </html>
+
+
+
+
+
 
 
