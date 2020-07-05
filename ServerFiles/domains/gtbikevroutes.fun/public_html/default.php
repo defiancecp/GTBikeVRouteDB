@@ -13,7 +13,8 @@
   <div class="topbanner">
   <!-- <style>body {background-image:URL("images/gtbv_banr.jpg");}</style> -->
     <h1 style="color:#C0D0C8;">GTBike V Routes</h1>
-    <p style="color:#C0D0C8;">Below you'll find the current tracked list of routes included in Matthias Urech's GTBike V course repository.<br>This site is super early and missing lots<br>such as callouts to all the awesome people making it possible<br><br><br><br><br><br></p>
+    <p style="color:#C0D0C8;">Below you'll find the current tracked list of routes included in the <a class="link" href="https://github.com/gtbikev/courses">GTBike V course repository.</a><br>Be sure to check the repository out if you have interest in building your own routes, or to submit issues with routes.<br>For general discussion about the mod or routes, come visit the community <a class="link" href="https://www.facebook.com/groups/1089053124812221">Facebook group.</a><br>
+	For issues with this site, development details, of just to take a look at how it all comes together, this project is maintained on <a class="link" href="https://github.com/defiancecp/GTBikeVRouteDB">Github.</a><br>When you stop by, be sure to take a look at the readme for the latest list of attributions and thanks.<br>And finally, these courses all utilize the brilliant <a class="link" href="gta5-mods.com/scripts/gt-bike-v">GT Bike V mod</a> for GTA V.<br><br></p>
   </div>
 </div>
     <?php
@@ -118,7 +119,7 @@
 					}
 */
 					if(file_exists ("./gpx/".$row["RouteName"].".xml")) { // THIS NEXT LINE NEEDS TO BE MADE DYNAMIC!!!!!
-						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route='.$row["RouteName"].'" class="embed-responsive-item" width="100%" height="1280px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
+						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route='.$row["RouteName"].'&met='.$met.'" class="embed-responsive-item" width="100%" height="1280px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
 					} else {
 						echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
 				}

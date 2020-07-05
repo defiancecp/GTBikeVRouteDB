@@ -11,10 +11,6 @@
 </head> 
 <body style="background-color: transparent; color:white; margin-bottom:-5px; vertical-align: top; display: block" >
 
-<!-- 
-Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.com/grand-theft-auto-v-the-map/#comments
-
--->
 <div style="display:none;">
 	<img id="AtlsMap" width="2048" height="2048"
 	src="images/map_atls.png" alt="Atlas Map">
@@ -28,15 +24,10 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 	</canvas><canvas id="btn" width="63" height="63">
 	</canvas><canvas id="bmap" width="1280" height="655" >
 	</canvas><script>
-// ********   NEED TO SET UP MAP CANVAS WITH BACKGROUND - PROBABLY MATCH SEA COLOR OF SELECTED MAP.
-	
-// ********   PENDING:  INTENT IS TO DRAW/TRACE EACH POINT IN THE ARRAY, ANIMATED OVER ~4S PERIOD
-//    Static draw is phase 1, but is done using canvas, and sets up arrays for future animation...
-//    The line drawing is even in a for loop, so (loosely), my thought is to build a loop that cycles 
-//    very quickly, with iterations counting up from 0 to 240 over 4 seconds, and each cycle, draw the
-//    map elements ( and possibly elevation elements) where the 't' array value is < that 0-240 counter...
-//    I think changing from static to animated may be easier than just getting it static :)
 
+		// Because the buttons have monitor functions, related variables set up here
+		// The numbers here control much of the map selection button layout.
+		// could probably be const's.
 			var btnc = document.getElementById("btn");
 			var btnctx = btnc.getContext("2d");
 			var link1Text = "Atlas";
@@ -64,16 +55,15 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			var isLink3 = false;
 
 
-
-
+		//  This is what's loaded initially with page
 		window.onload = function() {
+
 			const queryString = window.location.search;
 			const urlParams = new URLSearchParams(queryString);
 
 			// These define conversion factors to convert from the .fit x/y lat/long to
 			//  equivalent map pixels, based on 2048x2048 map images with 0,0 being top left, 
 			//  and z into meters.  These factors are constant.
-// *******    NEED TO WORK OUT APPROPRIATE CONVERSION FACTORS FROM LAT/LONG/ELEV/TIME
 			const xfactor = 17200; // this is multipler to convert to latlong to pixels
 			const xoffset = 169.9255; // this is offset to convert latlong to to pixels
 			const yfactor = -18200; // this is multipler to convert latlong to to pixels
@@ -84,29 +74,23 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			const ylolim = 41;
 			const zhilim = 50000; // just sanity imposed here - you're not 50km in the air
 			const zlolim = -5000; // or 5km underground 
+			const meters2feet = 3.28084; // this is multipler for conversion to either imperial
+			const km2mi = 0.621371; // this is multipler for conversion to either imperial
 		
-			
-			// --- changed Z to variable: can sub in imperial instead of metric based on URL parameter.
-			var zfactor = 1; // this is multipler for conversion to either metric or imperial
-			var zoffset = 0; // this is offset for conversion to either metric or imperial
-			var zfactor2 = 1;
-			var zoffset2 = 0;
-			var tfactor2 = 1;
-			var toffset2 = 0;
-			
-			// setting up all the vars
+			// these are not necessarily constant.  Many initializers are just placeholders.
+			var zfactor2 = 1; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels
+			var zoffset2 = 0; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels
+			var tfactor2 = 1; // and tfactor converts the time units into a scale of 0-240 for various purposes
+			var toffset2 = 0; // 
 			var zoomfactorx = 1; // handles x/y zoom for main panel
 			var zoomfactory = 1; // handles x/y zoom for main panel
 			var zoomfactorxy = 1; // handles x/y zoom for main panel
 			var translatefactorx = 0; // shift to center for x
 			var translatefactory = 0; // shift to center for y
+			//NOTE: zfactor/zoffset currently just left at 1/0 (no impact) - so not really implemented.  Left as a stub.
 
-			var zoomfactorz = 1; // elevation zoom factor for the z axis 
-			var zoomfactort = 1; // elevation time zoom factor for t axis
-			var translatefactorz = 0; // offset for elevation -- mostly this will be zero, but:
-			// if there's negative elevation, offset negative and draw a 0 axis.  also if there's very
-			// otherwise low elevation variation (<40), shift up by 10 pixels and draw a 0 axis.
 
+			// setting up the 3 canvases (buttons, elevation profile, map)
 			var elvc = document.getElementById("elv");
 			var elvctx = elvc.getContext("2d");
 			var mcanvas = document.getElementById("bmap");
@@ -117,10 +101,12 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			var maptype = urlParams.get('maptype'); // this carries user selection of the map type
 			var met = urlParams.get('met'); // this carries user selection of the units of measurement
 
+			// initialize the arrays for the route
 			let xarray = []; 
 			let yarray = []; 
 			let zarray = []; 
 			let tarray = []; 
+			let darray = [];  // new array for cumulative distance
 
 			// url parameter handling
 			if (route === null) {
@@ -132,53 +118,63 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			}	
 
 			if (met === null){
-				met = "Metric";
+				met = "Metric"; // default
 			}
-			if(met === "Imperial")
-			{
-				zfactor = 1; // this is multiplier to convert whatever the z axis is in to feet
-				zoffset = 0; // this is offset to convert whatever the z axis is in to meters
-			} else {
-				zfactor = 1; // this is multiplier to convert whatever the z axis is in to feet
-				zoffset = 0; // this is offset to convert whatever the z axis is in to feet
-			}
-
+			
+			// file for route preview 
+			// for some reason gpx won't pick up, have to name it xml.
 			var gpxfilename = "gpx/"+route+".xml";
 
+			// pick up file
 			var xhttp = new XMLHttpRequest();
 			xhttp.open("GET", gpxfilename, false);
+			// NOTE: Using deprecated synchronous mode to load the file because the page has to wait anyway.
 			xhttp.send();
 				  
-// ********** NEED TO PROPERLY HANDLE TIME 
-//  Right now just dumping the data in the array.
-//  Need to preserve prior element time and determine elapsed time between points and return a second value, or millisecond, or something useful like that
-
-			//parseTrack(this);
+			// really need to consolidate all my variable definitions - sooo messsy.
 			var i;
-			var lastTimestamp, thistimestamp
+			var lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev;
 			var cmlDist = 0;
+			var cmlTime = 0;
+			var cmlElev = 0;
+			var cmlDesc = 0;
 			var xmlDoc = xhttp.responseXML;
+
+			// now we really start parsing xml.  Pick out all the trkpt items and extract specfiic attributes:
 			var x = xmlDoc.getElementsByTagName("trkpt");
 			for (i = 0; i < x.length; i++) { 
-				xarray.push(  ((x[i].getAttribute("lon") *1)+(xoffset*1))*xfactor);
-				yarray.push(  ((x[i].getAttribute("lat") *1)+(yoffset*1))*yfactor);
-				zarray.push(  ((x[i].getElementsByTagName("ele")[0].childNodes[0].nodeValue *1)+(zoffset*1))*zfactor);
+
+				// load values from xml formatted gpx file into array, store in variable first for some stuff
+				thisLon=(x[i].getAttribute("lon") *1);
+				thisLat=(x[i].getAttribute("lat") *1);
+				thisElev=(x[i].getElementsByTagName("ele")[0].childNodes[0].nodeValue *1);
+				// for time convert from standardized text into time value and preserve in var
 				thisTimestamp = new Date(x[i].getElementsByTagName("time")[0].childNodes[0].nodeValue);
+
 				if(i===0) {
+					// first time that's all
 					lastTimestamp = thisTimestamp;
+					lastLat = thisLat;
+					lastLon = thisLon;
 				} else {
-					cmlDist=cmlDist+Math.abs(thisTimestamp-lastTimestamp);
+					// thereafter, calculate the difference in time and add too the cumulative time value.
+					cmlTime=cmlTime+Math.abs(thisTimestamp-lastTimestamp);
+					if(thisElev>lastElev){
+						cmlElev=cmlElev+(thisElev-lastElev);
+					} else if(thisElev<lastElev) {
+						cmlDesc=cmlDesc+(lastElev-thisElev);
+					}
+					cmlDist = cmlDist + getDistanceFromLatLonInKm(lastLat,lastLon,thisLat,thisLon);
 					lastTimestamp = thisTimestamp;
+					lastElev = thisElev;
+					lastLat = thisLat;
+					lastLon = thisLon;
 				}
-				tarray.push(cmlDist);
-				
-			// Now we identify ranges and then convert x/y into new range: 0,0 = top left corner, 2048,2048 = bottom right corner
-			// and z into meters, take min/max for scale on graph, then convert to 0-60 range for elevation chart.  Note: if Z variation is <20m, leave as is.
-			// it's a little redundant to cycle through the array twice, but the alternative would be to convert all values as
-			//  well as the min/max values...  If there's no load time issue this way is simpler :)
-			//  Basically, cycle through array to convert into preferred units (pixels & feet & seconds), then take min-max, then cycle through
-			//  again to handle scaling and zooming adjustments.
-			//  LATER: actually, turns out canvas just handles the scaling for me, so yay.
+				xarray.push((thisLon+(xoffset*1))*xfactor);
+				yarray.push((thisLat+(yoffset*1))*yfactor);
+				zarray.push(thisElev);
+				tarray.push(cmlTime);
+				// now impose sanity limits on values
 				if(xarray[i] > xhilim) {xarray[i] = xhilim;};
 				if(xarray[i] < xlolim) {xarray[i] = xlolim;};
 				if(yarray[i] > yhilim) {yarray[i] = yhilim;};
@@ -196,16 +192,29 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			var zmax = Math.max.apply(null, zarray);
 			var tmin = Math.min.apply(null, tarray);
 			var tmax = Math.max.apply(null, tarray);
-
-			console.log("zmin:"+xmin);
-			console.log("zmax:"+xmax);
-			console.log("tmin:"+tmin);
-			console.log("tmax:"+tmax);
-			// determine convesion for z into pixel value (0-60)
+			
+			if (met === "Imperial") {
+				zmin = zmin*meters2feet; // now we can use these values for our axis
+				zmax = zmax*meters2feet; // and it will align with user selection
+				cmlElev = cmlElev*meters2feet;
+				cmlDesc = cmlDesc*meters2feet;
+				cmlDist = cmlDist*km2mi;
+			}
+/* 
+			console.log(zmin); // lowest elevation in ft or meters from user selection.
+			console.log(zmax); // highest elevation in ft or meters from user selection.
+			console.log(cmlElev); //total climb in ft or m 
+			console.log(cmlDesc); //total descent in ft or m
+			console.log(cmlDist); // total distiance in mi or km
+			// all seemed OK.
+*/		
+			// determine convesion for z into pixel value (0-50)
 			if( (Math.max.apply(null, zarray) - Math.min.apply(null, zarray)) < 20 ) {
+				// if the values are too low to scale
 				zfactor2 = 1;
 				zoffset2 = 10;
 			} else {
+				// otherwise scale
 				zfactor2 = 50/(Math.max.apply(null, zarray) - Math.min.apply(null, zarray));
 				zoffset2 = 0-(zmin*zfactor2);
 			}
@@ -352,6 +361,13 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 			elvctx.stroke();
 			// put buffer on left.  We'll use for axis.
 
+			elvctx.fillStyle='rgb(0, 0, 0)';
+			elvctx.font = "12px Arial";
+			console.log(zmax);
+			console.log(zmin);
+			elvctx.fillText("Max "+Math.round(zmax), 5, 15);
+			elvctx.fillText("Min "+Math.round(zmin), 5, 55);
+			elvctx.stroke();
 		};
 
 
@@ -417,14 +433,13 @@ Map preview overlayed atop 2048x2048 maps created by: http://blog.damonpollard.c
 		var R = 6371; // Radius of the earth in km
 		var dLat = deg2rad(lat2-lat1);  // deg2rad below
 		var dLon = deg2rad(lon2-lon1); 
-		var a = 
-			Math.sin(dLat/2) * Math.sin(dLat/2) +
-			Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-			Math.sin(dLon/2) * Math.sin(dLon/2); 
+		var lat1 = deg2rad(lat1);
+		var lat2 = deg2rad(lat2);
+		var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
 		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-		var d = R * c; // Distance in km
+		var d = R * c;
 		return d;
-	}
+    }
 
 	function deg2rad(deg) {
 		return deg * (Math.PI/180)
