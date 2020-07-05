@@ -9,7 +9,7 @@ BEGIN
 
     UPDATE
         Routes Main
-        INNER JOIN RouteImportStaging Incoming
+        INNER JOIN (SELECT * FROM RouteImportStaging UNION ALL SELECT * FROM RouteImportDefaults) Incoming
             ON Main.RouteName = Incoming.RouteName
     SET
         Main.Author = Incoming.Author,
@@ -36,7 +36,7 @@ BEGIN
 
     UPDATE
         Routes Main
-        LEFT JOIN RouteImportStaging Incoming
+        LEFT JOIN (SELECT * FROM RouteImportStaging UNION ALL SELECT * FROM RouteImportDefaults) Incoming
             ON Main.RouteName = Incoming.RouteName
     SET
         Main.Active = 0
@@ -68,7 +68,7 @@ BEGIN
         NewData.Type,
         1
     FROM
-        RouteImportStaging NewData
+        (SELECT * FROM RouteImportStaging UNION ALL SELECT * FROM RouteImportDefaults) NewData
         LEFT JOIN Routes OldData
             ON NewData.RouteName = OldData.RouteName
     WHERE
