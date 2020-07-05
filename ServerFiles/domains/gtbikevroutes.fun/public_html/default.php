@@ -109,23 +109,31 @@
 					echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
  
 					// this is to demo route previews.  I only have a .gpx saved for the_tourist right now.
+
+/*
 					if($row["RouteName"] === "the_tourist") {
-						echo '<iframe src="MapPreview.php?route=the_tourist" class="embed-responsive-item" width="100%" height="1280px" allowtransparency="true" style="border:0px solid black;"></iframe>';
-					}
-					else {
+						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route=the_tourist" class="embed-responsive-item" width="100%" height="1280px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
+					} else {
 						echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
 					}
-                    }
-                    echo "</table>"; // table opener & header row
-                } else {
-                echo "0 results";
-            }
-            $result->free_result();
-            $conn->close();
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
-    }
-    ?>
+*/
+					if(file_exists ("./gpx/".$row["RouteName"].".xml")) { // THIS NEXT LINE NEEDS TO BE MADE DYNAMIC!!!!!
+						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route='.$row["RouteName"].'" class="embed-responsive-item" width="100%" height="1280px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
+					} else {
+						echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
+				}
+
+				}
+				echo "</table>"; // table opener & header row
+			} else {
+			echo "0 results";
+		}
+		$result->free_result();
+		$conn->close();
+	} else {
+		echo "Error: " . $sql . "<br>" . $conn->error;
+	}
+}
+?>
 </body>
 </html>
