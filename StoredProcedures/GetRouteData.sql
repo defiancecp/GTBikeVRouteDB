@@ -35,6 +35,7 @@ BEGIN
 			vRouteName = 'ALL'
             OR vRouteName = rt.RouteName 
 		)
+        AND rt.Active = 1
     GROUP BY
         rt.RouteName,
         rt.Author,
