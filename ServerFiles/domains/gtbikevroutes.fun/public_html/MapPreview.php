@@ -347,7 +347,7 @@
 			// better to skip this for now...
 			// if the provided ride file loops back to beginning, this will still work, and if it doesn't, so be it :P 
 			// now close off the shape
-			elvctx.lineTo(255,63);
+			elvctx.lineTo(1214,63);
 			elvctx.lineTo(11,63);
 			elvctx.closePath();
 			elvctx.stroke();
