@@ -22,9 +22,9 @@
 </div><br>
 -->
 
-	<canvas id="elv" width="1215" height="63">
-	</canvas><canvas id="btn" width="63" height="63">
-	</canvas><canvas id="bmap" width="1280" height="655" >
+	<canvas id="elv" width="1214" height="62">
+	</canvas><canvas id="btn" width="62" height="62">
+	</canvas><canvas id="bmap" width="1278" height="654" >
 	</canvas><script>
 
 		// Because the buttons have monitor functions, related variables set up here

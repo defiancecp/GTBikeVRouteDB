@@ -109,17 +109,8 @@
                     echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><a href="data:text/plain;charset=UTF-8,https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json" download="'.$row["RouteName"].'.json"><img src=/images/dl.png class="link" height="20px"></a></td><td>'.$mapstring.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
 					echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
  
-					// this is to demo route previews.  I only have a .gpx saved for the_tourist right now.
-
-/*
-					if($row["RouteName"] === "the_tourist") {
-						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route=the_tourist" class="embed-responsive-item" width="100%" height="1280px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
-					} else {
-						echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
-					}
-*/
-					if(file_exists ("./gpx/".$row["RouteName"].".xml")) { // THIS NEXT LINE NEEDS TO BE MADE DYNAMIC!!!!!
-						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route='.$row["RouteName"].'&met='.$met.'" class="embed-responsive-item" width="100%" height="1280px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
+					if(file_exists ("./gpx/".$row["RouteName"].".xml")) { 
+						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route='.$row["RouteName"].'&met='.$met.'" class="embed-responsive-item" width="1280px" height="720px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
 					} else {
 						echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
 				}
