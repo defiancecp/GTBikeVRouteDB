@@ -93,9 +93,15 @@
 			// setting up the 3 canvases (buttons, elevation profile, map)
 			var elvc = document.getElementById("elv");
 			var elvctx = elvc.getContext("2d");
+
+
 			var mcanvas = document.getElementById("bmap");
 			var ctx = mcanvas.getContext("2d");
 			var img;
+			var elunit = "m";
+			var dstunit = "km";
+			var mapbg;
+			var mapline;
 
 			var route = urlParams.get('route'); // this drives loading of the file.  Required.
 			var maptype = urlParams.get('maptype'); // this carries user selection of the map type
@@ -199,6 +205,8 @@
 				cmlElev = cmlElev*meters2feet;
 				cmlDesc = cmlDesc*meters2feet;
 				cmlDist = cmlDist*km2mi;
+				elunit = "ft";
+				dstunit = "mi";
 			}
 /* 
 			console.log(zmin); // lowest elevation in ft or meters from user selection.
@@ -238,78 +246,62 @@
 
 			if (maptype === "atlas") {
 				img = document.getElementById("AtlsMap");
+				mapbg = "#0fa8d2";
+				mapline = "#0000ff";
 			} else if (maptype === "road") {
 				img = document.getElementById("RoadMap");
+				mapbg = "#1862ad";
+				mapline = "#ff0000";
 			} else if (maptype === "satellite") {
 				img = document.getElementById("SatlMap");
+				mapbg = "#143d6b";
+				mapline = "#ff00ff";
 			} else  {
 				img = document.getElementById("AtlsMap");
+				mapbg = "#0fa8d2";
+				mapline = "#0000ff";
 			}
 			
+
+
 			zoomfactory = (655/(ymax - ymin));
 			zoomfactorx = (1280/(xmax - xmin));
-			if (zoomfactory < zoomfactorx) {
-				zoomfactorxy = zoomfactory*.98;
 
 //  *********** FUTURE IMPROVEMENT:  Left justified and top justified sucks for map centering!!!
 //   suggestion: Instead of just building in a small margin, for the non-driving axis (in other
 //   words, if Y axis drives the zoom level, X axis would get this treatment) -- Just figure out
 //   how much space is "left over" and offset the axis by half that amount to center.
 //   But for now it's just left justified.
-
+			if (zoomfactory < zoomfactorx) {
+				zoomfactorxy = zoomfactory*.98;
 				translatefactory = ymin*-1*zoomfactorxy;
 				translatefactory = translatefactory + (655*.01); // this is NICE :) 
-
 				translatefactorx = xmin*-1*zoomfactorxy; 
 				translatefactorx = translatefactorx + (1280*.01);; // this is NOT CENTERED :(
-
 			} else {
 				zoomfactorxy = zoomfactorx*.98;
-
 				translatefactorx = xmin*-1*zoomfactorxy; 
 				translatefactorx = translatefactorx + (1280*.01); // this is NICE :) 
-
 				translatefactory = ymin*-1*zoomfactorxy;
 				translatefactory = translatefactory + (655*.01); // this is NOT CENTERED :(
-
 			}
-
-
 			ctx.translate(translatefactorx,translatefactory);
 			ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
 			ctx.drawImage(img, 0, 0);
 
 
-
 			// FINALLY all the prep is done - let's draw the route!  Static for now, but canvas will let me
 			//  animate.  Plan is to use 't' value to drive animation.
-
-// ***** IMPROVEMENT: Let's pretty up this line, eh? *********
+// ***** IMPROVEMENT: "close off" the "shape" of line and fill with different color (darker grey?)
 // ******* CRITICAL: At least change the color based on map seletion - this is completely unreadable on satellite.
 //  ***** ISSUE: As I fixed mapping, elevation display stopped working...
 			ctx.moveTo(xarray[0],yarray[0]);
 			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
 				ctx.lineTo(xarray[i],yarray[i]);
 			}
-			// ctx.lineTo(xarray[0],yarray[0]); // assuming we loop back to start ...  Needed?
-			// but if we do that, t axis continuity is broken, and we have no means of estimating t...
-			// better to skip this for now...
-			// if the provided ride file loops back to beginning, this will still work, and if it doesn't, so be it :P 
 			
-			ctx.strokeStyle = '#0000ff';
+			ctx.strokeStyle = mapline;
 			ctx.lineWidth = 2;
-/* // this broke when I enabled, but blue works well enough I haven't bothered to troubleshoot. switch would be cleaner anyway.
-			if(mapstyle==="road") {
-				ctx.strokeStyle = '#0000ff'; // color for road
-				ctx.lineWidth = 2;
-			} else if (mapstyle==="satellite") {
-				ctx.strokeStyle = '#0000ff'; // color for sat
-				ctx.lineWidth = 2;
-			} else {
-				ctx.strokeStyle = '#0000ff'; // color for atlas
-				ctx.lineWidth = 2;
-			}
-*/
 			ctx.stroke();
 
 
@@ -342,15 +334,11 @@
 
 
 
-// need to implement zooming on z and t axis
-// would be nice to animate along t as well.
-// add axis labels
-// MAKE PRETTY - fill in bottom? background?  ugh is so uuugly.
-// Given that t axis data is now jacked, this will likely need to be altered to align to how the time data looks when
-//  that gets fixed.
 //  hm...  would be nice to allow x axis to be distance as well as time...
 //  feature creep is just so exciting!
-			elvctx.moveTo(11,zarray[0]);
+			elvctx.beginPath();
+			elvctx.moveTo(11,63);
+			elvctx.lineTo(11,60-zarray[0]);
 			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
 				elvctx.lineTo((tarray[i]*5)+11,60-zarray[i]);
 			} // 240*5=1200, so each 'time unit' is 4 pixels, with 15 pixels buffer...
@@ -358,7 +346,13 @@
 			// but if we do that, t axis continuity is broken, and we have no means of estimating t...
 			// better to skip this for now...
 			// if the provided ride file loops back to beginning, this will still work, and if it doesn't, so be it :P 
+			// now close off the shape
+			elvctx.lineTo(255,63);
+			elvctx.lineTo(11,63);
+			elvctx.closePath();
 			elvctx.stroke();
+			elvctx.fillStyle = "#505050";
+			elvctx.fill();
 			// put buffer on left.  We'll use for axis.
 
 			elvctx.fillStyle='rgb(0, 0, 0)';
@@ -368,7 +362,20 @@
 			elvctx.fillText("Max "+Math.round(zmax), 5, 15);
 			elvctx.fillText("Min "+Math.round(zmin), 5, 55);
 			elvctx.stroke();
+
+			// draw backgrounds last, and draw behind.
+			elvctx.globalCompositeOperation = 'destination-over'
+			elvctx.fillStyle = "#A0A0A0";
+			elvctx.fillRect(0, 0, elvc.width, elvc.height);
+			elvctx.stroke();
+			ctx.globalCompositeOperation = 'destination-over'
+			ctx.fillStyle = mapbg;
+			ctx.fillRect(-5000, -5000, 10000, 10000); // in this case the point is to still show when panning and zooming.
+			ctx.stroke();
+
 		};
+
+
 
 
 // To monitor for clicks on the map change tab.  
