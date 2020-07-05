@@ -11,6 +11,7 @@
 </head> 
 <body style="background-color: transparent; color:white; margin-bottom:-5px; vertical-align: top; display: block" >
 
+<!-- 
 <div style="display:none;">
 	<img id="AtlsMap" width="2048" height="2048"
 	src="images/map_atls.png" alt="Atlas Map">
@@ -19,6 +20,7 @@
 	<img id="SatlMap" width="2048" height="2048"
 	src="images/map_satl.png" alt="Satellite Map">
 </div><br>
+-->
 
 	<canvas id="elv" width="1215" height="63">
 	</canvas><canvas id="btn" width="63" height="63">
@@ -89,7 +91,6 @@
 			var translatefactory = 0; // shift to center for y
 			//NOTE: zfactor/zoffset currently just left at 1/0 (no impact) - so not really implemented.  Left as a stub.
 
-
 			// setting up the 3 canvases (buttons, elevation profile, map)
 			var elvc = document.getElementById("elv");
 			var elvctx = elvc.getContext("2d");
@@ -97,7 +98,7 @@
 
 			var mcanvas = document.getElementById("bmap");
 			var ctx = mcanvas.getContext("2d");
-			var img;
+			var img = new Image();   // Create new img element
 			var elunit = "m";
 			var dstunit = "km";
 			var mapbg;
@@ -213,7 +214,6 @@
 				zoffset2 = 0-(zmin*zfactor2);
 			}
 			
-
 			if (met === "Imperial") {
 				zmin = zmin*meters2feet; // now we can use these values for our axis
 				zmax = zmax*meters2feet; // and it will align with user selection
@@ -241,36 +241,8 @@
 				tarray[i] = ((tarray[i]*1)+(toffset2*1))*tfactor2;
 			}
 
-//  ********** LIKELY OPTION FOR LOAD SPEED IMPROVEMENT: 
-//    Right now the page loads all 3 2048x2048 map images in the html with hidden tag, then displays them in js.
-//    that's me being lazy!!!  All 3 large files are loaded every time, and that's wasteful.
-//    Better would be to define the objects pointed to images in js, just when you do that
-//    you also have to build in a wait, and I was lazy :p 
-//      BUT IT WOULD CUT LOAD TIME IN 1/3 SO SHOULD DO IT SOMETIME.
-
-			if (maptype === "atlas") {
-				img = document.getElementById("AtlsMap");
-				mapbg = "#0fa8d2";
-				mapline = "#0000ff";
-			} else if (maptype === "road") {
-				img = document.getElementById("RoadMap");
-				mapbg = "#1862ad";
-				mapline = "#ff0000";
-			} else if (maptype === "satellite") {
-				img = document.getElementById("SatlMap");
-				mapbg = "#143d6b";
-				mapline = "#ff00ff";
-			} else  {
-				img = document.getElementById("AtlsMap");
-				mapbg = "#0fa8d2";
-				mapline = "#0000ff";
-			}
-			
-
-
 			zoomfactory = (655/(ymax - ymin));
 			zoomfactorx = (1280/(xmax - xmin));
-
 //  *********** FUTURE IMPROVEMENT:  Left justified and top justified sucks for map centering!!!
 //   suggestion: Instead of just building in a small margin, for the non-driving axis (in other
 //   words, if Y axis drives the zoom level, X axis would get this treatment) -- Just figure out
@@ -289,55 +261,78 @@
 				translatefactory = ymin*-1*zoomfactorxy;
 				translatefactory = translatefactory + (655*.01); // this is NOT CENTERED :(
 			}
-			ctx.translate(translatefactorx,translatefactory);
-			ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
-			ctx.drawImage(img, 0, 0);
 
 
 			// FINALLY all the prep is done - let's draw the route!  Static for now, but canvas will let me
-			//  animate.  Plan is to use 't' value to drive animation.
-// ***** IMPROVEMENT: "close off" the "shape" of line and fill with different color (darker grey?)
-// ******* CRITICAL: At least change the color based on map seletion - this is completely unreadable on satellite.
-//  ***** ISSUE: As I fixed mapping, elevation display stopped working...
-			ctx.moveTo(xarray[0],yarray[0]);
-			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
-				ctx.lineTo(xarray[i],yarray[i]);
+			//  animate.  Plan is to use 't' value to drive animation?  Or better yet make an 'index' array that's
+			//  populated based on either cumulative time or cumulative distance depending on parameters
+			img.addEventListener('load', function() {
+				ctx.translate(translatefactorx,translatefactory);
+				ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
+				ctx.drawImage(img, 0, 0);
+				ctx.moveTo(xarray[0],yarray[0]);
+				for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
+					ctx.lineTo(xarray[i],yarray[i]);
+				}
+				ctx.strokeStyle = mapline;
+				ctx.lineWidth = 2;
+				ctx.stroke();
+				// draw backgrounds last, and draw behind.
+				ctx.globalCompositeOperation = 'destination-over'
+				ctx.fillStyle = mapbg;
+				ctx.fillRect(-5000, -5000, 10000, 10000); // in this case the point is to still show when panning and zooming.
+				ctx.stroke();
+			// draw backgrounds last, and draw behind.
+			}, false);
+
+			// now start the image load (whne complete, will trigger the above function to draw the image + route + bg.
+			if (maptype === "atlas") {
+				//img = document.getElementById("AtlsMap");
+				img.src = 'images/map_atls.png'; // Set source path
+				mapbg = "#0fa8d2";
+				mapline = "#0000ff";
+			} else if (maptype === "road") {
+				//img = document.getElementById("RoadMap");
+				img.src = 'images/map_road.png'; // Set source path
+				mapbg = "#1862ad";
+				mapline = "#ff0000";
+			} else if (maptype === "satellite") {
+				//img = document.getElementById("SatlMap");
+				img.src = 'images/map_satl.png'; // Set source path
+				mapbg = "#143d6b";
+				mapline = "#ff00ff";
+			} else  {
+				//img = document.getElementById("AtlsMap");
+				img.src = 'images/map_atls.png'; // Set source path
+				mapbg = "#0fa8d2";
+				mapline = "#0000ff";
 			}
-			
-			ctx.strokeStyle = mapline;
-			ctx.lineWidth = 2;
-			ctx.stroke();
 
-
+			// map switch button URL generation
 			link1URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=atlas&met="+met+"&route="+route;
 			link2URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=road&met="+met+"&route="+route;
 			link3URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=satellite&met="+met+"&route="+route;
-
-// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
-
+			// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
 			btnctx.fillStyle='rgb(128,185,35)';
 			btnctx.fillRect(0,0,63,21);
-
 			btnctx.fillStyle='rgb(146, 210, 187)';
 			btnctx.fillRect(0,22,63,21);
-
 			btnctx.fillStyle='rgb(0, 153, 0)';
 			btnctx.fillRect(0,43,63,21);
 			btnctx.stroke();
-
-	 
+			// button labels
 			btnctx.fillStyle='rgb(0, 0, 0)';
 			btnctx.font = "12px Arial";
 			btnctx.fillText(link1Text, link1X+textoffsetx, link1Y+textoffsety);
 			btnctx.fillText(link2Text, link2X+textoffsetx, link2Y+textoffsety);
 			btnctx.fillText(link3Text, link3X+textoffsetx, link3Y+textoffsety);
+			// draw
 			btnctx.stroke();
-
+			// and monitor, run the below functions to determine mouse location and respond to clicks
 			btnc.addEventListener("mousemove", CanvasMouseMove, false);
 			btnc.addEventListener("click", Link_click, false);
 
-
-
+			// Now elevation profile
 //  hm...  would be nice to allow x axis to be distance as well as time...
 //  feature creep is just so exciting!
 			elvctx.beginPath();
@@ -361,22 +356,14 @@
 
 			elvctx.fillStyle='rgb(0, 0, 0)';
 			elvctx.font = "12px Arial";
-			console.log(zmax);
-			console.log(zmin);
 			elvctx.fillText("Max "+Math.round(zmax), 5, 15);
 			elvctx.fillText("Min "+Math.round(zmin), 5, 55);
 			elvctx.stroke();
-
 			// draw backgrounds last, and draw behind.
 			elvctx.globalCompositeOperation = 'destination-over'
 			elvctx.fillStyle = "#A0A0A0";
 			elvctx.fillRect(0, 0, elvc.width, elvc.height);
 			elvctx.stroke();
-			ctx.globalCompositeOperation = 'destination-over'
-			ctx.fillStyle = mapbg;
-			ctx.fillRect(-5000, -5000, 10000, 10000); // in this case the point is to still show when panning and zooming.
-			ctx.stroke();
-
 		};
 
 
