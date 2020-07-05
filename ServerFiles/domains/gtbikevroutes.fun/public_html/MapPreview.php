@@ -159,9 +159,6 @@
 
 				if(i===0) {
 					// first time that's all
-					lastTimestamp = thisTimestamp;
-					lastLat = thisLat;
-					lastLon = thisLon;
 				} else {
 					// thereafter, calculate the difference in time and add too the cumulative time value.
 					cmlTime=cmlTime+Math.abs(thisTimestamp-lastTimestamp);
@@ -171,11 +168,15 @@
 						cmlDesc=cmlDesc+(lastElev-thisElev);
 					}
 					cmlDist = cmlDist + getDistanceFromLatLonInKm(lastLat,lastLon,thisLat,thisLon);
-					lastTimestamp = thisTimestamp;
-					lastElev = thisElev;
-					lastLat = thisLat;
-					lastLon = thisLon;
 				}
+				lastTimestamp = thisTimestamp;
+				lastElev = thisElev;
+				lastLat = thisLat;
+				lastLon = thisLon;
+
+				// minor concern: I'm referencing i as an index explicitly at some points, but at others
+				//  I'm doing non-indexed pushes into the array.  Could be a vector for bugs, seems like 
+				//  it would be easy to make a mistake and get them out of sync.
 				xarray.push((thisLon+(xoffset*1))*xfactor);
 				yarray.push((thisLat+(yoffset*1))*yfactor);
 				zarray.push(thisElev);
@@ -199,6 +200,20 @@
 			var tmin = Math.min.apply(null, tarray);
 			var tmax = Math.max.apply(null, tarray);
 			
+			// determine convesion for z into pixel value (0-50)
+			// need to calculate before zmax and zmin are adjusted for metric/imperial so 
+			// that behavior is consistent.
+			if( (Math.max.apply(null, zarray) - Math.min.apply(null, zarray)) < 20 ) {
+				// if the values are too low to scale
+				zfactor2 = 1;
+				zoffset2 = 10;
+			} else {
+				// otherwise scale
+				zfactor2 = 50/(Math.max.apply(null, zarray) - Math.min.apply(null, zarray));
+				zoffset2 = 0-(zmin*zfactor2);
+			}
+			
+
 			if (met === "Imperial") {
 				zmin = zmin*meters2feet; // now we can use these values for our axis
 				zmax = zmax*meters2feet; // and it will align with user selection
@@ -216,17 +231,6 @@
 			console.log(cmlDist); // total distiance in mi or km
 			// all seemed OK.
 */		
-			// determine convesion for z into pixel value (0-50)
-			if( (Math.max.apply(null, zarray) - Math.min.apply(null, zarray)) < 20 ) {
-				// if the values are too low to scale
-				zfactor2 = 1;
-				zoffset2 = 10;
-			} else {
-				// otherwise scale
-				zfactor2 = 50/(Math.max.apply(null, zarray) - Math.min.apply(null, zarray));
-				zoffset2 = 0-(zmin*zfactor2);
-			}
-			
 			// determine convesion for t into time driver (0-240) (intent is to display in ~4 seconds, so time equates to 16.67 milliseconds, ~60fps)
 			tfactor2 = 240/(Math.max.apply(null, tarray) - Math.min.apply(null, tarray));
 			toffset2 = 0-(tmin*tfactor2);
