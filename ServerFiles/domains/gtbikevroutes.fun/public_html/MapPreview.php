@@ -154,7 +154,7 @@
 				met = defaultMet; // default
 			}
 			// file for route preview ... for some reason gpx won't pick up, have to name it xml.
-			gpxfilename = "gpx/"+route+".xml";
+			gpxfilename = "gpx/"+route+".gpx";
 			xhttp = new XMLHttpRequest();
 // some variables not initialized: initialization for these is handled at load time.  Just adding a big chunk o' comment to document -- see end of 'script' segment 
 			// variable initialization complete! :)

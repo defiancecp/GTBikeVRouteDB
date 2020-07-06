@@ -1,0 +1,8 @@
+
+# DO NOT REMOVE THIS LINE AND THE LINES BELLOW SSL_REDIRECT:gtbikevroutes.fun
+RewriteEngine on
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} (www\.)?gtbikevroutes.fun
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+AddType text/xml gpx
+# DO NOT REMOVE THIS LINE AND THE LINES BELLOW SSL_REDIRECT:gtbikevroutes.fun

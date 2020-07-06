@@ -127,7 +127,7 @@
 					echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
  
 					// but for the map link, if there's a GPX file for this route, skip the map and use route preview instead.
-					if(file_exists ("./gpx/".$row["RouteName"].".xml")) { 
+					if(file_exists ("./gpx/".$row["RouteName"].".gpx")) { 
 						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route='.$row["RouteName"].'&met='.$met.'" class="embed-responsive-item" width="1280px" height="720px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
 					} else {
 						echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
