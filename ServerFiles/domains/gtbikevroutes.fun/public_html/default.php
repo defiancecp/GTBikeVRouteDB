@@ -50,82 +50,99 @@
     }    
     echo '<div style="color:#C0D0C8;"><a href="default.php'.$metswtag.$routetag.'"><img src="'.$metsw.'" height="20px"/></a>'.$met.'';
     
+	// if a route is passed, go to details.  If it isn't, show summary.
     if($route === NULL) {
+		// Summary:
         echo '</div>';
         $sql = "CALL GetRouteData('".get_ip_address()."','ALL');";
-        // execute SQL query submitting the rating.
+        // execute SQL query to get all the route data.
+// This is option 1 for filtering/sorting -- build something into the MySQL stored proc that will accept
+//  filtering/sorting inputs, then create controls on the page which reload, passing parameters and implementing in the call.
         $conn = myConnection();
         // This is just handling of connection results.
         if ($result = $conn->query($sql)) {
             if ($result->num_rows > 0) {
-                echo '<table style="color:#a0b0a8;" class="table table-dark table-striped"><tr><th>Route</th><th>Author</th><th>Type</th><th>Distance</th><th>Elevation</th><th>Download</th><th>Map</th><th width="145px">Rating</th></tr>'; // table opener & header row
+// This is option 2 for filtering/sorting -- Get the whole MySQL dataset just as is,
+//  create controls on the page which reload, passing parameters, and implement sort/filter
+//  in the table build/display
+				// now create a table to show results, and then cycle through each result row and build an html "tr" for each row and "td" for each displayed element.
+				echo '<table style="color:#a0b0a8;" class="table table-dark table-striped"><tr><th>Route</th><th>Author</th><th>Type</th><th>Distance</th><th>Elevation</th><th>Download</th><th>Map</th><th width="145px">Rating</th></tr>'; // table opener & header row
                 // output data of each row
-                while($row = $result->fetch_assoc()) {
+                while($row = $result->fetch_assoc()) { // fetch is pop-like so each row is cycled through. when done, result of the assignment will be false, ending loop.
+					// this value contains the definition for each row's rating link URL.  See submitrating.php for implementation of this rating.
                     $ratinglink = 'SubmitRating.php?route='.$row["RouteName"].'&rating='.$row["CurrentRating"].'&submit=FALSE&ratingcount='.$row["RatingCount"];
-                    if($met === 'Metric') {
-                        $velevation = $row["ElevationM"]."m"; // need to intelligently switch
-                        $vdistance = $row["DistanceKM"]."km"; // need to intelligently switch
+                    if($met === 'Metric') { // shift displayed metrics based on user selection
+                        $velevation = $row["ElevationM"]."m"; 
+                        $vdistance = $row["DistanceKM"]."km"; 
                     } else {
-                        $velevation = $row["ElevationFT"]."ft"; // need to intelligently switch
-                        $vdistance = $row["DistanceMI"]."mi"; // need to intelligently switch
-                    }
+                        $velevation = $row["ElevationFT"]."ft"; 
+                        $vdistance = $row["DistanceMI"]."mi"; 
+                    } // not using the map exactly like encoded in readme
+					// which, to be clear, is on me: I submitted the pull request to structure the table in the readme :P 
+					// but for now just fixing. This will probably be better in the API.
                     $mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"/></a>',$row["Map"]);
+					// now build the tr.
                     echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><a href="data:text/plain;charset=UTF-8,https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json" download="'.$row["RouteName"].'.json"><img src=/images/dl.png class="link" height="20px"></a></td><td>'.$mapstring.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
-                    }
-                    echo "</table>"; // table opener & header row
-                } else {
-                echo "0 results";
-            }
-            $result->free_result();
-            $conn->close();
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
-    }
-    else
-    {
+				}
+					// all tr's done, close it up.
+				echo "</table>"; // table opener & header row
+			} else {
+				echo "0 results";
+			}
+				// connection cleanup
+			$result->free_result();
+			$conn->close();
+		} else {
+			echo "Error: " . $sql . "<br>" . $conn->error;
+		}
+	} else {
+		// This is the specific route page.  Most of the code is similar to summary.
         echo '&nbsp;&nbsp;&nbsp;<a href="default.php?met='.$met.'"><img src="images/bkup.png" height="20px"/></a>Return';
         echo '</div>';
         $sql = "CALL GetRouteData('".get_ip_address()."','".$route."');";
-        // execute SQL query submitting the rating.
-        // execute SQL query submitting the rating.
+        // execute SQL query gathering table details
         $conn = myConnection();
         // This is just handling of connection results.
         if ($result = $conn->query($sql)) {
             if ($result->num_rows > 0) {
                 echo '<table style="color:#a0b0a8;" class="table table-dark table-striped"><tr><th>Route</th><th>Author</th><th>Type</th><th>Distance</th><th>Elevation</th><th>Download</th><th>Map</th><th width="145px">Rating</th></tr>'; // table opener & header row
                 // output data of each row
-                while($row = $result->fetch_assoc()) {
+                while($row = $result->fetch_assoc()) {// fetch is pop-like so each row is cycled through. when done, result of the assignment will be false, ending loop.
+					// this value contains the definition for each row's rating link URL.  See submitrating.php for implementation of this rating.
                     $ratinglink = 'SubmitRating.php?route='.$row["RouteName"].'&rating='.$row["CurrentRating"].'&submit=FALSE&ratingcount='.$row["RatingCount"];
-                    if($met === 'Metric') {
-                        $velevation = $row["ElevationM"]."m"; // need to intelligently switch
-                        $vdistance = $row["DistanceKM"]."km"; // need to intelligently switch
+                    if($met === 'Metric') { // shift displayed metrics based on user selection
+                        $velevation = $row["ElevationM"]."m";
+                        $vdistance = $row["DistanceKM"]."km";
                     } else {
-                        $velevation = $row["ElevationFT"]."ft"; // need to intelligently switch
-                        $vdistance = $row["DistanceMI"]."mi"; // need to intelligently switch
+                        $velevation = $row["ElevationFT"]."ft";
+                        $vdistance = $row["DistanceMI"]."mi";
                     }
                     $mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"/></a>',$row["Map"]);
+					// not using the map exactly like encoded in readme
+					// which, to be clear, is on me: I submitted the pull request to structure the table in the readme :P 
+					// but for now just fixing. This will probably be better in the API.
                     $mappic = str_replace('">Map</a>','',str_replace('<a href="','',$row["Map"]));
+					// now build the row for this data...
                     echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><a href="data:text/plain;charset=UTF-8,https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json" download="'.$row["RouteName"].'.json"><img src=/images/dl.png class="link" height="20px"></a></td><td>'.$mapstring.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
 					echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
  
+					// but for the map link, if there's a GPX file for this route, skip the map and use route preview instead.
 					if(file_exists ("./gpx/".$row["RouteName"].".xml")) { 
 						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route='.$row["RouteName"].'&met='.$met.'" class="embed-responsive-item" width="1280px" height="720px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
 					} else {
 						echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
-				}
-
+					}
 				}
 				echo "</table>"; // table opener & header row
 			} else {
-			echo "0 results";
+				echo "0 results";
+			}
+			$result->free_result();
+			$conn->close();
+		} else {
+			echo "Error: " . $sql . "<br>" . $conn->error;
 		}
-		$result->free_result();
-		$conn->close();
-	} else {
-		echo "Error: " . $sql . "<br>" . $conn->error;
 	}
-}
 ?>
 </body>
 </html>

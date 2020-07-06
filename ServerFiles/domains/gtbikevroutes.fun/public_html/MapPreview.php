@@ -11,144 +11,164 @@
 </head> 
 <body style="background-color: transparent; color:white; margin-bottom:-5px; vertical-align: top; display: block" >
 
-<!-- 
-<div style="display:none;">
-	<img id="AtlsMap" width="2048" height="2048"
-	src="images/map_atls.png" alt="Atlas Map">
-	<img id="RoadMap" width="2048" height="2048"
-	src="images/map_road.png" alt="Road Map">
-	<img id="SatlMap" width="2048" height="2048"
-	src="images/map_satl.png" alt="Satellite Map">
-</div><br>
--->
-
 	<canvas id="elv" width="1214" height="62">
 	</canvas><canvas id="btn" width="62" height="62">
 	</canvas><canvas id="bmap" width="1278" height="654" >
 	</canvas><script>
+		// set up a bunch of constant definitions at the outset to simplify 
+		// adjusting if needed.
+		// first set define aspects of the map style buttons.
+		const textoffsetx = 12; // how far all button text is offset from top
+		const textoffsety = 14; // how far all button text is offset from left
 
-		// Because the buttons have monitor functions, related variables set up here
-		// The numbers here control much of the map selection button layout.
-		// could probably be const's.
-			var btnc = document.getElementById("btn");
-			var btnctx = btnc.getContext("2d");
-			var link1Text = "Atlas";
-			var link1URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=atlas&met=Metric&route=the_tourist";
-			var link2Text = "Road";
-			var link2URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=road&met=Metric&route=the_tourist";
-			var link3Text = "Satellite";
-			var link3URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=satellite&met=Metric&route=the_tourist";
-			var textoffsetx = 12;
-			var textoffsety = 14;
-			var link1X = 0;
-			var link1Y = 0;
-			var link1Height = 21;
-			var link1Width = 63;
-			var isLink1 = false;
-			var link2X = 0;
-			var link2Y = 20;
-			var link2Height = 21;
-			var link2Width = 63;
-			var isLink2 = false;
-			var link3X = 0;
-			var link3Y = 40;
-			var link3Height = 21;
-			var link3Width = 63;
-			var isLink3 = false;
+		// details for first button
+		const link1Text = "Atlas"; // text
+		const link1X = 0; // position
+		const link1Y = 0;
+		const link1Height = 21; // size
+		const link1Width = 63;
+
+		// repeat for other buttons.
+		const link2Text = "Road";
+		const link2X = 0;
+		const link2Y = 20;
+		const link2Height = 21;
+		const link2Width = 63;
+
+		// repeat for other buttons.
+		const link3Text = "Satellite";
+		const link3X = 0;
+		const link3Y = 40;
+		const link3Height = 21;
+		const link3Width = 63;
+		
+		// set up params from the URL for use in the rest of the script
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+
+		// These define conversion factors to convert from the .fit x/y lat/long to
+		//  equivalent map pixels, based on 2048x2048 map images with 0,0 being top left 
+		const xfactor = 17200; // this is multipler to convert to latlong to pixels
+		const xoffset = 169.9255; // this is offset to convert latlong to to pixels
+		const yfactor = -18200; // this is multipler to convert latlong to to pixels
+		const yoffset = 19.0305	; // this is offset to convert latlong to to pixels
+		// not sure why x/y are different, but they are ... maybe the map images are squished slightly?
+
+		// sanity limits on values
+		const xhilim = 2007; // the map has wide boundaries with no roads
+		const xlolim = 41; // and limiting this makes some other stuff easier
+		const yhilim = 2007; // so we use 98% of 2048= 2007
+		const ylolim = 41; // and 2048-2007=41
+		const zhilim = 50000; // just sanity imposed here - you're not 50km in the air
+		const zlolim = -5000; // or 5km underground 
+		
+		// metric/imperial conversion factors.
+		const meters2feet = 3.28084; // this is multipler for conversion to either imperial
+		const km2mi = 0.621371; // this is multipler for conversion to either imperial
+		const earthRadius = 6371; // in km
+		const elvAxMxLabelX = 2; // pixels from left border for maximum elevation label on z axis
+		const elvAxMxLabelY = 10; //  pixels from top border for maximum elevation label on z axis
+		const elvAxMnLabelX = 2; // pixels from left border for minimum elevation label on z axis
+		const elvAxMnLabelY = 60; // pixels from top border for minimum elevation label on z axis
 
 
-		//  This is what's loaded initially with page
+		const defaultRoute = "the_tourist"; // just setting a default
+		const defaultMaptype = "atlas"; // just setting a default
+		const defaultMet = "Metric"; // just setting a default
+		
+		const atlasPng = 'images/map_atls.png'; // file source for atlas map
+		const roadPng = 'images/map_road.png'; // file source for road map
+		const satlPng = 'images/map_satl.png'; // file source for satellite map
+
+/// COLORS!!! woo.  Lots of colors for canvas elements defined here.
+		const atlasBg = "#0fa8d2"; // background color for atlas map
+		const atlasLn = "#0000ff"; // line color for atlas map
+		const roadBg = "#1862ad"; // background color for road map
+		const roadLn = "#ff0000"; // line color for road map
+		const satlBg = "#143d6b"; // background color for satellite map
+		const satlLn = "#ff00ff"; // line color for satellite map
+		const btnAtlsColr = 'rgb(128,185,35)'; // color of bg for atlas
+		const btnRoadColr = 'rgb(146, 210, 187)'; // color of bg for road
+		const btnSatlColr = 'rgb(0, 153, 0)'; // color of bg for sat
+		const elvAxColorAtls = "#ffffff"; // color of the axis labels in elevation chart
+		const elvLnColorAtls = "#121280"; // color of the line in elevation chart
+		const elvFlColorAtls = "#707070"; // color of the graph fill in elevation chart
+		const elvBgColorAtls = "#404040"; // color of the background in elevation chart
+		const elvAxColorRoad = "#ffffff"; // color of the axis labels in elevation chart
+		const elvLnColorRoad = "#121280"; // color of the line in elevation chart
+		const elvFlColorRoad = "#707070"; // color of the graph fill in elevation chart
+		const elvBgColorRoad = "#404040"; // color of the background in elevation chart
+		const elvAxColorSatl = "#ffffff"; // color of the axis labels in elevation chart
+		const elvLnColorSatl = "#121280"; // color of the line in elevation chart
+		const elvFlColorSatl = "#707070"; // color of the graph fill in elevation chart
+		const elvBgColorSatl = "#404040"; // color of the background in elevation chart
+	
+	// Because the buttons have monitor functions, related variables set up here
+	// The numbers here control much of the map selection button layout.
+	// could probably be defined as inline functions instead of separate functions, thus allowing these to consolidate with other vars.
+	
+		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL;
+		// initialize values:
+		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
+		isLink2 = false; // indicates whether mouse position currently hovering is over link 2
+		isLink3 = false; // indicates whether mouse position currently hovering is over link 3
+		btnc = document.getElementById("btn"); // button canvas
+		btnctx = btnc.getContext("2d"); // button canvas context
+		link1URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=atlas&met=Metric&route=the_tourist"; // basic value for url
+		link2URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=road&met=Metric&route=the_tourist"; // it's really dynamic, but defining and initializing
+		link3URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=satellite&met=Metric&route=the_tourist"; // is nice for readability :)
+
+		//  This function is executed when the window loads
 		window.onload = function() {
 
-			const queryString = window.location.search;
-			const urlParams = new URLSearchParams(queryString);
+			// variables:
+			var zfactor2,zoffset2,tfactor2,toffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,elvc,elvctx,mcanvas,ctx,img,elunit,dstunit,mapbg,mapline,route,maptype,met,gpxfilename,xhttp,i,cmlDist,cmlTime,cmlElev,cmlDesc,xmlDoc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,elvAxColor,elvLnColor,elvFlColor,elvBgColor;
 
-			// These define conversion factors to convert from the .fit x/y lat/long to
-			//  equivalent map pixels, based on 2048x2048 map images with 0,0 being top left, 
-			//  and z into meters.  These factors are constant.
-			const xfactor = 17200; // this is multipler to convert to latlong to pixels
-			const xoffset = 169.9255; // this is offset to convert latlong to to pixels
-			const yfactor = -18200; // this is multipler to convert latlong to to pixels
-			const yoffset = 19.0305	; // this is offset to convert latlong to to pixels
-			const xhilim = 2007; // the map has wide boundaries with no roads
-			const xlolim = 41; // and limiting this makes some other stuff easier
-			const yhilim = 2007; // so we use 98% of 2048= 2007
-			const ylolim = 41;
-			const zhilim = 50000; // just sanity imposed here - you're not 50km in the air
-			const zlolim = -5000; // or 5km underground 
-			const meters2feet = 3.28084; // this is multipler for conversion to either imperial
-			const km2mi = 0.621371; // this is multipler for conversion to either imperial
-		
-			// these are not necessarily constant.  Many initializers are just placeholders.
-			var zfactor2 = 1; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels
-			var zoffset2 = 0; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels
-			var tfactor2 = 1; // and tfactor converts the time units into a scale of 0-240 for various purposes
-			var toffset2 = 0; // 
-			var zoomfactorx = 1; // handles x/y zoom for main panel
-			var zoomfactory = 1; // handles x/y zoom for main panel
-			var zoomfactorxy = 1; // handles x/y zoom for main panel
-			var translatefactorx = 0; // shift to center for x
-			var translatefactory = 0; // shift to center for y
-			//NOTE: zfactor/zoffset currently just left at 1/0 (no impact) - so not really implemented.  Left as a stub.
-
-			// setting up the 3 canvases (buttons, elevation profile, map)
-			var elvc = document.getElementById("elv");
-			var elvctx = elvc.getContext("2d");
-
-
-			var mcanvas = document.getElementById("bmap");
-			var ctx = mcanvas.getContext("2d");
-			var img = new Image();   // Create new img element
-			var elunit = "m";
-			var dstunit = "km";
-			var mapbg;
-			var mapline;
-
-			var route = urlParams.get('route'); // this drives loading of the file.  Required.
-			var maptype = urlParams.get('maptype'); // this carries user selection of the map type
-			var met = urlParams.get('met'); // this carries user selection of the units of measurement
-
-			// initialize the arrays for the route
+			// array variables:
 			let xarray = []; 
 			let yarray = []; 
 			let zarray = []; 
 			let tarray = []; 
 			let darray = [];  // new array for cumulative distance
-
-			// url parameter handling
-			if (route === null) {
-				route = "something"; // default... but this is really required.
-			}	
-
-			if (maptype === null) {
-				maptype = "atlas"; // default
-			}	
-
-			if (met === null){
-				met = "Metric"; // default
-			}
 			
-			// file for route preview 
-			// for some reason gpx won't pick up, have to name it xml.
-			var gpxfilename = "gpx/"+route+".xml";
+			// set initial assignments for variables as needed.
+			//  also serves as a good location to document variables' usage
+			elvc = document.getElementById("elv"); // elevation profile canvas
+			elvctx = elvc.getContext("2d"); // elevation profile canvas context
+			mcanvas = document.getElementById("bmap"); // map canvas
+			ctx = mcanvas.getContext("2d"); // map canvas context
+			img = new Image();   // Create new img element
+			elunit = "m"; // displays the type of elevation unit
+			dstunit = "km"; // displays the type of distance unit
+			// url parameter handling
+			route = urlParams.get('route'); // this drives loading of the file.  Required.
+			if (route === null) {
+				route = defaultRoute; // default... but this is really required.
+			}	
+			maptype = urlParams.get('maptype'); // this carries user selection of the map type
+			if (maptype === null) {
+				maptype = defaultMaptype; // default
+			}	
+			met = urlParams.get('met'); // this carries user selection of the units of measurement
+			if (met === null){
+				met = defaultMet; // default
+			}
+			// file for route preview ... for some reason gpx won't pick up, have to name it xml.
+			gpxfilename = "gpx/"+route+".xml";
+			xhttp = new XMLHttpRequest();
+// some variables not initialized: initialization for these is handled at load time.  Just adding a big chunk o' comment to document -- see end of 'script' segment 
+			// variable initialization complete! :)
 
-			// pick up file
-			var xhttp = new XMLHttpRequest();
+	//  *** LOAD THE GPX INTO CULTIVATED ARRAYS ***
+
+			// NOTE: Using deprecated synchronous mode - see github issue #22
 			xhttp.open("GET", gpxfilename, false);
-			// NOTE: Using deprecated synchronous mode to load the file because the page has to wait anyway.
 			xhttp.send();
-				  
-			// really need to consolidate all my variable definitions - sooo messsy.
-			var i;
-			var lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev;
-			var cmlDist = 0;
-			var cmlTime = 0;
-			var cmlElev = 0;
-			var cmlDesc = 0;
-			var xmlDoc = xhttp.responseXML;
+			xmlDoc = xhttp.responseXML;
 
-			// now we really start parsing xml.  Pick out all the trkpt items and extract specfiic attributes:
-			var x = xmlDoc.getElementsByTagName("trkpt");
+			// now we really start parsing xml.  javascript with the libraries I'm using makes XML pretty effortless.
+			// so -- Pick out all the trkpt items and extract specfiic attributes:
+			x = xmlDoc.getElementsByTagName("trkpt");
 			for (i = 0; i < x.length; i++) { 
 
 				// load values from xml formatted gpx file into array, store in variable first for some stuff
@@ -159,7 +179,10 @@
 				thisTimestamp = new Date(x[i].getElementsByTagName("time")[0].childNodes[0].nodeValue);
 
 				if(i===0) {
-					// first time that's all
+					cmlDist = 0;
+					cmlTime = 0;
+					cmlElev = 0;
+					cmlDesc = 0;
 				} else {
 					// thereafter, calculate the difference in time and add too the cumulative time value.
 					cmlTime=cmlTime+Math.abs(thisTimestamp-lastTimestamp);
@@ -191,58 +214,63 @@
 				if(zarray[i] < zlolim) {zarray[i] = zlolim;};
 			};
 
+	//  *** LOAD THE GPX INTO CULTIVATED ARRAYS COMPLETED ***
+	//  *** ANALYZE DATASET ***
+
 			// Preserve min and max values - we'll possibly use these to control zooming...
-			var xmin = Math.min.apply(null, xarray); 
-			var xmax = Math.max.apply(null, xarray);
-			var ymin = Math.min.apply(null, yarray);
-			var ymax = Math.max.apply(null, yarray);
-			var zmin = Math.min.apply(null, zarray);
-			var zmax = Math.max.apply(null, zarray);
-			var tmin = Math.min.apply(null, tarray);
-			var tmax = Math.max.apply(null, tarray);
+			xmin = Math.min.apply(null, xarray); 
+			xmax = Math.max.apply(null, xarray);
+			ymin = Math.min.apply(null, yarray);
+			ymax = Math.max.apply(null, yarray);
+			zmin = Math.min.apply(null, zarray);
+			zmax = Math.max.apply(null, zarray);
+			tmin = Math.min.apply(null, tarray);
+			tmax = Math.max.apply(null, tarray);
 			
 			// determine convesion for z into pixel value (0-50)
 			// need to calculate before zmax and zmin are adjusted for metric/imperial so 
 			// that behavior is consistent.
-			if( (Math.max.apply(null, zarray) - Math.min.apply(null, zarray)) < 20 ) {
+			if( (Math.max.apply(null, zarray) - Math.min.apply(null, zarray)) < 2 ) {
 				// if the values are too low to scale
-				zfactor2 = 1;
-				zoffset2 = 10;
+				zfactor2 = 25;
+				zoffset2 = -5;
 			} else {
 				// otherwise scale
-				zfactor2 = 50/(Math.max.apply(null, zarray) - Math.min.apply(null, zarray));
-				zoffset2 = 0-(zmin*zfactor2);
+				zfactor2 = 60/(Math.max.apply(null, zarray) - Math.min.apply(null, zarray));
+				zoffset2 = 0-zmin; // (zmin*zfactor2)+20;
 			}
 			
+			console.log(zmin);
+			console.log(zmax);
+			console.log(zfactor2);
+			console.log(zoffset2);
+			
+			// convert from default metric values to imperial as needed.
 			if (met === "Imperial") {
-				zmin = zmin*meters2feet; // now we can use these values for our axis
-				zmax = zmax*meters2feet; // and it will align with user selection
-				cmlElev = cmlElev*meters2feet;
-				cmlDesc = cmlDesc*meters2feet;
-				cmlDist = cmlDist*km2mi;
-				elunit = "ft";
+				zmin = zmin*meters2feet; // lowest elevation meters to feet
+				zmax = zmax*meters2feet; // highest elevation meters to feet
+				cmlElev = cmlElev*meters2feet; // total ascent meters to feet
+				cmlDesc = cmlDesc*meters2feet; // total descent meters to feet
+				cmlDist = cmlDist*km2mi; // total distance km to mi
+				elunit = "ft"; // update unit tags
 				dstunit = "mi";
 			}
-/* 
-			console.log(zmin); // lowest elevation in ft or meters from user selection.
-			console.log(zmax); // highest elevation in ft or meters from user selection.
-			console.log(cmlElev); //total climb in ft or m 
-			console.log(cmlDesc); //total descent in ft or m
-			console.log(cmlDist); // total distiance in mi or km
-			// all seemed OK.
-*/		
-			// determine convesion for t into time driver (0-240) (intent is to display in ~4 seconds, so time equates to 16.67 milliseconds, ~60fps)
-			tfactor2 = 240/(Math.max.apply(null, tarray) - Math.min.apply(null, tarray));
+
+			// determine convesion for t into time driver (0-243 because 243 works with this width)
+			// intent is to display in ~4 seconds, so time equates to 16.67 milliseconds, ~60fps
+			tfactor2 = 243/(Math.max.apply(null, tarray) - Math.min.apply(null, tarray));
 			toffset2 = 0-(tmin*tfactor2);
 			
-			
-			for (var i=0, len=xarray.length; i<len; i++) { // Now adjust to fit scales and zooms.
+			// Now adjust to fit scales and zooms.
+			for (var i=0, len=xarray.length; i<len; i++) { 
 				zarray[i] = ((zarray[i]*1)+(zoffset2*1))*zfactor2;
 				tarray[i] = ((tarray[i]*1)+(toffset2*1))*tfactor2;
 			}
 
+			// determine optimal scaling on each axis to fit most of the route onscreen
 			zoomfactory = (655/(ymax - ymin));
 			zoomfactorx = (1280/(xmax - xmin));
+
 //  *********** FUTURE IMPROVEMENT:  Left justified and top justified sucks for map centering!!!
 //   suggestion: Instead of just building in a small margin, for the non-driving axis (in other
 //   words, if Y axis drives the zoom level, X axis would get this treatment) -- Just figure out
@@ -262,10 +290,19 @@
 				translatefactory = translatefactory + (655*.01); // this is NOT CENTERED :(
 			}
 
+	//  *** ANALYZE DATASET COMPLETE ***
+	//  *** MAP CANVAS HANDLING ***
 
 			// FINALLY all the prep is done - let's draw the route!  Static for now, but canvas will let me
 			//  animate.  Plan is to use 't' value to drive animation?  Or better yet make an 'index' array that's
 			//  populated based on either cumulative time or cumulative distance depending on parameters
+			// Dynamic file loading: javascript loads files asynchronously.  This is key to note because draw
+			//  ordering is key in what is displayed, so to enforce proper order we can't draw background or route
+			//  until the image is loaded.
+			// Note: normal approach to loading involves using html a hrefs and pointing to them, but the files are huge
+			//  and there are different ones selected by user.  Load times were horrendous using that approach.  This is
+			//  more complicated, but only loads the user-selected map file, cutting most of the load time.
+			// So: This is the function that runs whe the file load is completed.
 			img.addEventListener('load', function() {
 				ctx.translate(translatefactorx,translatefactory);
 				ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
@@ -285,40 +322,59 @@
 			// draw backgrounds last, and draw behind.
 			}, false);
 
+			// now that the above function is defined, let's trigger it.  This cycles through and starts loading of the files
+			//  based on user selection.  It also sets appropriate line and bg colors depending on chosen map.
 			// now start the image load (whne complete, will trigger the above function to draw the image + route + bg.
 			if (maptype === "atlas") {
-				//img = document.getElementById("AtlsMap");
-				img.src = 'images/map_atls.png'; // Set source path
-				mapbg = "#0fa8d2";
-				mapline = "#0000ff";
+				img.src = atlasPng; //'images/map_atls.png'; // Set source path
+				mapbg = atlasBg; //"#0fa8d2";
+				mapline = atlasLn; //"#0000ff";
+				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
+				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
+				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
+				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
 			} else if (maptype === "road") {
-				//img = document.getElementById("RoadMap");
-				img.src = 'images/map_road.png'; // Set source path
-				mapbg = "#1862ad";
-				mapline = "#ff0000";
+				img.src = roadPng; //'images/map_road.png'; // Set source path
+				mapbg = roadBg; //"#1862ad";
+				mapline = roadLn; //"#ff0000";
+				elvAxColor = elvAxColorRoad; // "#ffffff"; // color of the axis labels in elevation chart
+				elvLnColor = elvLnColorRoad; // "#121280"; // color of the line in elevation chart
+				elvFlColor = elvFlColorRoad; // "#707070"; // color of the graph fill in elevation chart
+				elvBgColor = elvBgColorRoad; // "#404040"; // color of the background in elevation chart
 			} else if (maptype === "satellite") {
-				//img = document.getElementById("SatlMap");
-				img.src = 'images/map_satl.png'; // Set source path
-				mapbg = "#143d6b";
-				mapline = "#ff00ff";
+				img.src = satlPng; //'images/map_satl.png'; // Set source path
+				mapbg = satlBg; //"#143d6b";
+				mapline = satlLn; //"#ff00ff";
+				elvAxColor = elvAxColorSatl; // "#ffffff"; // color of the axis labels in elevation chart
+				elvLnColor = elvLnColorSatl; // "#121280"; // color of the line in elevation chart
+				elvFlColor = elvFlColorSatl; // "#707070"; // color of the graph fill in elevation chart
+				elvBgColor = elvBgColorSatl; // "#404040"; // color of the background in elevation chart
 			} else  {
-				//img = document.getElementById("AtlsMap");
-				img.src = 'images/map_atls.png'; // Set source path
-				mapbg = "#0fa8d2";
-				mapline = "#0000ff";
+				img.src = atlasPng; //'images/map_atls.png'; // Set source path
+				mapbg = atlasBg; //"#0fa8d2";
+				mapline = atlasLn; //"#0000ff";
+				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
+				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
+				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
+				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
 			}
 
+
+	//  *** MAP CANVAS HANDLING DONE ***
+	//  *** BUTTON CANVAS HANDLING ***
+	
 			// map switch button URL generation
 			link1URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=atlas&met="+met+"&route="+route;
 			link2URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=road&met="+met+"&route="+route;
 			link3URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=satellite&met="+met+"&route="+route;
 			// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
-			btnctx.fillStyle='rgb(128,185,35)';
+			btnctx.fillStyle=btnAtlsColr;
 			btnctx.fillRect(0,0,63,21);
-			btnctx.fillStyle='rgb(146, 210, 187)';
+			btnctx.fillStyle=btnRoadColr;
 			btnctx.fillRect(0,22,63,21);
-			btnctx.fillStyle='rgb(0, 153, 0)';
+			btnctx.fillStyle=btnSatlColr;
 			btnctx.fillRect(0,43,63,21);
+
 			btnctx.stroke();
 			// button labels
 			btnctx.fillStyle='rgb(0, 0, 0)';
@@ -332,46 +388,53 @@
 			btnc.addEventListener("mousemove", CanvasMouseMove, false);
 			btnc.addEventListener("click", Link_click, false);
 
-			// Now elevation profile
+	//  *** BUTTON CANVAS HANDLING DONE ***
+	//  *** ELEVATION CANVAS HANDLING ***
+
 //  hm...  would be nice to allow x axis to be distance as well as time...
 //  feature creep is just so exciting!
+			// use path to trace the elevation line, then loop back along the bottom edge of the canvas to create a 'shape'
+			// then close and fill it.
 			elvctx.beginPath();
-			elvctx.moveTo(11,63);
-			elvctx.lineTo(11,60-zarray[0]);
+			elvctx.moveTo(0,63);
+			elvctx.lineTo(0,60-zarray[0]);
 			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
-				elvctx.lineTo((tarray[i]*5)+11,60-zarray[i]);
-			} // 240*5=1200, so each 'time unit' is 4 pixels, with 15 pixels buffer...
+				elvctx.lineTo((tarray[i]*5),60-zarray[i]);
+			} // 243*5=1215, so each 'time unit' is 5 pixels
 			//elvctx.lineTo(1215,zarray[0]); // looping back to beginning -- Needed?
 			// but if we do that, t axis continuity is broken, and we have no means of estimating t...
 			// better to skip this for now...
 			// if the provided ride file loops back to beginning, this will still work, and if it doesn't, so be it :P 
 			// now close off the shape
 			elvctx.lineTo(1214,63);
-			elvctx.lineTo(11,63);
+			elvctx.lineTo(0,63);
 			elvctx.closePath();
+			elvctx.strokeStyle = elvLnColor;
 			elvctx.stroke();
-			elvctx.fillStyle = "#505050";
+
+			elvctx.fillStyle = elvFlColor;
 			elvctx.fill();
 			// put buffer on left.  We'll use for axis.
 
-			elvctx.fillStyle='rgb(0, 0, 0)';
+			elvctx.fillStyle = elvAxColor;
 			elvctx.font = "12px Arial";
-			elvctx.fillText("Max "+Math.round(zmax), 5, 15);
-			elvctx.fillText("Min "+Math.round(zmin), 5, 55);
+			// elvAxColor
+			// elvLnColor
+			elvctx.fillText(Math.round(zmax)+" "+elunit, elvAxMxLabelX, elvAxMxLabelY);
+			elvctx.fillText(Math.round(zmin)+" "+elunit, elvAxMnLabelX, elvAxMnLabelY);
 			elvctx.stroke();
 			// draw backgrounds last, and draw behind.
 			elvctx.globalCompositeOperation = 'destination-over'
-			elvctx.fillStyle = "#A0A0A0";
+			elvctx.fillStyle = elvBgColor; // "#A0A0A0"
 			elvctx.fillRect(0, 0, elvc.width, elvc.height);
 			elvctx.stroke();
 		};
 
 
-
-
 // To monitor for clicks on the map change tab.  
 // credit for much of this part of code: http://www.authorcode.com/how-to-create-hyper-link-on-the-canvas-in-html5/
 // modified for canvas-relevant position rather than absolute
+// 
         function CanvasMouseMove(e) {
             var x, y;
 			if (e.pageX || e.pageY) { 
@@ -414,7 +477,10 @@
             }
         }
  
-        function Link_click(e) {
+        // when a click is detcted, determine if it was on one of the map buttons.
+		//  position determination based on CanvasMouseMove
+		// if it was, reload with the selected map.
+		function Link_click(e) {
 
             if (isLink1) {
                 window.location = link1URL;
@@ -427,8 +493,9 @@
             }
         }
 
+	// getting distance based on standard earth-surface lat-long distance calc.  Result in kliometers.
 	function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-		var R = 6371; // Radius of the earth in km
+		var R = earthRadius; // Radius of the earth in km
 		var dLat = deg2rad(lat2-lat1);  // deg2rad below
 		var dLon = deg2rad(lon2-lon1); 
 		var lat1 = deg2rad(lat1);
@@ -439,9 +506,49 @@
 		return d;
     }
 
+	// used in distance calc
 	function deg2rad(deg) {
 		return deg * (Math.PI/180)
 	}
+
+
+/* -- list of uninitialized variables and their usage:
+			zfactor2 = 1; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels.  Calculated, initial is meaningless.
+			zoffset2 = 0; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels.  Calculated, initial is meaningless.
+			tfactor2 = 1; // and tfactor/offset converts the time units into a scale of 0-240 for various purposes.  Calculated, initial is meaningless.
+			toffset2 = 0; // .  Calculated, initial is meaningless.
+			zoomfactorx = 1; // handles x/y zoom for main panel.  Calculated, initial is meaningless.
+			zoomfactory = 1; // handles x/y zoom for main panel.  Calculated, initial is meaningless.
+			zoomfactorxy = 1; // handles x/y zoom for main panel.  Calculated, initial is meaningless.
+			translatefactorx = 0; // shift to center for x.  Calculated, initial is meaningless.
+			translatefactory = 0; // shift to center for y.  Calculated, initial is meaningless.
+			mapbg = "#ffffff"; // background color for map canvas
+			mapline = "#ffffff"; // color for map line
+			i = 0; // gp counter
+			cmlDist = 0; // cumulative distance
+			cmlTime = 0; // cumulative time
+			cmlElev = 0; // cumulative ascent
+			cmlDesc = 0; // cumulative descent
+			xmlDoc = 0; // holder for xmldoc
+			x = 0; // xml file referencer
+			lastTimestamp = 0; // most recent point timestamp
+			thisTimestamp = 0; // current point timestamp
+			lastLat = 0; // most recent lat
+			thislat = 0; // current lat
+			lastLon = 0; // most recent long
+			thisLon = 0; // current long
+			lastElev = 0; // most recent elevation
+			thisElev = 0; // curent elevation
+			xmin = 0; // min and max on each axis
+			xmax = 0; // ..
+			ymin = 0; // ..
+			ymax = 0; // ..
+			zmin = 0; // ..
+			zmax = 0; // ..
+			tmin = 0; // ..
+			tmax = 0; // ..
+*/
+
 
 	</script>
 </body>
