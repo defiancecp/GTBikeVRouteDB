@@ -11,6 +11,7 @@
 </head> 
 <body style="background-color: transparent; color:white; margin-bottom:-5px; vertical-align: top; display: block" >
 
+<input type="file" id="xmlfile" style="display:none" />  
 	<canvas id="elv" width="1214" height="62">
 	</canvas><canvas id="btn" width="62" height="62">
 	</canvas><canvas id="bmap" width="1278" height="654" >
@@ -160,7 +161,6 @@
 	// now function defines.
 
 
-
 	// To monitor for clicks on the map change tab.  
 	// credit for much of this part of code: http://www.authorcode.com/how-to-create-hyper-link-on-the-canvas-in-html5/
 	// modified for canvas-relevant position rather than absolute
@@ -255,9 +255,32 @@
 	// This function is triggered when a 'load' is complete on the xhttp object.  xhttp is our xml file container, so when this
 	// is triggered it means the xml file load is complete and we can parse values into the array and cultivate/analyze the data.
 		xhttp.onload = function () {
-			// javascript with the libraries I'm using makes XML pretty effortless.
-			// so -- Pick out all the trkpt items and extract specfiic attributes:
-			xmlDoc = xhttp.responseXML;
+			if(route === null) {
+			} else {
+				// javascript with the libraries I'm using makes XML pretty effortless.
+				// so -- Pick out all the trkpt items and extract specfiic attributes:
+				xmlDoc = xhttp.responseXML;
+				processXmlDoc();
+			}
+		};
+
+	// if no file is passed as parameters, the user file button is enabled.
+	// This function is triggered when a file is loaded.
+	//  so far it seems to load a file, but passing the result to xml doc isn't working...
+		$("#xmlfile").change(function(e){
+			var selectedFile = document.getElementById("xmlfile").files[0];
+			//You could insert a check here to ensure proper file type
+			var reader = new FileReader();
+			reader.onload = function(e){
+				readXml=e.target.result;
+				var parser = new DOMParser();
+				xmlDoc = parser.parseFromString(readXml, "application/xml");
+				processXmlDoc();
+           }
+			reader.readAsText(selectedFile);
+       });
+
+		function processXmlDoc() {
 			x = xmlDoc.getElementsByTagName("trkpt");
 			for (i = 0; i < x.length; i++) { 
 
@@ -502,19 +525,17 @@
 			route = urlParams.get('route'); // this drives loading of the file.  Required.
 			// main variable initialization complete! :)	
 
-
-//			if (route === null) { // Enable user direct-interface mode!
-// *************** here's where user load file prompt will be written. *******
-				// goal is to end up with user file loaded to document object 'xmlDoc'.
-				// but for now we'll just load a default and move along.
-//				route = 'the_tourist'
-//			} else {
-// bypassing else because user file load not yet working
+			if (route === null) {
+	// start loading the arrays using user driven file load (expose button)
+				var expform = document.getElementById("xmlfile")
+				expform.style.display = "block";
+			} else {
+	// start loading the arrays from the selected route's associated gpx file
+				document.getElementById("xmlfile").style.display = "hidden";
 				gpxfilename = "gpx/"+route+".gpx";
-				// NOTE: Using deprecated synchronous mode - see github issue #22
 				xhttp.open("GET", gpxfilename, true);
 				xhttp.send();
-//			}
+			}
 
 			// now that the above function is defined, let's trigger it.  This cycles through and starts loading of the files
 			//  based on user selection.  It also sets appropriate line and bg colors depending on chosen map.
@@ -587,7 +608,6 @@
 
 		};
 	</script>
-<input type="file" id="xmlfile" style="display:none" />  
 <br />  
 
 </body>
