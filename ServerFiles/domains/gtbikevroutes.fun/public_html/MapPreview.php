@@ -617,11 +617,11 @@
 			// main variable initialization complete! :)	
 
 			if (route === null) {
-	// start loading the arrays using user driven file load (expose button)
+			// start loading the arrays using user driven file load (expose button)
 				var expform = document.getElementById("xmlfile")
 				expform.style.display = "block";
 			} else {
-	// start loading the arrays from the selected route's associated gpx file
+			// start loading the arrays from the selected route's associated gpx file
 				document.getElementById("xmlfile").style.display = "hidden";
 				gpxfilename = "gpx/"+route+".gpx";
 				xhttp.open("GET", gpxfilename, true);
