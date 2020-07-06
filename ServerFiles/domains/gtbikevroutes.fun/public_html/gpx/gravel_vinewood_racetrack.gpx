@@ -1,0 +1,2015 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" creator="--No GPS SELECTED--" version="7.9">
+  <metadata>
+    <link href="https://gotoes.org/strava/Combine_GPX_TCX_FIT_Files.php">
+      <text>GOTOES STRAVA TOOLS</text>
+    </link>
+    <time>2020-07-06T07:53:58Z</time>
+  </metadata>
+  <trk>
+    <name>GTBikeV_gravel_vinewood_racetrack</name>
+    <type>Biking</type>
+    <trkseg>
+      <trkpt lon="-169.86041" lat="-19.10689">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:53:58Z</time>
+        <extensions>
+          <gpxdata:cadence>0</gpxdata:cadence>
+          <power>0</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86041" lat="-19.10689">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:53:59Z</time>
+        <extensions>
+          <gpxdata:cadence>0</gpxdata:cadence>
+          <power>0</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86041" lat="-19.10689">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:54:00Z</time>
+        <extensions>
+          <gpxdata:cadence>0</gpxdata:cadence>
+          <power>0</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86041" lat="-19.10689">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:54:01Z</time>
+        <extensions>
+          <gpxdata:cadence>0</gpxdata:cadence>
+          <power>0</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86041" lat="-19.10689">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:54:02Z</time>
+        <extensions>
+          <gpxdata:cadence>0</gpxdata:cadence>
+          <power>0</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86041" lat="-19.10689">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:54:04Z</time>
+        <extensions>
+          <gpxdata:cadence>0</gpxdata:cadence>
+          <power>0</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86041" lat="-19.10689">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:54:05Z</time>
+        <extensions>
+          <gpxdata:cadence>0</gpxdata:cadence>
+          <power>0</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86041" lat="-19.10689">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:54:06Z</time>
+        <extensions>
+          <gpxdata:cadence>0</gpxdata:cadence>
+          <power>0</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86041" lat="-19.10689">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:54:25Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86038" lat="-19.10689">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:26Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86035" lat="-19.10685">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:27Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86032" lat="-19.10681">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:28Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86029" lat="-19.10677">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:30Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86026" lat="-19.10673">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:31Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86024" lat="-19.10669">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:32Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86021" lat="-19.10665">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:33Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86018" lat="-19.1066">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:34Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86015" lat="-19.10656">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:35Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86012" lat="-19.10652">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:36Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86009" lat="-19.10648">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:37Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86006" lat="-19.10643">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:38Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86003" lat="-19.10639">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:39Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86" lat="-19.10635">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:40Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85997" lat="-19.1063">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:41Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85995" lat="-19.10626">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:42Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85992" lat="-19.10621">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:43Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85989" lat="-19.10617">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:44Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85986" lat="-19.10613">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:45Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85983" lat="-19.10608">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:46Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8598" lat="-19.10604">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:47Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85977" lat="-19.106">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:48Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85974" lat="-19.10595">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:49Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85971" lat="-19.10591">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:50Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8597" lat="-19.10587">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:51Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85966" lat="-19.10582">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:52Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85963" lat="-19.10578">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:53Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8596" lat="-19.10574">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:54Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85957" lat="-19.10569">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:55Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85954" lat="-19.10565">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:56Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85951" lat="-19.10561">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:57Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85948" lat="-19.10556">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:58Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85945" lat="-19.10552">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:54:59Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85944" lat="-19.10548">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:00Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85941" lat="-19.10543">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:02Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85937" lat="-19.10539">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:03Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85934" lat="-19.10534">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:04Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85931" lat="-19.1053">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:05Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85928" lat="-19.10526">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:06Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85925" lat="-19.10522">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:07Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85922" lat="-19.10517">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:08Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85919" lat="-19.10513">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:09Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85918" lat="-19.10508">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:10Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85915" lat="-19.10504">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:11Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85912" lat="-19.105">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:12Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85909" lat="-19.10495">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:13Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85905" lat="-19.10491">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:14Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85902" lat="-19.10487">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:15Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85899" lat="-19.10482">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:16Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85898" lat="-19.10478">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:17Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85895" lat="-19.10473">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:18Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85892" lat="-19.10469">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:19Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85889" lat="-19.10464">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:20Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85887" lat="-19.1046">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:21Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85884" lat="-19.10455">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:22Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85883" lat="-19.1045">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:23Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85883" lat="-19.10445">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:24Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85881" lat="-19.1044">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:25Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85881" lat="-19.10435">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:26Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85881" lat="-19.1043">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:27Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85881" lat="-19.10425">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:28Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85883" lat="-19.1042">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:29Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85884" lat="-19.10415">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:30Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85887" lat="-19.1041">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:31Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85889" lat="-19.10406">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:33Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85892" lat="-19.10401">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:34Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85895" lat="-19.10397">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:35Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85898" lat="-19.10393">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:36Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85902" lat="-19.1039">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:37Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85905" lat="-19.10387">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:38Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8591" lat="-19.10384">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:39Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85915" lat="-19.10382">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:40Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85919" lat="-19.10381">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:41Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85924" lat="-19.10379">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:42Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85927" lat="-19.10377">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:43Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85931" lat="-19.10376">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:44Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85936" lat="-19.10376">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:45Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85941" lat="-19.10375">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:46Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85945" lat="-19.10375">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:47Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8595" lat="-19.10376">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:48Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85953" lat="-19.10376">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:49Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85957" lat="-19.10377">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:50Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8596" lat="-19.10378">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:51Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85965" lat="-19.10379">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:52Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85968" lat="-19.1038">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:53Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85973" lat="-19.10382">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:54Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85976" lat="-19.10383">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:55Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85979" lat="-19.10385">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:56Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85982" lat="-19.10387">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:57Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85985" lat="-19.10389">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:58Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85986" lat="-19.10391">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:55:59Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85989" lat="-19.10393">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:00Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85991" lat="-19.10396">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:01Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85992" lat="-19.10398">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:02Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85995" lat="-19.10401">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:03Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85997" lat="-19.10403">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:05Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.85999" lat="-19.10406">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:06Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86002" lat="-19.10409">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:07Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86003" lat="-19.10411">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:08Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86005" lat="-19.10414">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:09Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86006" lat="-19.10416">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:10Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86008" lat="-19.10419">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:11Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86009" lat="-19.10422">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:12Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86012" lat="-19.10424">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:13Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86014" lat="-19.10427">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:14Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86015" lat="-19.10429">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:15Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86017" lat="-19.10432">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:16Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86018" lat="-19.10435">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:17Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8602" lat="-19.10437">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:18Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86023" lat="-19.1044">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:19Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86024" lat="-19.10443">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:20Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86026" lat="-19.10445">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:21Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86028" lat="-19.10448">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:22Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86029" lat="-19.10451">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:23Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86031" lat="-19.10453">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:24Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86032" lat="-19.10456">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:25Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86035" lat="-19.10458">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:26Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86037" lat="-19.10461">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:27Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86038" lat="-19.10464">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:28Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8604" lat="-19.10466">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:29Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86041" lat="-19.10469">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:30Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86043" lat="-19.10472">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:31Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86046" lat="-19.10474">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:32Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86047" lat="-19.10477">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:33Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86049" lat="-19.1048">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:34Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8605" lat="-19.10482">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:35Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86052" lat="-19.10485">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:36Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86053" lat="-19.10488">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:38Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86055" lat="-19.1049">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:39Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86058" lat="-19.10493">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:40Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8606" lat="-19.10495">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:41Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86061" lat="-19.10498">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:42Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86063" lat="-19.10501">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:43Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86064" lat="-19.10503">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:44Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86066" lat="-19.10506">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:45Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86067" lat="-19.10509">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:46Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8607" lat="-19.10511">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:47Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86072" lat="-19.10514">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:48Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86073" lat="-19.10517">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:49Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86075" lat="-19.10519">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:50Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86076" lat="-19.10522">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:51Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86078" lat="-19.10525">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:52Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86079" lat="-19.10527">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:53Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86082" lat="-19.1053">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:54Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86084" lat="-19.10533">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:55Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86086" lat="-19.10535">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:56Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86087" lat="-19.10538">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:57Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86089" lat="-19.10541">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:58Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8609" lat="-19.10543">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:56:59Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86092" lat="-19.10546">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:00Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86095" lat="-19.10548">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:01Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86096" lat="-19.10551">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:02Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86098" lat="-19.10554">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:03Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86099" lat="-19.10556">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:04Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86101" lat="-19.10559">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:05Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86102" lat="-19.10562">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:06Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86105" lat="-19.10564">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:07Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86107" lat="-19.10567">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:09Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86108" lat="-19.1057">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:10Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8611" lat="-19.10572">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:11Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86111" lat="-19.10575">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:12Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86113" lat="-19.10577">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:13Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86114" lat="-19.1058">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:14Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86118" lat="-19.10583">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:15Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86119" lat="-19.10585">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:16Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86121" lat="-19.10588">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:17Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86122" lat="-19.10591">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:18Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86124" lat="-19.10593">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:19Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86125" lat="-19.10596">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:20Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86127" lat="-19.10599">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:21Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86128" lat="-19.10601">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:22Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86131" lat="-19.10604">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:23Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86133" lat="-19.10607">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:24Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86134" lat="-19.10609">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:25Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86136" lat="-19.10612">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:26Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86137" lat="-19.10615">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:27Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86139" lat="-19.10617">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:28Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8614" lat="-19.1062">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:29Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86142" lat="-19.10623">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:30Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86145" lat="-19.10625">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:31Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86147" lat="-19.10628">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:32Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86148" lat="-19.10631">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:33Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8615" lat="-19.10633">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:34Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86151" lat="-19.10636">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:35Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86153" lat="-19.10639">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:36Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86154" lat="-19.10642">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:37Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86154" lat="-19.10645">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:38Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86156" lat="-19.10648">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:39Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86156" lat="-19.10651">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:41Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86157" lat="-19.10654">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:42Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86157" lat="-19.10657">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:43Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86157" lat="-19.1066">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:44Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86157" lat="-19.10663">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:45Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86157" lat="-19.10666">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:46Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86157" lat="-19.10669">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:47Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86157" lat="-19.10672">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:48Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86157" lat="-19.10675">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:49Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86156" lat="-19.10678">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:50Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86156" lat="-19.10681">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:51Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86154" lat="-19.10683">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:52Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86153" lat="-19.10686">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:53Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86151" lat="-19.10689">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:54Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8615" lat="-19.10692">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:55Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86148" lat="-19.10695">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:56Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86147" lat="-19.10697">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:57Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86145" lat="-19.107">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:58Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86142" lat="-19.10702">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:57:59Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8614" lat="-19.10705">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:00Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86137" lat="-19.10707">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:01Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86136" lat="-19.10709">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:02Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86133" lat="-19.10711">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:03Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8613" lat="-19.10713">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:04Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86127" lat="-19.10715">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:05Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86122" lat="-19.10716">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:06Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86119" lat="-19.10718">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:07Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86116" lat="-19.10719">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:08Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86113" lat="-19.1072">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:09Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86108" lat="-19.10722">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:10Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86104" lat="-19.10722">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:12Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86101" lat="-19.10723">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:13Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86096" lat="-19.10723">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:14Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86092" lat="-19.10723">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:15Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86087" lat="-19.10722">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:16Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86082" lat="-19.10721">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:17Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86079" lat="-19.10721">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:18Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86075" lat="-19.10719">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:19Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8607" lat="-19.10718">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:20Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86066" lat="-19.10716">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:21Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86063" lat="-19.10714">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:22Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86058" lat="-19.10712">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:23Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86053" lat="-19.10709">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:24Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8605" lat="-19.10705">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:25Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86047" lat="-19.10702">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:26Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86043" lat="-19.10698">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:27Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.8604" lat="-19.10695">
+        <ele>40.4</ele>
+        <time>2020-07-06T07:58:28Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86038" lat="-19.10692">
+        <ele>44.4</ele>
+        <time>2020-07-06T07:58:29Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86037" lat="-19.10691">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:58:30Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86038" lat="-19.10692">
+        <ele>43.8</ele>
+        <time>2020-07-06T07:58:31Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86038" lat="-19.10692">
+        <ele>44.4</ele>
+        <time>2020-07-06T07:58:32Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86038" lat="-19.10692">
+        <ele>44.4</ele>
+        <time>2020-07-06T07:58:33Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+      <trkpt lon="-169.86038" lat="-19.10692">
+        <ele>44.4</ele>
+        <time>2020-07-06T07:58:34Z</time>
+        <extensions>
+          <gpxdata:cadence>27</gpxdata:cadence>
+          <power>80</power>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

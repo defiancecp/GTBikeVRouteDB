@@ -11,7 +11,12 @@
 </head> 
 <body style="background-color: transparent; color:white; vertical-align: top; display: block" >
 
-<input type="file" id="xmlfile" style="display:none" /> 
+<div id="hiddenContainer" style="display:none" width=100%>
+	<input type="file" id="xmlfile" width=25%></input>
+	<button onclick="clkImpMet()" id="btnImpMet" width=25%>Imperial/Metric switch</button>
+	<button onclick="clkTmDst()" id="btnTmDst" width=25%>Time/Distance switch</button>
+	<button onclick="clkScrSht()" id="btnScrSht" width=25%>Take Screenshot</button><br>
+</div>
 	<canvas id="elv" width="1214" height="62">
 	</canvas><canvas id="btn" width="62" height="62">
 	</canvas><canvas id="bmap" width="1278" height="654" >
@@ -84,6 +89,7 @@
 
 		const defaultMaptype = "atlas"; // just setting a default
 		const defaultMet = "Metric"; // just setting a default
+		const defaultElex = "d";
 		
 		const atlasPng = 'images/map_atls.png'; // file source for atlas map
 		const roadPng = 'images/map_road.png'; // file source for road map
@@ -113,7 +119,7 @@
 		const elvBgColorSatl = "#404040"; // color of the background in elevation chart
 	
 	// variables
-		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,gpxfilename,xhttp,zfactor2,zoffset2,tfactor2,toffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,i,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded;
+		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,gpxfilename,xhttp,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded;
 	
 	// array variables:
 		let xarray = []; 
@@ -134,12 +140,16 @@
 		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
 		isLink2 = false; // indicates whether mouse position currently hovering is over link 2
 		isLink3 = false; // indicates whether mouse position currently hovering is over link 3
+		if (elex === null){
+			elex = defaultElex // default
+		}
+
 		
 	/* -- list of uninitialized variables and their usage:
 			zfactor2 = 1; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels.  Calculated, initial is meaningless.
 			zoffset2 = 0; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels.  Calculated, initial is meaningless.
-			tfactor2 = 1; // and tfactor/offset converts the time units into a scale of 0-240 for various purposes.  Calculated, initial is meaningless.
-			toffset2 = 0; // .  Calculated, initial is meaningless.
+			ifactor2 = 1; // and ifactor/offset converts the time units into a scale of 0-240 for various purposes.  Calculated, initial is meaningless.
+			ioffset2 = 0; // .  Calculated, initial is meaningless.
 			zoomfactorx = 1; // handles x/y zoom for main panel.  Calculated, initial is meaningless.
 			zoomfactory = 1; // handles x/y zoom for main panel.  Calculated, initial is meaningless.
 			zoomfactorxy = 1; // handles x/y zoom for main panel.  Calculated, initial is meaningless.
@@ -147,7 +157,6 @@
 			translatefactory = 0; // shift to center for y.  Calculated, initial is meaningless.
 			mapbg = "#ffffff"; // background color for map canvas
 			mapline = "#ffffff"; // color for map line
-			i = 0; // gp counter
 			cmlDist = 0; // cumulative distance
 			cmlTime = 0; // cumulative time
 			cmlElev = 0; // cumulative ascent
@@ -294,10 +303,25 @@
 				var parser = new DOMParser();
 				xmlDoc = parser.parseFromString(readXml, "application/xml");
 				processXmlDoc();
-           }
+			}
 			reader.readAsText(selectedFile);
-       });
+		});
 
+		function clkImpMet() {
+			if (met === "Metric") {met = "Imperial"} else {met = "Metric"};
+			processXmlDoc();
+		}
+
+		function clkTmDst() {
+			if (elex === "d") {elex = "t"} else {elex = "d"};
+			processXmlDoc();
+		}
+		
+		function clkScrSht() {
+			processXmlDoc();
+			// placeholder, need to write screenshot routine.
+		}
+		
 		function processXmlDoc() {
 			x = xmlDoc.getElementsByTagName("trkpt");
 			xarray = []; 
@@ -340,11 +364,30 @@
 				// minor concern: I'm referencing i as an index explicitly at some points, but at others
 				//  I'm doing non-indexed pushes into the array.  Could be a vector for bugs, seems like 
 				//  it would be easy to make a mistake and get them out of sync.
+/*
 				xarray.push((thisLon+(xoffset*1))*xfactor);
 				yarray.push((thisLat+(yoffset*1))*yfactor);
 				zarray.push(thisElev);
 				tarray.push(cmlTime);
+*/
+				xarray[i]=(thisLon+(xoffset*1))*xfactor;
+				yarray[i]=(thisLat+(yoffset*1))*yfactor;
+				zarray[i]=thisElev;
+				tarray[i]=cmlTime;
+				darray[i]=cmlDist;
 
+
+				if(elex === "t") {
+					iarray[i]=cmlTime; 
+				}  else {
+					iarray[i]=cmlDist; 
+				};
+
+// ******** HERE IS WHERE YOU'D IMPLEMENT TIME - VS - DISTANCE SELECTION ************
+//  Basically "iarray" is the array we'll use for the animation index and the x axis in elevation chart.
+//  Here I populate it with cumulative distance.
+//  Make it conditional, using either distance or time?
+				
 				// now impose sanity limits on values - just confirm they're not outside predefined limits.
 				if(xarray[i] > xhilim) {xarray[i] = xhilim;};
 				if(xarray[i] < xlolim) {xarray[i] = xlolim;};
@@ -364,6 +407,8 @@
 			zmax = Math.max.apply(null, zarray);
 			tmin = Math.min.apply(null, tarray);
 			tmax = Math.max.apply(null, tarray);
+			imin = Math.min.apply(null, iarray);
+			imax = Math.max.apply(null, iarray);
 			
 
 			// determine convesion for z into pixel value (0-60)
@@ -391,13 +436,13 @@
 			}
 			// determine convesion for t into time driver (0-243 because 243 works with this width)
 			// intent is to display in ~4 seconds, so time equates to 16.67 milliseconds, ~60fps
-			tfactor2 = 243/(Math.max.apply(null, tarray) - Math.min.apply(null, tarray));
-			toffset2 = 0-(tmin*tfactor2);
+			ifactor2 = 243/(Math.max.apply(null, iarray) - Math.min.apply(null, iarray));
+			ioffset2 = 0-(imin*ifactor2);
 			
 			// Now adjust to fit scales and zooms.
 			for (var i=0, len=xarray.length; i<len; i++) { 
 				zarray[i] = ((zarray[i]*1)+(zoffset2*1))*zfactor2;
-				tarray[i] = ((tarray[i]*1)+(toffset2*1))*tfactor2;
+				iarray[i] = ((iarray[i]*1)+(ioffset2*1))*ifactor2;
 			}
 
 			// determine optimal scaling on each axis to fit most of the route onscreen
@@ -495,7 +540,7 @@
 			elvctx.moveTo(0,63);
 			elvctx.lineTo(0,60-zarray[0]);
 			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
-				elvctx.lineTo((tarray[i]*5),60-zarray[i]);
+				elvctx.lineTo((iarray[i]*5),60-zarray[i]);
 			} // 243*5=1215, so each 'time unit' is 5 pixels
 			//elvctx.lineTo(1215,zarray[0]); // looping back to beginning -- Needed?
 			// but if we do that, t axis continuity is broken, and we have no means of estimating t...
@@ -547,11 +592,12 @@
 			ctx.fillStyle = mapbg;
 			ctx.fillRect(-5000, -5000, 10000, 10000); // in this case the point is to still show when panning and zooming.
 			ctx.stroke();
+			ctx.globalCompositeOperation = 'source-over'; // just never ever leave this on background it's annoying :) 
 			elvctx.globalCompositeOperation = 'destination-over';
 			elvctx.fillStyle = elvBgColor; // "#A0A0A0"
 			elvctx.fillRect(0, 0, elvc.width, elvc.height);
 			elvctx.stroke();
-
+			elvctx.globalCompositeOperation = 'source-over'; // just never ever leave this on background it's annoying :) 
 		};
 
 
@@ -618,8 +664,9 @@
 
 			if (route === null) {
 			// start loading the arrays using user driven file load (expose button)
-				var expform = document.getElementById("xmlfile")
-				expform.style.display = "block";
+				var hcont = document.getElementById("hiddenContainer")
+				hcont.style.display = "block";
+
 			} else {
 			// start loading the arrays from the selected route's associated gpx file
 				document.getElementById("xmlfile").style.display = "hidden";
