@@ -73,6 +73,15 @@
 		const elvAxMnLabelX = 2; // pixels from left border for minimum elevation label on z axis
 		const elvAxMnLabelY = 60; // pixels from top border for minimum elevation label on z axis
 
+		const elvDistLabelX = 1130;
+		const elvDistLabelY = 15;
+		const elvTimeLabelX = 1130;
+		const elvTimeLabelY = 30;
+		const elvAsceLabelX = 1130;
+		const elvAsceLabelY = 45;
+		const elvDescLabelX = 1130;
+		const elvDescLabelY = 60;
+
 		const defaultMaptype = "atlas"; // just setting a default
 		const defaultMet = "Metric"; // just setting a default
 		
@@ -356,6 +365,7 @@
 			tmin = Math.min.apply(null, tarray);
 			tmax = Math.max.apply(null, tarray);
 			
+
 			// determine convesion for z into pixel value (0-60)
 			// need to calculate before zmax and zmin are adjusted for metric/imperial so 
 			// that behavior is consistent.
@@ -379,7 +389,6 @@
 				elunit = "ft"; // update unit tags
 				dstunit = "mi";
 			}
-
 			// determine convesion for t into time driver (0-243 because 243 works with this width)
 			// intent is to display in ~4 seconds, so time equates to 16.67 milliseconds, ~60fps
 			tfactor2 = 243/(Math.max.apply(null, tarray) - Math.min.apply(null, tarray));
@@ -435,20 +444,6 @@
 		};
 
 		function xmlImageBothLoaded(e) {
-	//  *** MAP CANVAS HANDLING ***
-			resetCanvas(mcanvas);
-			resetCanvas(elvc);
-	
-			// clear for re-draw.
-			ctx = mcanvas.getContext("2d"); // map canvas context
-			elvctx = elvc.getContext("2d"); // elevation profile canvas context
-
-			// this gave me fits ... I'd switched to do backgrounds, and when I started trying to allow re-loading, 
-			//  it just wouldn't clear.  Standard canvas clearing methods are to draw white over them, but this context
-			//  was set to background on subsequent draws ...  Just gotta reset it back to foreground :)
-			ctx.globalCompositeOperation = 'source-over';
-			elvctx.globalCompositeOperation = 'source-over';
-
 			// FINALLY all the prep is done - let's draw the route!  Static for now, but canvas will let me
 			//  animate.  Plan is to use 't' value to drive animation?  Or better yet make an 'index' array that's
 			//  populated based on either cumulative time or cumulative distance depending on parameters
@@ -460,30 +455,38 @@
 			//  more complicated, but only loads the user-selected map file, cutting most of the load time.
 			// So: This is the function that runs whe the file load is completed.
 
+	//  *** MAP CANVAS HANDLING ***
+			// clear for re-draw.
+			resetCanvas(mcanvas);
+			resetCanvas(elvc);
+			ctx = mcanvas.getContext("2d"); // map canvas context
+			elvctx = elvc.getContext("2d"); // elevation profile canvas context
+	
+			// this gave me fits ... I'd switched to do backgrounds, and when I started trying to allow re-loading, 
+			//  it just wouldn't clear.  Standard canvas clearing methods are to draw white over them, but this context
+			//  was set to background on subsequent draws ...  Just gotta reset it back to foreground :)
+			ctx.globalCompositeOperation = 'source-over';
+			elvctx.globalCompositeOperation = 'source-over';
+
+			// zoom and pan!
 			ctx.translate(translatefactorx,translatefactory);
 			ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
 			ctx.drawImage(img, 0, 0);
 
+			// now prep & draw route;
 			ctx.beginPath();
 			ctx.moveTo(xarray[0],yarray[0]);
-			console.log("line draw: "+xarray.length+" points.");
 			ctx.strokeStyle = mapline;
 			ctx.lineWidth = 2;
 			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
 				ctx.lineTo(xarray[i],yarray[i]);
-				console.log("line draw: point "+i);
 			}
 			ctx.stroke();
 
-			// draw backgrounds last, and draw behind.
-			ctx.globalCompositeOperation = 'destination-over'
-			ctx.fillStyle = mapbg;
-			ctx.fillRect(-5000, -5000, 10000, 10000); // in this case the point is to still show when panning and zooming.
-			ctx.stroke();
-		// draw backgrounds last, and draw behind.
+
+
 
 	// **** Elevation profile drawing!
-	
 //  hm...  would be nice to allow x axis to be distance as well as time...
 //  feature creep is just so exciting!
 			// use path to trace the elevation line, then loop back along the bottom edge of the canvas to create a 'shape'
@@ -509,6 +512,7 @@
 			elvctx.fill();
 			// put buffer on left.  We'll use for axis.
 
+		// Now display z axis min max.
 			elvctx.fillStyle = elvAxColor;
 			elvctx.font = "12px Arial";
 			// elvAxColor
@@ -516,7 +520,33 @@
 			elvctx.fillText(Math.round(zmax)+" "+elunit, elvAxMxLabelX, elvAxMxLabelY);
 			elvctx.fillText(Math.round(zmin)+" "+elunit, elvAxMnLabelX, elvAxMnLabelY);
 			elvctx.stroke();
-			// draw backgrounds last, and draw behind.
+
+		// Now display ride stats.
+			elvctx.fillStyle = elvAxColor;
+			elvctx.font = "12px Arial";
+			// elvAxColor
+			// elvLnColor
+			elvctx.fillText("Dist:   "+Math.round(cmlDist*10)/10+" "+dstunit, elvDistLabelX, elvDistLabelY);
+
+			console.log(cmlTime);
+
+			var hrs=Math.trunc(cmlTime/(3600000));
+			var mins=Math.trunc((cmlTime-(hrs*3600000))/60000);
+			if(mins<10) {dph=hrs+":0"+mins+":";} else {dph=hrs+":"+mins+":";};
+			var secs=Math.trunc((cmlTime-(hrs*3600000)-(mins*60000))/1000);
+			if(secs<10) {dph=dph+"0"+secs;} else {dph=dph+""+secs;};
+			console.log("Time: "+dph);
+			elvctx.fillText("Time: "+dph, elvTimeLabelX, elvTimeLabelY);
+			elvctx.fillText("Asc:   "+Math.round(cmlElev)+" "+elunit, elvAsceLabelX, elvAsceLabelY);
+			elvctx.fillText("Desc: "+Math.round(cmlDesc)+" "+elunit, elvDescLabelX, elvDescLabelY);
+			elvctx.stroke();
+
+
+		// draw backgrounds last, and draw behind.
+			ctx.globalCompositeOperation = 'destination-over'
+			ctx.fillStyle = mapbg;
+			ctx.fillRect(-5000, -5000, 10000, 10000); // in this case the point is to still show when panning and zooming.
+			ctx.stroke();
 			elvctx.globalCompositeOperation = 'destination-over';
 			elvctx.fillStyle = elvBgColor; // "#A0A0A0"
 			elvctx.fillRect(0, 0, elvc.width, elvc.height);
@@ -526,9 +556,8 @@
 
 
 		function procMapLoad() {
-			var timestamp = new Date().getTime(); 
 			if (maptype === "atlas") {
-				img.src = atlasPng+"?t=" + timestamp; //'images/map_atls.png'; // Set source path -- triggers loading!
+				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
 				mapbg = atlasBg; //"#0fa8d2";
 				mapline = atlasLn; //"#0000ff";
 				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
@@ -536,7 +565,7 @@
 				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
 				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
 			} else if (maptype === "road") {
-				img.src = roadPng+"?t=" + timestamp; //'images/map_road.png'; // Set source path -- triggers loading!
+				img.src = roadPng; //'images/map_road.png'; // Set source path -- triggers loading!
 				mapbg = roadBg; //"#1862ad";
 				mapline = roadLn; //"#ff0000";
 				elvAxColor = elvAxColorRoad; // "#ffffff"; // color of the axis labels in elevation chart
@@ -544,7 +573,7 @@
 				elvFlColor = elvFlColorRoad; // "#707070"; // color of the graph fill in elevation chart
 				elvBgColor = elvBgColorRoad; // "#404040"; // color of the background in elevation chart
 			} else if (maptype === "satellite") {
-				img.src = satlPng+"?t=" + timestamp; //'images/map_satl.png'; // Set source path -- triggers loading!
+				img.src = satlPng; //'images/map_satl.png'; // Set source path -- triggers loading!
 				mapbg = satlBg; //"#143d6b";
 				mapline = satlLn; //"#ff00ff";
 				elvAxColor = elvAxColorSatl; // "#ffffff"; // color of the axis labels in elevation chart
@@ -553,7 +582,7 @@
 				elvBgColor = elvBgColorSatl; // "#404040"; // color of the background in elevation chart
 			} else  {
 				maptype = defaultMaptype;
-				img.src = atlasPng+"?t=" + timestamp; //'images/map_atls.png'; // Set source path -- triggers loading!
+				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
 				mapbg = atlasBg; //"#0fa8d2";
 				mapline = atlasLn; //"#0000ff";
 				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
