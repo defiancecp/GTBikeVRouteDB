@@ -7,21 +7,27 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<script src="html2canvas.min.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 </head> 
 <body style="background-color: transparent; color:white; vertical-align: top; display: block" >
-
 <div id="hiddenContainer" style="display:none" width=100%>
-	<input type="file" id="xmlfile" width=25%></input>
-	<button onclick="clkImpMet()" id="btnImpMet" width=25%>Imperial/Metric switch</button>
-	<button onclick="clkTmDst()" id="btnTmDst" width=25%>Time/Distance switch</button>
-	<button onclick="clkScrSht()" id="btnScrSht" width=25%>Take Screenshot</button><br>
+	<input type="file" id="xmlfile" width=20%></input>
+	<button onclick="clkImpMet()" id="btnImpMet" width=20%>Imperial/Metric switch</button>
+	<button onclick="clkTmDst()" id="btnTmDst" width=20%>Time/Distance switch</button>
+	<!-- When I get screenshot code working, the "btnScrSht" button should be un-hidden.-->
+	<button onclick="clkScrSht()" id="btnScrSht" style="display:none" width=20%>Take Screenshot</button> 
+	<!-- But leae this one hidden - it's enabled dynamically.-->
+	<button onclick="clkDlSs()" id="btnDlSs" style="display:none" width=20%>Download Screenshot</button>
+	<br>
 </div>
+<div id="main">
 <div id="canvasContainer" width=100%>
 	<canvas id="elv" width="1214" height="62">
 	</canvas><canvas id="btn" width="62" height="62">
 	</canvas><canvas id="bmap" width="1278" height="654" >
 	</canvas>
+</div>
 </div>
 <script>
 
@@ -319,11 +325,51 @@
 			processXmlDoc();
 		}
 		
-		function clkScrSht() {
-			processXmlDoc();
-			// placeholder, need to write screenshot routine.
-		}
 		
+// ********** SCREENSHOT FUNCTIONALITY IN DEVELOPMENT
+//  Basically the way this works is, it creates a single canvas containing the screenshot, then tries
+//  to trigger download dialogue with that image when you click the 'download' button.
+//  may try to consolidate into a single click.
+//  Right now the new canvas never clears so it just breaks the page.  It also doesn't trigger the download dlg.
+//  so for now keeping button hidden 'til I get it debugged.
+		function makeScreenshot()
+		{
+			html2canvas(document.getElementById("main"), {scale: 2}).then(canvas =>
+			{
+				canvas.id = "scrCanvas";
+				var main = document.getElementById("bmap");
+				while (main.firstChild) { main.removeChild(main.firstChild); }
+				main.appendChild(canvas);
+			});
+		}
+
+		function clkScrSht()
+		{
+			alert("Picked up take ss click");
+			document.getElementById("btnScrSht").style.display = "none";
+			makeScreenshot();
+			document.getElementById("btnDlSs").style.display = "inline";
+		};
+
+		function clkDlSs()
+		{
+			alert("Picked up save ss click");
+			document.getElementById("btnScrSht").style.display = "inline";
+			var thescrcanvas = document.getElementById("scrCanvas")
+			var scrCtx = thescrcanvas.getContext("2d");
+			location.href = thescrcanvas.toDataURL();
+			this.download = "GTBikeVRideImage.png";
+			//thescr.toBlob(function(blob) {
+			//	saveAs(blob, "GTBikeV_Ride_Image.png");
+			//}, "image/png");
+			document.getElementById("btnDlSs").style.display = "none";
+			scrCtx.clearRect(0,0,thescrcanvas.width,thescrcanvas.height);
+			scrCtx.stroke();
+			processXmlDoc();
+		};
+
+
+
 		function processXmlDoc() {
 			x = xmlDoc.getElementsByTagName("trkpt");
 			xarray = []; 
@@ -712,7 +758,6 @@
 
 		};
 	</script>
-<br />  
 
 </body>
 </html>
