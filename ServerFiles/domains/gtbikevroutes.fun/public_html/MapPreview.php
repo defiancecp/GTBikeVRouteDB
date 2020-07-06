@@ -9,9 +9,9 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 </head> 
-<body style="background-color: transparent; color:white; margin-bottom:-5px; vertical-align: top; display: block" >
+<body style="background-color: transparent; color:white; vertical-align: top; display: block" >
 
-<input type="file" id="xmlfile" style="display:none" />  
+<input type="file" id="xmlfile" style="display:none" /> 
 	<canvas id="elv" width="1214" height="62">
 	</canvas><canvas id="btn" width="62" height="62">
 	</canvas><canvas id="bmap" width="1278" height="654" >
@@ -120,6 +120,11 @@
 		xhttp = new XMLHttpRequest();
 		xmlLoaded = 0;
 		imgLoaded = 0;
+		mcanvas = document.getElementById("bmap"); // map canvas
+		elvc = document.getElementById("elv"); // elevation profile canvas
+		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
+		isLink2 = false; // indicates whether mouse position currently hovering is over link 2
+		isLink3 = false; // indicates whether mouse position currently hovering is over link 3
 		
 	/* -- list of uninitialized variables and their usage:
 			zfactor2 = 1; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels.  Calculated, initial is meaningless.
@@ -212,13 +217,16 @@
 		function Link_click(e) {
 
 			if (isLink1) {
-				window.location = link1URL;
+				maptype = "atlas";
+				procMapLoad();
 			}
 			if (isLink2) {
-				window.location = link2URL;
+				maptype = "road";
+				procMapLoad();
 			}
 			if (isLink3) {
-				window.location = link3URL;
+				maptype = "satellite";
+				procMapLoad();
 			}
 		}
 
@@ -242,6 +250,7 @@
 
 		img.onload = function () {
 			imgLoaded = 1;
+			img.draw;
 			// this is probably a kludgy/klunky approach...
 			// basically it needs both of these items processed before proceeding to this last draw
 			// because the order of drawn objects on the map pane is critical.
@@ -282,6 +291,12 @@
 
 		function processXmlDoc() {
 			x = xmlDoc.getElementsByTagName("trkpt");
+			xarray = []; 
+			yarray = []; 
+			zarray = []; 
+			tarray = []; 
+			darray = [];
+			iarray = [];
 			for (i = 0; i < x.length; i++) { 
 
 				// load values from xml formatted gpx file into array, store in variable first for some stuff
@@ -411,9 +426,28 @@
 			};
 		};
 		
-		function xmlImageBothLoaded(e) {
 
+		function resetCanvas(inCvs)
+		{
+			var inCtx = inCvs.getContext("2d");
+			inCtx.setTransform(1, 0, 0, 1, 0, 0);
+			inCtx.clearRect(0,0, inCvs.width, inCvs.height);
+		};
+
+		function xmlImageBothLoaded(e) {
 	//  *** MAP CANVAS HANDLING ***
+			resetCanvas(mcanvas);
+			resetCanvas(elvc);
+	
+			// clear for re-draw.
+			ctx = mcanvas.getContext("2d"); // map canvas context
+			elvctx = elvc.getContext("2d"); // elevation profile canvas context
+
+			// this gave me fits ... I'd switched to do backgrounds, and when I started trying to allow re-loading, 
+			//  it just wouldn't clear.  Standard canvas clearing methods are to draw white over them, but this context
+			//  was set to background on subsequent draws ...  Just gotta reset it back to foreground :)
+			ctx.globalCompositeOperation = 'source-over';
+			elvctx.globalCompositeOperation = 'source-over';
 
 			// FINALLY all the prep is done - let's draw the route!  Static for now, but canvas will let me
 			//  animate.  Plan is to use 't' value to drive animation?  Or better yet make an 'index' array that's
@@ -430,13 +464,17 @@
 			ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
 			ctx.drawImage(img, 0, 0);
 
+			ctx.beginPath();
 			ctx.moveTo(xarray[0],yarray[0]);
-			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
-				ctx.lineTo(xarray[i],yarray[i]);
-			}
+			console.log("line draw: "+xarray.length+" points.");
 			ctx.strokeStyle = mapline;
 			ctx.lineWidth = 2;
+			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
+				ctx.lineTo(xarray[i],yarray[i]);
+				console.log("line draw: point "+i);
+			}
 			ctx.stroke();
+
 			// draw backgrounds last, and draw behind.
 			ctx.globalCompositeOperation = 'destination-over'
 			ctx.fillStyle = mapbg;
@@ -479,7 +517,7 @@
 			elvctx.fillText(Math.round(zmin)+" "+elunit, elvAxMnLabelX, elvAxMnLabelY);
 			elvctx.stroke();
 			// draw backgrounds last, and draw behind.
-			elvctx.globalCompositeOperation = 'destination-over'
+			elvctx.globalCompositeOperation = 'destination-over';
 			elvctx.fillStyle = elvBgColor; // "#A0A0A0"
 			elvctx.fillRect(0, 0, elvc.width, elvc.height);
 			elvctx.stroke();
@@ -487,8 +525,44 @@
 		};
 
 
-
-
+		function procMapLoad() {
+			var timestamp = new Date().getTime(); 
+			if (maptype === "atlas") {
+				img.src = atlasPng+"?t=" + timestamp; //'images/map_atls.png'; // Set source path -- triggers loading!
+				mapbg = atlasBg; //"#0fa8d2";
+				mapline = atlasLn; //"#0000ff";
+				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
+				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
+				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
+				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
+			} else if (maptype === "road") {
+				img.src = roadPng+"?t=" + timestamp; //'images/map_road.png'; // Set source path -- triggers loading!
+				mapbg = roadBg; //"#1862ad";
+				mapline = roadLn; //"#ff0000";
+				elvAxColor = elvAxColorRoad; // "#ffffff"; // color of the axis labels in elevation chart
+				elvLnColor = elvLnColorRoad; // "#121280"; // color of the line in elevation chart
+				elvFlColor = elvFlColorRoad; // "#707070"; // color of the graph fill in elevation chart
+				elvBgColor = elvBgColorRoad; // "#404040"; // color of the background in elevation chart
+			} else if (maptype === "satellite") {
+				img.src = satlPng+"?t=" + timestamp; //'images/map_satl.png'; // Set source path -- triggers loading!
+				mapbg = satlBg; //"#143d6b";
+				mapline = satlLn; //"#ff00ff";
+				elvAxColor = elvAxColorSatl; // "#ffffff"; // color of the axis labels in elevation chart
+				elvLnColor = elvLnColorSatl; // "#121280"; // color of the line in elevation chart
+				elvFlColor = elvFlColorSatl; // "#707070"; // color of the graph fill in elevation chart
+				elvBgColor = elvBgColorSatl; // "#404040"; // color of the background in elevation chart
+			} else  {
+				maptype = defaultMaptype;
+				img.src = atlasPng+"?t=" + timestamp; //'images/map_atls.png'; // Set source path -- triggers loading!
+				mapbg = atlasBg; //"#0fa8d2";
+				mapline = atlasLn; //"#0000ff";
+				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
+				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
+				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
+				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
+			}
+		};
+		
 
 // *************** MAIN LOAD BEGINS HERE *********************
 // all other functions are triggered by events or by this script.
@@ -497,20 +571,8 @@
 		//  This function is executed when the window loads
 		window.onload = function() {
 			// initialize values:
-			isLink1 = false; // indicates whether mouse position currently hovering is over link 1
-			isLink2 = false; // indicates whether mouse position currently hovering is over link 2
-			isLink3 = false; // indicates whether mouse position currently hovering is over link 3
 			btnc = document.getElementById("btn"); // button canvas
 			btnctx = btnc.getContext("2d"); // button canvas context
-			elvc = document.getElementById("elv"); // elevation profile canvas
-			elvctx = elvc.getContext("2d"); // elevation profile canvas context
-			mcanvas = document.getElementById("bmap"); // map canvas
-			ctx = mcanvas.getContext("2d"); // map canvas context
-			link1URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=atlas&met=Metric&route=the_tourist"; // basic value for url
-			link2URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=road&met=Metric&route=the_tourist"; // it's really dynamic, but defining and initializing
-			link3URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=satellite&met=Metric&route=the_tourist"; // is nice for readability :)
-			// set initial assignments for variables as needed.
-			//  also serves as a good location to document variables' usage
 			elunit = "m"; // displays the type of elevation unit
 			dstunit = "km"; // displays the type of distance unit
 			// url parameter handling
@@ -537,54 +599,12 @@
 				xhttp.send();
 			}
 
-			// now that the above function is defined, let's trigger it.  This cycles through and starts loading of the files
-			//  based on user selection.  It also sets appropriate line and bg colors depending on chosen map.
-			// now start the image load (whne complete, will trigger the above function to draw the image + route + bg.
-			if (maptype === "atlas") {
-				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
-				mapbg = atlasBg; //"#0fa8d2";
-				mapline = atlasLn; //"#0000ff";
-				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
-				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
-				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
-				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
-			} else if (maptype === "road") {
-				img.src = roadPng; //'images/map_road.png'; // Set source path -- triggers loading!
-				mapbg = roadBg; //"#1862ad";
-				mapline = roadLn; //"#ff0000";
-				elvAxColor = elvAxColorRoad; // "#ffffff"; // color of the axis labels in elevation chart
-				elvLnColor = elvLnColorRoad; // "#121280"; // color of the line in elevation chart
-				elvFlColor = elvFlColorRoad; // "#707070"; // color of the graph fill in elevation chart
-				elvBgColor = elvBgColorRoad; // "#404040"; // color of the background in elevation chart
-			} else if (maptype === "satellite") {
-				img.src = satlPng; //'images/map_satl.png'; // Set source path -- triggers loading!
-				mapbg = satlBg; //"#143d6b";
-				mapline = satlLn; //"#ff00ff";
-				elvAxColor = elvAxColorSatl; // "#ffffff"; // color of the axis labels in elevation chart
-				elvLnColor = elvLnColorSatl; // "#121280"; // color of the line in elevation chart
-				elvFlColor = elvFlColorSatl; // "#707070"; // color of the graph fill in elevation chart
-				elvBgColor = elvBgColorSatl; // "#404040"; // color of the background in elevation chart
-			} else  {
-				maptype = defaultMaptype;
-				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
-				mapbg = atlasBg; //"#0fa8d2";
-				mapline = atlasLn; //"#0000ff";
-				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
-				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
-				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
-				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
-			}
+			procMapLoad();
 
-		// now xmlDoc is loading.  When it's finished, it'll load the 'xmlIsLoaded' routine.
+		// now image is loading.  When it's finished, it'll load the 'xmlIsLoaded' routine.
 
 	//  *** BUTTON CANVAS HANDLING ***
-		// the other canvases I put in their own separate functions as they have dependencies on loaded objects, but
-		// the buttons?  no dependencies, just draw 'em.
-	
-			// map switch button URL generation
-			link1URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=atlas&met="+met+"&route="+route;
-			link2URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=road&met="+met+"&route="+route;
-			link3URL = "https://gtbikevroutes.fun/MapPreview.php?maptype=satellite&met="+met+"&route="+route;
+
 			// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
 			btnctx.fillStyle=btnAtlsColr;
 			btnctx.fillRect(0,0,63,21);
@@ -592,16 +612,16 @@
 			btnctx.fillRect(0,22,63,21);
 			btnctx.fillStyle=btnSatlColr;
 			btnctx.fillRect(0,43,63,21);
-
 			btnctx.stroke();
+
 			// button labels
 			btnctx.fillStyle='rgb(0, 0, 0)';
 			btnctx.font = "12px Arial";
 			btnctx.fillText(link1Text, link1X+textoffsetx, link1Y+textoffsety);
 			btnctx.fillText(link2Text, link2X+textoffsetx, link2Y+textoffsety);
 			btnctx.fillText(link3Text, link3X+textoffsetx, link3Y+textoffsety);
-			// draw
 			btnctx.stroke();
+
 			// and monitor, run the below functions to determine mouse location and respond to clicks
 			btnc.addEventListener("mousemove", CanvasMouseMove, false);
 			btnc.addEventListener("click", Link_click, false);
