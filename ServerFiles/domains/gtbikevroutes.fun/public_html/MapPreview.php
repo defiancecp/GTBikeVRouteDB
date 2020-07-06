@@ -17,10 +17,13 @@
 	<button onclick="clkTmDst()" id="btnTmDst" width=25%>Time/Distance switch</button>
 	<button onclick="clkScrSht()" id="btnScrSht" width=25%>Take Screenshot</button><br>
 </div>
+<div id="canvasContainer" width=100%>
 	<canvas id="elv" width="1214" height="62">
 	</canvas><canvas id="btn" width="62" height="62">
 	</canvas><canvas id="bmap" width="1278" height="654" >
-	</canvas><script>
+	</canvas>
+</div>
+<script>
 
 		// set up a bunch of constant definitions at the outset to simplify 
 		// adjusting if needed.
@@ -77,6 +80,8 @@
 		const elvAxMxLabelY = 10; //  pixels from top border for maximum elevation label on z axis
 		const elvAxMnLabelX = 2; // pixels from left border for minimum elevation label on z axis
 		const elvAxMnLabelY = 60; // pixels from top border for minimum elevation label on z axis
+		const elvAxCtLabelX = 2;
+		const elvAxCtLabelY = 35;
 
 		const elvDistLabelX = 1130;
 		const elvDistLabelY = 15;
@@ -140,9 +145,6 @@
 		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
 		isLink2 = false; // indicates whether mouse position currently hovering is over link 2
 		isLink3 = false; // indicates whether mouse position currently hovering is over link 3
-		if (elex === null){
-			elex = defaultElex // default
-		}
 
 		
 	/* -- list of uninitialized variables and their usage:
@@ -377,10 +379,10 @@
 				darray[i]=cmlDist;
 
 
-				if(elex === "t") {
-					iarray[i]=cmlTime; 
-				}  else {
+				if(elex === "d") {
 					iarray[i]=cmlDist; 
+				}  else {
+					iarray[i]=cmlTime; 
 				};
 
 // ******** HERE IS WHERE YOU'D IMPLEMENT TIME - VS - DISTANCE SELECTION ************
@@ -564,6 +566,11 @@
 			// elvLnColor
 			elvctx.fillText(Math.round(zmax)+" "+elunit, elvAxMxLabelX, elvAxMxLabelY);
 			elvctx.fillText(Math.round(zmin)+" "+elunit, elvAxMnLabelX, elvAxMnLabelY);
+			if (elex === "d") {
+				elvctx.fillText("X Axis: Dist", elvAxCtLabelX,elvAxCtLabelY);
+			} else {
+				elvctx.fillText("X Axis: Time", elvAxCtLabelX,elvAxCtLabelY);
+			};
 			elvctx.stroke();
 
 		// Now display ride stats.
@@ -650,6 +657,7 @@
 			btnctx = btnc.getContext("2d"); // button canvas context
 			elunit = "m"; // displays the type of elevation unit
 			dstunit = "km"; // displays the type of distance unit
+			elex = defaultElex; // default
 			// url parameter handling
 			maptype = urlParams.get('maptype'); // this carries user selection of the map type
 			if (maptype === null) {
