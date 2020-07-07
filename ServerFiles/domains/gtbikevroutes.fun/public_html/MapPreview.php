@@ -339,10 +339,10 @@
 //  so for now keeping button hidden 'til I get it debugged.
 		function makeScreenshot()
 		{
-			html2canvas(document.getElementById("main"), {scale: 2}).then(canvas =>
+			html2canvas(document.getElementById("main"), {scale: 1}).then(canvas =>
 			{
 				canvas.id = "scrCanvas";
-				var main = document.getElementById("bmap");
+				var main = document.getElementById("canvasContainer");
 				while (main.firstChild) { main.removeChild(main.firstChild); }
 				main.appendChild(canvas);
 			});
@@ -350,7 +350,6 @@
 
 		function clkScrSht()
 		{
-			alert("Picked up take ss click");
 			document.getElementById("btnScrSht").style.display = "none";
 			makeScreenshot();
 			document.getElementById("btnDlSs").style.display = "inline";
@@ -359,22 +358,28 @@
 		function clkDlSs()
 		{
 			alert("Picked up save ss click");
+			document.getElementById("btnDlSs").style.display = "none";
 			document.getElementById("btnScrSht").style.display = "inline";
 			var thescrcanvas = document.getElementById("scrCanvas")
 			var scrCtx = thescrcanvas.getContext("2d");
-			location.href = thescrcanvas.toDataURL();
-			this.download = "GTBikeVRideImage.png";
-			//thescr.toBlob(function(blob) {
-			//	saveAs(blob, "GTBikeV_Ride_Image.png");
-			//}, "image/png");
-			document.getElementById("btnDlSs").style.display = "none";
-			scrCtx.clearRect(0,0,thescrcanvas.width,thescrcanvas.height);
-			scrCtx.stroke();
-			processXmlDoc();
+			thescrcanvas.toBlob(function(blob) {
+
+
+				var newImg = document.createElement('img'),
+					url = URL.createObjectURL(blob);
+				newImg.onload = function() {
+					// no longer need to read the blob so it's revoked
+					URL.revokeObjectURL(url);
+				};
+				newImg.src = url;
+				document.body.appendChild(newImg);
+			});
+			resetCanvas(thescrcanvas);
+			drawLoop();
 		};
 
 
-
+// after file is loaded into xmlDoc, here's where we read it and process data:
 		function processXmlDoc() {
 			x = xmlDoc.getElementsByTagName("trkpt");
 			xarray = []; 
@@ -413,16 +418,6 @@
 				lastLat = thisLat;
 				lastLon = thisLon;
 
-				// and then pop into arrays.
-				// minor concern: I'm referencing i as an index explicitly at some points, but at others
-				//  I'm doing non-indexed pushes into the array.  Could be a vector for bugs, seems like 
-				//  it would be easy to make a mistake and get them out of sync.
-/*
-				xarray.push((thisLon+(xoffset*1))*xfactor);
-				yarray.push((thisLat+(yoffset*1))*yfactor);
-				zarray.push(thisElev);
-				tarray.push(cmlTime);
-*/
 				xarray[i]=(thisLon+(xoffset*1))*xfactor;
 				yarray[i]=(thisLat+(yoffset*1))*yfactor;
 				zarray[i]=thisElev;
@@ -436,11 +431,6 @@
 					iarray[i]=cmlTime; 
 				};
 
-// ******** HERE IS WHERE YOU'D IMPLEMENT TIME - VS - DISTANCE SELECTION ************
-//  Basically "iarray" is the array we'll use for the animation index and the x axis in elevation chart.
-//  Here I populate it with cumulative distance.
-//  Make it conditional, using either distance or time?
-				
 				// now impose sanity limits on values - just confirm they're not outside predefined limits.
 				if(xarray[i] > xhilim) {xarray[i] = xhilim;};
 				if(xarray[i] < xlolim) {xarray[i] = xlolim;};
@@ -487,7 +477,7 @@
 				elunit = "ft"; // update unit tags
 				dstunit = "mi";
 			}
-			// determine convesion for t into time driver (0-243 because 243 works with this width)
+			// determine convesion for index into animation index (0-243 because 243 works with this width)
 			// intent is to display in ~4 seconds, so time equates to 16.67 milliseconds, ~60fps
 			ifactor2 = 243/(Math.max.apply(null, iarray) - Math.min.apply(null, iarray));
 			ioffset2 = 0-(imin*ifactor2);
@@ -501,6 +491,7 @@
 			// determine optimal scaling on each axis to fit most of the route onscreen
 			zoomfactory = (655/(ymax - ymin));
 			zoomfactorx = (1280/(xmax - xmin));
+
 
 //  *********** FUTURE IMPROVEMENT:  Left justified and top justified sucks for map centering!!!
 //   suggestion: Instead of just building in a small margin, for the non-driving axis (in other
@@ -521,19 +512,18 @@
 				translatefactory = translatefactory + (655*.01); // this is NOT CENTERED :(
 			}
 
-			//  *** ANALYZE DATASET COMPLETE ***
+	//  *** ANALYZE DATASET COMPLETE ***
 			xmlLoaded = 1;
 
-			// this is probably a kludgy/klunky approach...
-			// basically it needs both of these items processed before proceeding to this last draw
-			// because the order of drawn objects on the map pane is critical.
-			// so after each of the two, check load, and only run the final if the other has completed too.
+			// initially thought this was a bit klunky, but I think it works well here.
 			if(imgLoaded === 1 && xmlLoaded === 1) {
 				var thm = drawLoop();
 			};
 		};
 		
-
+// helpful to retain standard way of clearing canvases for redraw.
+// note that this function clears transforms and scales, but that's OK since
+// draw function applies them anyway.
 		function resetCanvas(inCvs)
 		{
 			var inCtx = inCvs.getContext("2d");
@@ -541,14 +531,18 @@
 			inCtx.clearRect(0,0, inCvs.width, inCvs.height);
 		};
 
-// LOOP - each time calling re-draw -- drawMapAndElv(e).  Don't start loop until the first time the draw is run otherwise.
-//  Once it's started, loop for 4 seconds, iterating through and re-running the call.
+// More of a loop initializer.  Name stuck after I changed things :) The 0 check is to prevent overlaps.
+//  And operlaps... that was actually a fun bug: You could rapidly click and each click would lead to it 
+//  appending onto the array, so the animation-in-progress would bump up its speed...
+//  and it would keep going around and around ...
+//  The more you clicked, the faster it went! :)
 		function drawLoop(e) {
 			if(currAniIx === 0) {
 				window.requestAnimationFrame(drawMapAndElv);
 			};
 		}
 		
+	// this is the function, run each frame, to draw the map and elevation profile.
 		function drawMapAndElv(e) { 
 
 	//  *** MAP CANVAS HANDLING ***
@@ -615,8 +609,6 @@
 		// Now display z axis min max and chosen axis type
 			elvctx.fillStyle = elvAxColor;
 			elvctx.font = "12px Arial";
-			// elvAxColor
-			// elvLnColor
 			elvctx.fillText(Math.round(zmax)+" "+elunit, elvAxMxLabelX, elvAxMxLabelY);
 			elvctx.fillText(Math.round(zmin)+" "+elunit, elvAxMnLabelX, elvAxMnLabelY);
 			if (elex === "d") {
@@ -655,17 +647,23 @@
 			elvctx.globalCompositeOperation = 'source-over'; // just never ever leave this on background it's annoying :) 
 
 			currAniIx += 1;
-			if( currAniIx == aniframes ) {
-				currAniIx = 0;
+			if( currAniIx >= aniframes ) {
+				currAniIx = 0; // and we're done with anim.
 			}
 			else {
 				window.requestAnimationFrame(drawMapAndElv); // call itself again when finished to continue animating.
 				// at least until frames run out.
+				// each time it executes, it waits until the frame is ready and then draws.
+				// then executes itself again, unti the counter hits the aniframes (max).
 			};
 
 		};
 
-
+			// this pics up the map and loads it into the image object that's used by the canvas.
+			// note: this loading takes quite a bit of time (from a code perspective), so it happens
+			// async.  When the "src" of the image is changed loading is initialized, and when laoding
+			// completes it will trigger the function that's set to trigger on load of img: img.onload.
+			//  If the user changes it, it'll reset here and when loaded, again it will trigger the onload.
 		function procMapLoad() {
 			if (maptype === "atlas") {
 				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
@@ -736,25 +734,28 @@
 			route = urlParams.get('route'); // this drives loading of the file.  Required.
 			// main variable initialization complete! :)	
 
+		// now trigger file & image loading, which is all async so not consumed in this loop..
+		//  Instead each has an "onload" function triggered when they finish loading.
 			if (route === null) {
-			// start loading the arrays using user driven file load (expose button)
+			// If no route is shared, user is viewing directly - Expose controls and let them load their file.
+			// see $("#xmlfile").change for that function.
 				var hcont = document.getElementById("hiddenContainer")
 				hcont.style.display = "block";
 
 			} else {
 			// start loading the arrays from the selected route's associated gpx file
+			// again, trigged when load complete: xhttp.onload
 				document.getElementById("xmlfile").style.display = "hidden";
 				gpxfilename = "gpx/"+route+".gpx";
 				xhttp.open("GET", gpxfilename, true);
 				xhttp.send();
 			}
-
+			
+		// now this triggers image loading.  When it's finished, it'll load the img.onload routine.
 			procMapLoad();
 
-		// now image is loading.  When it's finished, it'll load the 'xmlIsLoaded' routine.
 
-	//  *** BUTTON CANVAS HANDLING ***
-
+	//  *** BUTTON CANVAS HANDLING *** -- handled here since nothing ever really happens to them.
 			// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
 			btnctx.fillStyle=btnAtlsColr;
 			btnctx.fillRect(0,0,63,21);
