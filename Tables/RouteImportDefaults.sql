@@ -56,7 +56,7 @@ UNION ALL SELECT
     NOW()
 UNION ALL SELECT
 	'Palomino_Highlands',
-    '(UNKNOWNN CONTRIBUTOR)',
+    'András Beck',
     '',
     'Road',
     0,
@@ -67,7 +67,7 @@ UNION ALL SELECT
     NOW()
 UNION ALL SELECT
 	'Suburb_Crit',
-    'Nestor Matas (Makinolo)',
+    'András Beck',
     '',
     'Road',
     0,
