@@ -67,34 +67,36 @@
 				// now create a table to show results, and then cycle through each result row and build an html "tr" for each row and "td" for each displayed element.
 				echo '<table id="tblSummary" style="color:#a0b0a8;" class="table table-dark table-striped">';
 
-				// header row
-				echo '<tr><th>Route</th><th>Author</th><th>Type</th><th colspan="2">Distance</th><th colspan="2">Elevation</th><th>Download</th><th>Map</th><th colspan="2" width="145px">Rating</th><th style="display:none;">numRating</th><th style="display:none;">numKM</th><th style="display:none;">numMI</th><th style="display:none;">numM</th><th style="display:none;">numFT</th></tr>'; // table opener & header row
-
 				// Sort/Filter Controls:
 				echo '<tr id="rowSortFilter">';
 				echo '<th><input id="myInRoute" type="text" onkeyup="fltFn()" placeholder="search route.." title="f1"></th>';
 				echo '<th><input id="myInAuthor" type="text" onkeyup="fltFn()" placeholder="search author.." title="f2"></th>';
 				echo '<th><input id="myInType" type="text" onkeyup="fltFn()" placeholder="search type.." title="f3"></th>';
 
-				echo '<th><input id="myDistMin" type="number" onkeyup="fltFn()" placeholder=" Dist >" title="f5"><br>';
-				echo '<input id="myDistMax" onkeyup="fltFn()" placeholder="Dist <.." title="f7"></th>';
-
 				echo '<th><input id="btnDistAsc" type="button" value="^" onclick="srtFn(9,1)"><br>';
 				echo '<input id="btnDistDesc" type="button" value="v" onclick="srtFn(9,-1)"></th>';
 
-				echo '<th><input id="myElvMin" type="number" onkeyup="fltFn()" placeholder="Elev >.." title="f6"><br>';
-				echo '<input id="myElvMax" type="number" onkeyup="fltFn()" placeholder="Elev <.." title="f8"></th>';
+				echo '<th><input id="myDistMin" type="number" onkeyup="fltFn()" placeholder=" Dist >" title="f5"><br>';
+				echo '<input id="myDistMax" onkeyup="fltFn()" placeholder="Dist <.." title="f7"></th>';
 
 				echo '<th><input id="btnElvAsc" type="button" value="^" onclick="srtFn(11,1)"><br>';
 				echo '<input id="btnElvDesc" type="button" value="v" onclick="srtFn(11,-1)"></th>';
 
-				echo '<th colspan="2" >Units of Measure:<br><a href="default.php'.$metswtag.$routetag.'"><img src="'.$metsw.'" height="26px"/></a>'.$met.'</th>';
+				echo '<th><input id="myElvMin" type="number" onkeyup="fltFn()" placeholder="Elev >.." title="f6"><br>';
+				echo '<input id="myElvMax" type="number" onkeyup="fltFn()" placeholder="Elev <.." title="f8"></th>';
 
-				echo '<th><input stype="number" id="myRateMin" onkeyup="fltFn()" placeholder="Rated >.." title="f4"></th>';
+
+				echo '<th colspan="2" >Units of Measure:<br><a href="default.php'.$metswtag.$routetag.'"><img src="'.$metsw.'" height="26px"/></a>'.$met.'</th>';
 
 				echo '<th width=20px><input id="btnRtgAsc" type="button" value="^" onclick="srtFn(8,1)"><br>';
 				echo '<input id="btnRtgDesc" type="button" value="v" onclick="srtFn(8,-1)"></th>';
+
+				echo '<th><input stype="number" id="myRateMin" onkeyup="fltFn()" placeholder="Rated >.." title="f4"></th>';
+
 				echo '</tr>';
+
+				// header row
+				echo '<tr><th>Route</th><th>Author</th><th>Type</th><th colspan="2">Distance</th><th colspan="2">Elevation</th><th>Download</th><th>Map</th><th colspan="2" width="145px">Rating</th><th style="display:none;">numRating</th><th style="display:none;">numKM</th><th style="display:none;">numMI</th><th style="display:none;">numM</th><th style="display:none;">numFT</th></tr>'; // table opener & header row
 						
 				
                 // output data of each row
