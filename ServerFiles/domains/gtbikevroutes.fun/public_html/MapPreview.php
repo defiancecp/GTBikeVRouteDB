@@ -128,9 +128,13 @@
 		const elvLnColorSatl = "#121280"; // color of the line in elevation chart
 		const elvFlColorSatl = "#707070"; // color of the graph fill in elevation chart
 		const elvBgColorSatl = "#404040"; // color of the background in elevation chart
+		const mpAniR = 5;
+		const elAniR = 5;
+
+		const aniframes = 243; // number of frames to display in animation
 	
 	// variables
-		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,gpxfilename,xhttp,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded;
+		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,gpxfilename,xhttp,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot;
 	
 	// array variables:
 		let xarray = []; 
@@ -146,6 +150,7 @@
 		xhttp = new XMLHttpRequest();
 		xmlLoaded = 0;
 		imgLoaded = 0;
+		currAniIx = 0;
 		mcanvas = document.getElementById("bmap"); // map canvas
 		elvc = document.getElementById("elv"); // elevation profile canvas
 		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
@@ -282,7 +287,7 @@
 			// because the order of drawn objects on the map pane is critical.
 			// so after each of the two, check load, and only run the final if the other has completed too.
 			if(imgLoaded === 1 && xmlLoaded === 1) {
-				var thm = xmlImageBothLoaded();
+				var thm = drawLoop();
 			};
 		};
 
@@ -524,7 +529,7 @@
 			// because the order of drawn objects on the map pane is critical.
 			// so after each of the two, check load, and only run the final if the other has completed too.
 			if(imgLoaded === 1 && xmlLoaded === 1) {
-				var thm = xmlImageBothLoaded();
+				var thm = drawLoop();
 			};
 		};
 		
@@ -536,76 +541,78 @@
 			inCtx.clearRect(0,0, inCvs.width, inCvs.height);
 		};
 
-		function xmlImageBothLoaded(e) {
-			// FINALLY all the prep is done - let's draw the route!  Static for now, but canvas will let me
-			//  animate.  Plan is to use 't' value to drive animation?  Or better yet make an 'index' array that's
-			//  populated based on either cumulative time or cumulative distance depending on parameters
-			// Dynamic file loading: javascript loads files asynchronously.  This is key to note because draw
-			//  ordering is key in what is displayed, so to enforce proper order we can't draw background or route
-			//  until the image is loaded.
-			// Note: normal approach to loading involves using html a hrefs and pointing to them, but the files are huge
-			//  and there are different ones selected by user.  Load times were horrendous using that approach.  This is
-			//  more complicated, but only loads the user-selected map file, cutting most of the load time.
-			// So: This is the function that runs whe the file load is completed.
+// LOOP - each time calling re-draw -- drawMapAndElv(e).  Don't start loop until the first time the draw is run otherwise.
+//  Once it's started, loop for 4 seconds, iterating through and re-running the call.
+		function drawLoop(e) {
+			if(currAniIx === 0) {
+				window.requestAnimationFrame(drawMapAndElv);
+			};
+		}
+		
+		function drawMapAndElv(e) { 
 
 	//  *** MAP CANVAS HANDLING ***
-			// clear for re-draw.
+			// clear for re-draw, set up, and ensure foreground
 			resetCanvas(mcanvas);
-			resetCanvas(elvc);
 			ctx = mcanvas.getContext("2d"); // map canvas context
-			elvctx = elvc.getContext("2d"); // elevation profile canvas context
-	
-			// this gave me fits ... I'd switched to do backgrounds, and when I started trying to allow re-loading, 
-			//  it just wouldn't clear.  Standard canvas clearing methods are to draw white over them, but this context
-			//  was set to background on subsequent draws ...  Just gotta reset it back to foreground :)
 			ctx.globalCompositeOperation = 'source-over';
-			elvctx.globalCompositeOperation = 'source-over';
-
 			// zoom and pan!
 			ctx.translate(translatefactorx,translatefactory);
 			ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
 			ctx.drawImage(img, 0, 0);
-
 			// now prep & draw route;
 			ctx.beginPath();
 			ctx.moveTo(xarray[0],yarray[0]);
 			ctx.strokeStyle = mapline;
 			ctx.lineWidth = 2;
-			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
-				ctx.lineTo(xarray[i],yarray[i]);
-			}
-			ctx.stroke();
 
+	// **** ELEVATION CANVAS HANDLING
+			// clear for re-draw, set up, and ensure foreground
+			resetCanvas(elvc);
+			elvctx = elvc.getContext("2d"); // elevation profile canvas context
+			elvctx.globalCompositeOperation = 'source-over';
 
-
-
-	// **** Elevation profile drawing!
-//  hm...  would be nice to allow x axis to be distance as well as time...
-//  feature creep is just so exciting!
 			// use path to trace the elevation line, then loop back along the bottom edge of the canvas to create a 'shape'
 			// then close and fill it.
 			elvctx.beginPath();
 			elvctx.moveTo(0,63);
 			elvctx.lineTo(0,60-zarray[0]);
+
 			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
+				ctx.lineTo(xarray[i],yarray[i]);
 				elvctx.lineTo((iarray[i]*5),60-zarray[i]);
-			} // 243*5=1215, so each 'time unit' is 5 pixels
-			//elvctx.lineTo(1215,zarray[0]); // looping back to beginning -- Needed?
-			// but if we do that, t axis continuity is broken, and we have no means of estimating t...
-			// better to skip this for now...
-			// if the provided ride file loops back to beginning, this will still work, and if it doesn't, so be it :P 
+				if(iarray[i] <= currAniIx) {
+					elAniX = (iarray[i]*5);
+					elAniY = 60-zarray[i];
+					mpAniX = (xarray[i]);
+					mpAniY = yarray[i];
+				}
+			}
+			ctx.stroke();
+
 			// now close off the shape
 			elvctx.lineTo(1214,63);
 			elvctx.lineTo(0,63);
 			elvctx.closePath();
 			elvctx.strokeStyle = elvLnColor;
 			elvctx.stroke();
-
+			// and fill
 			elvctx.fillStyle = elvFlColor;
 			elvctx.fill();
-			// put buffer on left.  We'll use for axis.
 
-		// Now display z axis min max.
+		// And finally, trace with an animated dot:
+			ctx.fillStyle = mapdot;
+			elvctx.fillStyle = elvdot;
+			ctx.font = "12px Arial";
+			elvctx.font = "12px Arial";
+			ctx.beginPath();
+			ctx.arc(mpAniX, mpAniY, mpAniR, 0, 2 * Math.PI, false);
+			ctx.fill();
+			elvctx.beginPath();
+			elvctx.arc(elAniX, elAniY, elAniR, 0, 2 * Math.PI, false);
+			elvctx.fill();
+
+		// Now display z axis min max and chosen axis type
 			elvctx.fillStyle = elvAxColor;
 			elvctx.font = "12px Arial";
 			// elvAxColor
@@ -618,27 +625,22 @@
 				elvctx.fillText("X Axis: Time", elvAxCtLabelX,elvAxCtLabelY);
 			};
 			elvctx.stroke();
+			
 
 		// Now display ride stats.
 			elvctx.fillStyle = elvAxColor;
 			elvctx.font = "12px Arial";
-			// elvAxColor
-			// elvLnColor
 			elvctx.fillText("Dist:   "+Math.round(cmlDist*10)/10+" "+dstunit, elvDistLabelX, elvDistLabelY);
-
-			console.log(cmlTime);
 
 			var hrs=Math.trunc(cmlTime/(3600000));
 			var mins=Math.trunc((cmlTime-(hrs*3600000))/60000);
 			if(mins<10) {dph=hrs+":0"+mins+":";} else {dph=hrs+":"+mins+":";};
 			var secs=Math.trunc((cmlTime-(hrs*3600000)-(mins*60000))/1000);
 			if(secs<10) {dph=dph+"0"+secs;} else {dph=dph+""+secs;};
-			console.log("Time: "+dph);
 			elvctx.fillText("Time: "+dph, elvTimeLabelX, elvTimeLabelY);
 			elvctx.fillText("Asc:   "+Math.round(cmlElev)+" "+elunit, elvAsceLabelX, elvAsceLabelY);
 			elvctx.fillText("Desc: "+Math.round(cmlDesc)+" "+elunit, elvDescLabelX, elvDescLabelY);
 			elvctx.stroke();
-
 
 		// draw backgrounds last, and draw behind.
 			ctx.globalCompositeOperation = 'destination-over'
@@ -651,6 +653,16 @@
 			elvctx.fillRect(0, 0, elvc.width, elvc.height);
 			elvctx.stroke();
 			elvctx.globalCompositeOperation = 'source-over'; // just never ever leave this on background it's annoying :) 
+
+			currAniIx += 1;
+			if( currAniIx == aniframes ) {
+				currAniIx = 0;
+			}
+			else {
+				window.requestAnimationFrame(drawMapAndElv); // call itself again when finished to continue animating.
+				// at least until frames run out.
+			};
+
 		};
 
 
@@ -663,6 +675,8 @@
 				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
 				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
 				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
+				mapdot = mapline;
+				elvdot = mapline;
 			} else if (maptype === "road") {
 				img.src = roadPng; //'images/map_road.png'; // Set source path -- triggers loading!
 				mapbg = roadBg; //"#1862ad";
@@ -671,6 +685,8 @@
 				elvLnColor = elvLnColorRoad; // "#121280"; // color of the line in elevation chart
 				elvFlColor = elvFlColorRoad; // "#707070"; // color of the graph fill in elevation chart
 				elvBgColor = elvBgColorRoad; // "#404040"; // color of the background in elevation chart
+				mapdot = mapline;
+				elvdot = mapline;
 			} else if (maptype === "satellite") {
 				img.src = satlPng; //'images/map_satl.png'; // Set source path -- triggers loading!
 				mapbg = satlBg; //"#143d6b";
@@ -679,6 +695,8 @@
 				elvLnColor = elvLnColorSatl; // "#121280"; // color of the line in elevation chart
 				elvFlColor = elvFlColorSatl; // "#707070"; // color of the graph fill in elevation chart
 				elvBgColor = elvBgColorSatl; // "#404040"; // color of the background in elevation chart
+				mapdot = mapline;
+				elvdot = mapline;
 			} else  {
 				maptype = defaultMaptype;
 				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
@@ -688,6 +706,8 @@
 				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
 				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
 				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
+				mapdot = mapline;
+				elvdot = mapline;
 			}
 		};
 		
