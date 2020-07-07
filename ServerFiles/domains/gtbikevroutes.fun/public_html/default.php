@@ -114,7 +114,7 @@
 					// but for now just fixing. This will probably be better in the API.
                     $mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"/></a>',$row["Map"]);
 					// now build the tr.
-                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td colspan="2">'.$vdistance.'</td><td colspan="2">'.$velevation.'</td><td><a href="data:text/plain;charset=UTF-8,https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json" download="'.$row["RouteName"].'.json"><img src=/images/dl.png class="link" height="20px"></a></td><td>'.$mapstring.'</td><td colspan="2"><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td style="display:none;">'.$row["CurrentRating"].'</td><td style="display:none;">'.$row["DistanceKM"].'</td><td style="display:none;">'.$row["DistanceMI"].'</td><td style="display:none;">'.$row["ElevationM"].'</td><td style="display:none;">'.$row["ElevationFT"].'</td></tr>';
+                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td colspan="2">'.$vdistance.'</td><td colspan="2">'.$velevation.'</td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td>'.$mapstring.'</td><td colspan="2"><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td style="display:none;">'.$row["CurrentRating"].'</td><td style="display:none;">'.$row["DistanceKM"].'</td><td style="display:none;">'.$row["DistanceMI"].'</td><td style="display:none;">'.$row["ElevationM"].'</td><td style="display:none;">'.$row["ElevationFT"].'</td></tr>';
 				}
 					// all tr's done, close it up.
 				echo "</table>"; // table opener & header row
@@ -158,7 +158,7 @@
 					// but for now just fixing. This will probably be better in the API.
                     $mappic = str_replace('">Map</a>','',str_replace('<a href="','',$row["Map"]));
 					// now build the row for this data...
-                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><a href="data:text/plain;charset=UTF-8,https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json" download="'.$row["RouteName"].'.json"><img src=/images/dl.png class="link" height="20px"></a></td><td>'.$mapstring.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
+                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td>'.$mapstring.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
 					echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
  
 					// but for the map link, if there's a GPX file for this route, skip the map and use route preview instead.
@@ -181,6 +181,13 @@
 ?>
 
 <script>
+const minFileThreshold = 200; 
+// minimum number of bytes for valid file
+// cross-domain download requires client .js to pull into a blob and reconstruct the file.  This is critical because
+//  it means the file could possibly be created out of (for example) a 404 message.
+//  Intent of this threshold is to throw out bad results instead of giving them to the user as a file, with no indication
+//  that it's not a "real" file.
+
 	function fltFn() {
 		const defaultMet = "Metric";
 		const queryString = window.location.search;
@@ -263,8 +270,6 @@
 		}
 	}
 
-
-
 function srtFn(sIndex, sOrder) {
 
 	// sOrder: 1 asc, -1 desc
@@ -315,7 +320,32 @@ function srtFn(sIndex, sOrder) {
 	}
 }
 
+function forceDownload(blob, filename) {
+	var a = document.createElement('a');
+	a.download = filename;
+	a.href = blob;
+	document.body.appendChild(a);
+	a.click();
+	a.remove();
+}
 
+function downloadResource(url, filename) {
+  if (!filename) filename = url.split('\\').pop().split('/').pop();
+  fetch(url, {
+      headers: new Headers({
+        'Origin': location.origin
+      }),
+      mode: 'cors'
+    })
+    .then(response => response.blob())
+    .then(blob => {
+      let blobUrl = window.URL.createObjectURL(blob);
+	  if(blob.size>minFileThreshold){;
+		forceDownload(blobUrl, filename)
+	  } else {alert("File not found on github server. This is normal for original included routes (no need to download them, they're included!).  If this was not an included route, please submit an issue in the github repository linked at https://github.com/defiancecp/GTBikeVRouteDB .  Thanks!")};
+    })
+    .catch(e => console.error(e));
+}
 </script>
 
 </body>
