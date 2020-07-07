@@ -26,7 +26,7 @@ if ($result = $conn->prepare($sql)) {
 // Now we parse the table.
 // First, skip ahead until we find the table marker
 $IsolatedText = "";
-$RawFile = fopen("https://raw.githubusercontent.com/gtbikev/courses/master/README.md", "r");
+$RawFile = fopen("https://raw.githubusercontent.com/gtbikev/courses/master/api/html-api.html", "r");
 $RawText = fgets($RawFile);
 $EndPos = strpos($RawText, "COURSE_TABLE_BEGIN");
 WHILE ($RawText AND $EndPos === false )

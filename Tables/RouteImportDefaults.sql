@@ -56,7 +56,7 @@ UNION ALL SELECT
     NOW()
 UNION ALL SELECT
 	'Palomino_Highlands',
-    'Nestor Matas (Makinolo)',
+    '(UNKNOWNN CONTRIBUTOR)',
     '',
     'Road',
     0,
