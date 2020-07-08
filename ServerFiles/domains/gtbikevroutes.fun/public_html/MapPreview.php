@@ -66,10 +66,11 @@
 
 		// These define conversion factors to convert from the .fit x/y lat/long to
 		//  equivalent map pixels, based on 2048x2048 map images with 0,0 being top left 
-		const xfactor = 17200; // this is multipler to convert to latlong to pixels
-		const xoffset = 169.9255; // this is offset to convert latlong to to pixels
-		const yfactor = -18200; // this is multipler to convert latlong to to pixels
-		const yoffset = 19.0305	; // this is offset to convert latlong to to pixels
+		const xfactor = 17375; // this is multipler to convert to latlong to pixels
+		const xoffset = 169.9250; // this is offset to convert latlong to to pixels
+	// note that it's not quite the same as the offset in the ini, since game 0's from map center, html from top/left.
+		const yfactor = -18275; // this is multipler to convert latlong to to pixels
+		const yoffset = 19.0309	; // this is offset to convert latlong to to pixels
 		// not sure why x/y are different, but they are ... maybe the map images are squished slightly?
 
 		// sanity limits on values
@@ -130,13 +131,12 @@
 		const elvLnColorSatl = "#121280"; // color of the line in elevation chart
 		const elvFlColorSatl = "#707070"; // color of the graph fill in elevation chart
 		const elvBgColorSatl = "#404040"; // color of the background in elevation chart
-		const mpAniR = 5;
 		const elAniR = 5;
 
 		const aniframes = 243; // number of frames to display in animation
 	
 	// variables
-		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,gpxfilename,xhttp,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot;
+		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,gpxfilename,xhttp,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset;
 	
 	// array variables:
 		let xarray = []; 
@@ -146,6 +146,8 @@
 		let darray = []; // new array for cumulative distance
 		let iarray = []; // future use: Instead of just using the "t" array, build an index array based on either t or cumulative distance
 		// based on user selection.
+		mpLineWidth = 1;
+		mpAniR = 5;
 
 		// initializing some containers and variables that will be referenced by triggered functions so must be initialized globally
 		img = new Image();   // Create new img element
@@ -153,6 +155,8 @@
 		xmlLoaded = 0;
 		imgLoaded = 0;
 		currAniIx = 0;
+		xmapoffset = 0;
+		ymapoffset = 0;
 		mcanvas = document.getElementById("bmap"); // map canvas
 		elvc = document.getElementById("elv"); // elevation profile canvas
 		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
@@ -464,30 +468,39 @@
 			zoomfactory = (655/(ymax - ymin));
 			zoomfactorx = (1280/(xmax - xmin));
 
-
-//  *********** FUTURE IMPROVEMENT:  Left justified and top justified sucks for map centering!!!
-//   suggestion: Instead of just building in a small margin, for the non-driving axis (in other
-//   words, if Y axis drives the zoom level, X axis would get this treatment) -- Just figure out
-//   how much space is "left over" and offset the axis by half that amount to center.
-//   But for now it's just left justified.
 			if (zoomfactory < zoomfactorx) {
 				zoomfactorxy = zoomfactory*.98;
 				translatefactory = ymin*-1*zoomfactorxy;
 				translatefactory = translatefactory + (655*.01); // this is NICE :) 
 				translatefactorx = xmin*-1*zoomfactorxy; 
-				translatefactorx = translatefactorx + (1280*.01);; // this is NOT CENTERED :(
+				xmapoffset =   
+					(((1280/zoomfactorxy) // total pixel space
+					-(xmax-xmin)) /2 // occupied pixel space /2
+					)*zoomfactorxy; // scaling factor applied to result
+				ymapoffset = 0;
+				translatefactorx = translatefactorx + (1280*.01) + xmapoffset; // this is hopefully now centered
 			} else {
 				zoomfactorxy = zoomfactorx*.98;
 				translatefactorx = xmin*-1*zoomfactorxy; 
 				translatefactorx = translatefactorx + (1280*.01); // this is NICE :) 
 				translatefactory = ymin*-1*zoomfactorxy;
-				translatefactory = translatefactory + (655*.01); // this is NOT CENTERED :(
+				ymapoffset =   
+					(((655/zoomfactorxy) // total pixel space
+					-(ymax-ymin)) /2 // occupied pixel space /2
+					)*zoomfactorxy; // scaling factor applied to result
+				ymapoffset = 0;
+				translatefactory = translatefactory + (655*.01) + ymapoffset; // this is hopefully now centered
 			}
 
+
+	// dynamic line sizing here :)
+		mpLineWidth = (zoomfactorxy*-0.4)+4.5;
+		mpAniR = mpLineWidth*2.25;
+
 	//  *** ANALYZE DATASET COMPLETE ***
-			xmlLoaded = 1;
 
 			// initially thought this was a bit klunky, but I think it works well here.
+			xmlLoaded = 1;
 			if(imgLoaded === 1 && xmlLoaded === 1) {
 				var thm = drawLoop();
 			};
@@ -530,7 +543,7 @@
 			ctx.beginPath();
 			ctx.moveTo(xarray[0],yarray[0]);
 			ctx.strokeStyle = mapline;
-			ctx.lineWidth = 2;
+			ctx.lineWidth = mpLineWidth;
 
 	// **** ELEVATION CANVAS HANDLING
 			// clear for re-draw, set up, and ensure foreground
