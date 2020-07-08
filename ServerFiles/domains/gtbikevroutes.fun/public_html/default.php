@@ -15,7 +15,7 @@
     <h1 style="color:#C0D0C8;">GTBike V Routes</h1>
     <p style="color:#C0D0C8;">Below you'll find the current tracked list of routes included in the <a class="link" href="https://github.com/gtbikev/courses">GTBike V course repository.</a><br>Be sure to check the repository out if you have interest in building your own routes, or to submit issues with routes.<br>For general discussion about the mod or routes, come visit the community <a class="link" href="https://www.facebook.com/groups/1089053124812221">Facebook group.</a><br>
 	For issues with this site, development details, of just to take a look at how it all comes together, this project is maintained on <a class="link" href="https://github.com/defiancecp/GTBikeVRouteDB">Github.</a><br>When you stop by, be sure to take a look at the readme for the latest list of attributions and thanks.<br>And finally, these courses all utilize the brilliant <a class="link" href="gta5-mods.com/scripts/gt-bike-v">GT Bike V mod</a> for GTA V.<br><br>
-	<b>You can now view your GT Bike V rides mapped on the GTA V Map, using the <a class="link" href="https://gtbikevroutes.fun/MapPreview.php" >GT Bike V ride viewer.</a> 
+	<b>You can now view your GT Bike V rides mapped on the GTA V Map, using the <a class="link" href="https://gtbikevroutes.fun/MapPreview.php" >GT Bike V ride viewer.</a> </b>
 	</p>
   </div>
 </div>
@@ -59,40 +59,32 @@
         if ($result = $conn->query($sql)) {
             if ($result->num_rows > 0) {
 				// now create a table to show results, and then cycle through each result row and build an html "tr" for each row and "td" for each displayed element.
+				echo '<div id="fltDescrip">Use this form to filter, or click on column headers for Elevation, Distance, or Rating to sort. The <img src="images/map.png" height="15px"/> icon means a route preview is available on this ride detail page.</div>';
 				echo '<table id="tblSummary" style="color:#a0b0a8;" class="table table-dark table-striped">';
 
-				// Sort/Filter Controls:
+				// Filter Controls (sort is with real header row):
 				echo '<tr id="rowSortFilter">';
 				echo '<th><input id="myInRoute" type="text" onkeyup="fltFn()" placeholder="search route.." title="f1"></th>';
 				echo '<th><input id="myInAuthor" type="text" onkeyup="fltFn()" placeholder="search author.." title="f2"></th>';
 				echo '<th><input id="myInType" type="text" onkeyup="fltFn()" placeholder="search type.." title="f3"></th>';
-
-				echo '<th><input id="myDistMin" type="number" onkeyup="fltFn()" placeholder=" Dist >" title="f5"><br>';
+				echo '<th id="dblFilt" colspan="2"><input id="myDistMin" type="number" onkeyup="fltFn()" placeholder=" Dist >" title="f5"><br>';
 				echo '<input id="myDistMax" onkeyup="fltFn()" placeholder="Dist <.." title="f7"></th>';
-
-				echo '<th><input id="btnDistAsc" type="button" value="sort-^" onclick="srtFn(9,1)"><br>';
-				echo '<input id="btnDistDesc" type="button" value="sort-v" onclick="srtFn(9,-1)"></th>';
-
-				echo '<th><input id="myElvMin" type="number" onkeyup="fltFn()" placeholder="Elev >.." title="f6"><br>';
+				echo '<th id="dblFilt" colspan="2"><input id="myElvMin" type="number" onkeyup="fltFn()" placeholder="Elev >.." title="f6"><br>';
 				echo '<input id="myElvMax" type="number" onkeyup="fltFn()" placeholder="Elev <.." title="f8"></th>';
-
-				echo '<th><input id="btnElvAsc" type="button" value="sort-^" onclick="srtFn(11,1)"><br>';
-				echo '<input id="btnElvDesc" type="button" value="sort-v" onclick="srtFn(11,-1)"></th>';
-
-
-				echo '<th><input stype="number" id="myRateMin" onkeyup="fltFn()" placeholder="Rated >.." title="f4"></th>';
-
-				echo '<th ><input id="btnRtgAsc" type="button" value="sort-^" onclick="srtFn(8,1)"><br>';
-				echo '<input id="btnRtgDesc" type="button" value="sort-v" onclick="srtFn(8,-1)"></th>';
-
-				echo '<th colspan="2" >Units of Measure:<br><a href="default.php'.$metswtag.$routetag.'"><img src="'.$metsw.'" height="26px"/></a>'.$met.'</th>';
-
-				echo '</tr>';
-
+				echo '<th colspan="2"><input stype="number" id="myRateMin" onkeyup="fltFn()" placeholder="Rated >.." title="f4"></th>';
+				echo '<th id="metSwCell"><a href="default.php'.$metswtag.$routetag.'"><img src="'.$metsw.'" height="30px"/></a>'.substr($met,0,3).'</th>';
+				echo '<th style="display:none;">map</th><th style="display:none;">rtg</th><th style="display:none;">numRating</th><th style="display:none;">numKM</th><th style="display:none;">numMI</th><th style="display:none;">numM</th><th style="display:none;">numFT</th></tr>';
 				// header row
-				echo '<tr><th>Route</th><th>Author</th><th>Type</th><th colspan="2">Distance</th><th colspan="2">Elevation</th><th colspan="2" width="145px">Rating</th><th>Download</th><th>Map</th><th style="display:none;">numRating</th><th style="display:none;">numKM</th><th style="display:none;">numMI</th><th style="display:none;">numM</th><th style="display:none;">numFT</th></tr>'; // table opener & header row
-						
-				
+				echo '<tr id="tblHeaderRow">';
+				echo '<th>Route</th><th>Author</th><th>Type</th>';
+				echo '<th colspan="2" id="cellDstSort" onclick="srtFn(9,1)">Dist - &#x21d5;</th>';
+				echo '<th colspan="2" id="cellElvSort" onclick="srtFn(11,1)">Elev - &#x21d5;</th>';
+				echo '<th colspan="2" id="cellRtgSort" onclick="srtFn(8,1)">Rating - &#x21d5;</th>';
+				echo '<th>Download</th>';
+				echo '<th style="display:none">Map</th>';
+				// these entire columns are hidden - raw numeric values used for javascript sorting and filtering.
+				echo '<th style="display:none;">rtg</th><th style="display:none;">numRating</th><th style="display:none;">numKM</th><th style="display:none;">numMI</th><th style="display:none;">numM</th><th style="display:none;">numFT</th></tr>'; // table opener & header row
+
                 // output data of each row
                 while($row = $result->fetch_assoc()) { // fetch is pop-like so each row is cycled through. when done, result of the assignment will be false, ending loop.
 					// this value contains the definition for each row's rating link URL.  See submitrating.php for implementation of this rating.
@@ -106,9 +98,12 @@
                     } // not using the map exactly like encoded in readme
 					// which, to be clear, is on me: I submitted the pull request to structure the table in the readme :P 
 					// but for now just fixing. This will probably be better in the API.
-                    $mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"/></a>',$row["Map"]);
+                    $mapstring = "";
+					//if(file_exists ("./gpx/".$row["RouteName"].".gpx")) {$mapstring="(!)";};
+					if(file_exists ("./gpx/".$row["RouteName"].".gpx"))  {$mapstring = ' - <img src="images/map.png" height="15px"/>';}; //  class="link" height="15px"
+					//$mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"/></a>',$row["Map"]);
 					// now build the tr.
-                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td colspan="2">'.$vdistance.'</td><td colspan="2">'.$velevation.'</td><td colspan="2"><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td>'.$mapstring.'</td><td style="display:none;">'.$row["CurrentRating"].'</td><td style="display:none;">'.$row["DistanceKM"].'</td><td style="display:none;">'.$row["DistanceMI"].'</td><td style="display:none;">'.$row["ElevationM"].'</td><td style="display:none;">'.$row["ElevationFT"].'</td></tr>';
+                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a>'.$mapstring.'</td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td colspan="2">'.$vdistance.'</td><td colspan="2">'.$velevation.'</td><td colspan="2"><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td style="display:none;"></td><td style="display:none;">'.$row["CurrentRating"].'</td><td style="display:none;">'.$row["DistanceKM"].'</td><td style="display:none;">'.$row["DistanceMI"].'</td><td style="display:none;">'.$row["ElevationM"].'</td><td style="display:none;">'.$row["ElevationFT"].'</td></tr>';
 				}
 					// all tr's done, close it up.
 				echo "</table>"; // table opener & header row
@@ -264,19 +259,50 @@ const minFileThreshold = 200;
 		}
 	}
 
+
 function srtFn(sIndex, sOrder) {
 
-	// sOrder: 1 asc, -1 desc
-
-	// sIndex:
-	// 10 	 - rating
-	// 11 - dist
-	// 13 - elv
-
-	// text options that don't work:
-	// 0 - name
-	// 1 - author
-	// 2 - type
+	// first handle updating the displayed text and onclick functions based on the user click.
+	if(sIndex === 9) {
+		//distance
+		if(sOrder === 1){
+			document.getElementById("cellDstSort").innerHTML = "Dist - &#x21d1;";
+			document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn(9,-1)");
+		} else {
+			document.getElementById("cellDstSort").innerHTML = "Dist - &#x21d3;";
+			document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn(9,1)");
+		}
+		document.getElementById("cellElvSort").innerHTML = "Elev - &#x21d5;";
+		document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn(11,1)");
+		document.getElementById("cellRtgSort").innerHTML = "Rating - &#x21d5;";
+		document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn(8,1)");
+	} else if(sIndex === 11) {
+		//elevation
+		if(sOrder === 1){
+			document.getElementById("cellElvSort").innerHTML = "Elev - &#x21d1;";
+			document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn(11,-1)");
+		} else {
+			document.getElementById("cellElvSort").innerHTML = "Elev - &#x21d3;";
+			document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn(11,1)");
+		}srtFn
+		document.getElementById("cellDstSort").innerHTML = "Dist - &#x21d5;";
+		document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn(9,1)");
+		document.getElementById("cellRtgSort").innerHTML = "Rating - &#x21d5;";
+		document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn(8,1)");
+	} else if(sIndex === 8) {
+		//rating
+		if(sOrder === 1){
+			document.getElementById("cellRtgSort").innerHTML = "Rating- &#x21d1;";
+			document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn(8,-1)");
+		} else {
+			document.getElementById("cellRtgSort").innerHTML = "Rating - &#x21d3;";
+			document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn(8,1)");
+		}
+		document.getElementById("cellDstSort").innerHTML= "Dist - &#x21d5;";
+		document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn(9,1)");
+		document.getElementById("cellElvSort").innerHTML = "Elev - &#x21d5;";
+		document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn(11,1)");
+	}
 
 	var table, rows, switching, i, x, y, shouldSwitch, sOrder, sIndex;
 	table = document.getElementById("tblSummary");
@@ -286,6 +312,7 @@ function srtFn(sIndex, sOrder) {
 		rows = table.rows;
 		for (i = 0; i < rows.length; i++) {
 			shouldSwitch = false;
+			console.log(sIndex);
 			x = rows[i].getElementsByTagName("TD")[sIndex];
 			y = rows[i + 1].getElementsByTagName("TD")[sIndex];
 			if(x && y) {

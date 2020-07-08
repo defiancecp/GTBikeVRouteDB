@@ -18,107 +18,86 @@
   border: 0px solid black;
 }
 #rowSortFilter {
-	height: 46px;
+	height: 36px;
 	background-color:#556065;
 }
 
-#btnDistAsc {
-	background-color:#303030;
-	color:#C0D0C8;
-	height:25px;
-	width:45px;
-    font-size:8pt;
-}
-#btnDistDesc {
-	background-color:#303030;
-	color:#C0D0C8;
-	height:25px;
-	width:45px;
-    font-size:8pt;
-}
-#btnElvAsc {
-	background-color:#303030;
-	color:#C0D0C8;
-	height:25px;
-	width:45px;
-    font-size:8pt;
-}
-#btnElvDesc {
-	background-color:#303030;
-	color:#C0D0C8;
-	height:25px;
-	width:45px;
-    font-size:8pt;
-}
-#btnRtgAsc {
-	background-color:#303030;
-	color:#C0D0C8;
-	height:25px;
-	width:45px;
-    font-size:8pt;
-}
-#btnRtgDesc {
-	background-color:#303030;
-	color:#C0D0C8;
-	height:25px;
-	width:45px;
-    font-size:8pt;
-}
 
 #myDistMin {
-	width: 6em;
+	width:100%;
 	background-color:#303030;
-    height:25px;
-    font-size:8pt;
+    height:17px;
+    font-size:6pt;
 	color:#C0D0C8;
 }
 #myDistMax {
-	width: 6em;
+	width:100%;
 	background-color:#303030;
-    height:25px;
-    font-size:8pt;
+    height:17px;
+    font-size:6pt;
 	color:#C0D0C8;
 }
 #myElvMin {
-	width: 6em;
+	width:100%;
 	background-color:#303030;
-    height:25px;
-    font-size:8pt;
+    height:17px;
+    font-size:6pt;
 	color:#C0D0C8;
 }
 #myElvMax {
-	width: 6em;
+	width:100%;
 	background-color:#303030;
-    height:25px;
-    font-size:8pt;
+    height:17px;
+    font-size:6pt;
 	color:#C0D0C8;
 }
 #myRateMin {
 	background-color:#303030;
-	size:10;
-    height:50px;
-    font-size:10pt;
+	width:100%;
+    height:35px;
+    font-size:8pt;
 	color:#C0D0C8;
+}
+#dblFilt {
+	font-size:0;
+}
+#metSwCell {
+	font-size:10pt;
+}
+#fltDescrip{
+	font-size:10pt;
+	color:#C0D0C8;
+}
+#tblHeaderRow{
+	font-size:10pt;
 }
 
 #myInRoute {
 	background-color:#303030;
-	size:10;
-    height:50px;
-    font-size:10pt;
+	width:100%;
+    height:35px;
+    font-size:8pt;
 	color:#C0D0C8;
 }
 #myInAuthor {
 	background-color:#303030;
-	size:10;
-    height:50px;
-    font-size:10pt;
+	width:100%;
+    height:35px;
+    font-size:8pt;
 	color:#C0D0C8;
 }
 #myInType {
 	background-color:#303030;
-	size:10;
-    height:50px;
-    font-size:10pt;
+	width:100%;
+    height:35px;
+    font-size:8pt;
 	color:#C0D0C8;
 }
+#cellDstSort {
+}
+#cellElvSort {
+}
+#cellRtgSort {
+}
+
+
