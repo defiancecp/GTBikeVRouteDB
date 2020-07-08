@@ -73,30 +73,30 @@
 				echo '<th><input id="myInAuthor" type="text" onkeyup="fltFn()" placeholder="search author.." title="f2"></th>';
 				echo '<th><input id="myInType" type="text" onkeyup="fltFn()" placeholder="search type.." title="f3"></th>';
 
-				echo '<th><input id="btnDistAsc" type="button" value="^" onclick="srtFn(9,1)"><br>';
-				echo '<input id="btnDistDesc" type="button" value="v" onclick="srtFn(9,-1)"></th>';
-
 				echo '<th><input id="myDistMin" type="number" onkeyup="fltFn()" placeholder=" Dist >" title="f5"><br>';
 				echo '<input id="myDistMax" onkeyup="fltFn()" placeholder="Dist <.." title="f7"></th>';
 
-				echo '<th><input id="btnElvAsc" type="button" value="^" onclick="srtFn(11,1)"><br>';
-				echo '<input id="btnElvDesc" type="button" value="v" onclick="srtFn(11,-1)"></th>';
+				echo '<th><input id="btnDistAsc" type="button" value="sort-^" onclick="srtFn(9,1)"><br>';
+				echo '<input id="btnDistDesc" type="button" value="sort-v" onclick="srtFn(9,-1)"></th>';
 
 				echo '<th><input id="myElvMin" type="number" onkeyup="fltFn()" placeholder="Elev >.." title="f6"><br>';
 				echo '<input id="myElvMax" type="number" onkeyup="fltFn()" placeholder="Elev <.." title="f8"></th>';
 
+				echo '<th><input id="btnElvAsc" type="button" value="sort-^" onclick="srtFn(11,1)"><br>';
+				echo '<input id="btnElvDesc" type="button" value="sort-v" onclick="srtFn(11,-1)"></th>';
 
-				echo '<th colspan="2" >Units of Measure:<br><a href="default.php'.$metswtag.$routetag.'"><img src="'.$metsw.'" height="26px"/></a>'.$met.'</th>';
-
-				echo '<th width=20px><input id="btnRtgAsc" type="button" value="^" onclick="srtFn(8,1)"><br>';
-				echo '<input id="btnRtgDesc" type="button" value="v" onclick="srtFn(8,-1)"></th>';
 
 				echo '<th><input stype="number" id="myRateMin" onkeyup="fltFn()" placeholder="Rated >.." title="f4"></th>';
+
+				echo '<th ><input id="btnRtgAsc" type="button" value="sort-^" onclick="srtFn(8,1)"><br>';
+				echo '<input id="btnRtgDesc" type="button" value="sort-v" onclick="srtFn(8,-1)"></th>';
+
+				echo '<th colspan="2" >Units of Measure:<br><a href="default.php'.$metswtag.$routetag.'"><img src="'.$metsw.'" height="26px"/></a>'.$met.'</th>';
 
 				echo '</tr>';
 
 				// header row
-				echo '<tr><th>Route</th><th>Author</th><th>Type</th><th colspan="2">Distance</th><th colspan="2">Elevation</th><th>Download</th><th>Map</th><th colspan="2" width="145px">Rating</th><th style="display:none;">numRating</th><th style="display:none;">numKM</th><th style="display:none;">numMI</th><th style="display:none;">numM</th><th style="display:none;">numFT</th></tr>'; // table opener & header row
+				echo '<tr><th>Route</th><th>Author</th><th>Type</th><th colspan="2">Distance</th><th colspan="2">Elevation</th><th colspan="2" width="145px">Rating</th><th>Download</th><th>Map</th><th style="display:none;">numRating</th><th style="display:none;">numKM</th><th style="display:none;">numMI</th><th style="display:none;">numM</th><th style="display:none;">numFT</th></tr>'; // table opener & header row
 						
 				
                 // output data of each row
@@ -114,7 +114,7 @@
 					// but for now just fixing. This will probably be better in the API.
                     $mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"/></a>',$row["Map"]);
 					// now build the tr.
-                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td colspan="2">'.$vdistance.'</td><td colspan="2">'.$velevation.'</td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td>'.$mapstring.'</td><td colspan="2"><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td style="display:none;">'.$row["CurrentRating"].'</td><td style="display:none;">'.$row["DistanceKM"].'</td><td style="display:none;">'.$row["DistanceMI"].'</td><td style="display:none;">'.$row["ElevationM"].'</td><td style="display:none;">'.$row["ElevationFT"].'</td></tr>';
+                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td colspan="2">'.$vdistance.'</td><td colspan="2">'.$velevation.'</td><td colspan="2"><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td>'.$mapstring.'</td><td style="display:none;">'.$row["CurrentRating"].'</td><td style="display:none;">'.$row["DistanceKM"].'</td><td style="display:none;">'.$row["DistanceMI"].'</td><td style="display:none;">'.$row["ElevationM"].'</td><td style="display:none;">'.$row["ElevationFT"].'</td></tr>';
 				}
 					// all tr's done, close it up.
 				echo "</table>"; // table opener & header row

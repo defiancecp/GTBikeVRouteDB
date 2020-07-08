@@ -18,7 +18,7 @@
   border: 0px solid black;
 }
 #rowSortFilter {
-	height: 52px;
+	height: 46px;
 	background-color:#556065;
 }
 
@@ -26,37 +26,43 @@
 	background-color:#303030;
 	color:#C0D0C8;
 	height:25px;
-	width:25px;
+	width:45px;
+    font-size:8pt;
 }
 #btnDistDesc {
 	background-color:#303030;
 	color:#C0D0C8;
 	height:25px;
-	width:25px;
+	width:45px;
+    font-size:8pt;
 }
 #btnElvAsc {
 	background-color:#303030;
 	color:#C0D0C8;
 	height:25px;
-	width:25px;
+	width:45px;
+    font-size:8pt;
 }
 #btnElvDesc {
 	background-color:#303030;
 	color:#C0D0C8;
 	height:25px;
-	width:25px;
+	width:45px;
+    font-size:8pt;
 }
 #btnRtgAsc {
 	background-color:#303030;
 	color:#C0D0C8;
 	height:25px;
-	width:25px;
+	width:45px;
+    font-size:8pt;
 }
 #btnRtgDesc {
 	background-color:#303030;
 	color:#C0D0C8;
 	height:25px;
-	width:25px;
+	width:45px;
+    font-size:8pt;
 }
 
 #myDistMin {
