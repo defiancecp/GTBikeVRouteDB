@@ -8,6 +8,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 	<script src="html2canvas.min.js"></script>
+	<script src="FileSaver.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 </head> 
 <body style="background-color: transparent; color:white; vertical-align: top; display: block" >
@@ -15,10 +16,7 @@
 	<input type="file" id="xmlfile" width=20%></input>
 	<button onclick="clkImpMet()" id="btnImpMet" width=20%>Imperial/Metric switch</button>
 	<button onclick="clkTmDst()" id="btnTmDst" width=20%>Time/Distance switch</button>
-	<!-- When I get screenshot code working, the "btnScrSht" button should be un-hidden.-->
-	<button onclick="clkScrSht()" id="btnScrSht" style="display:none" width=20%>Take Screenshot</button> 
-	<!-- But leae this one hidden - it's enabled dynamically.-->
-	<button onclick="clkDlSs()" id="btnDlSs" style="display:none" width=20%>Download Screenshot</button>
+	<button onclick="clkScrSht()" id="btnScrSht" width=20%>Take Screenshot</button> 
 	<br>
 </div>
 <div id="main">
@@ -28,6 +26,10 @@
 	</canvas><canvas id="bmap" width="1278" height="654" >
 	</canvas>
 </div>
+</div>
+<div id="scrContainer" style="display:none">
+	<canvas id="scrCanvas" width="1280" height="720">
+	</canvas>
 </div>
 <script>
 
@@ -331,53 +333,23 @@
 		}
 		
 		
-// ********** SCREENSHOT FUNCTIONALITY IN DEVELOPMENT
-//  Basically the way this works is, it creates a single canvas containing the screenshot, then tries
-//  to trigger download dialogue with that image when you click the 'download' button.
-//  may try to consolidate into a single click.
-//  Right now the new canvas never clears so it just breaks the page.  It also doesn't trigger the download dlg.
-//  so for now keeping button hidden 'til I get it debugged.
-		function makeScreenshot()
+		// ********** SCREENSHOT FUNCTIONALITY 
+		function clkScrSht()
 		{
+			var thescrcanvas = document.getElementById("scrCanvas")
+			resetCanvas(thescrcanvas);
 			html2canvas(document.getElementById("main"), {scale: 1}).then(canvas =>
 			{
 				canvas.id = "scrCanvas";
-				var main = document.getElementById("canvasContainer");
-				while (main.firstChild) { main.removeChild(main.firstChild); }
-				main.appendChild(canvas);
+				var ss = document.getElementById("scrContainer");
+				while (ss.firstChild) { ss.removeChild(ss.firstChild); }
+				ss.appendChild(canvas);
+				var link = document.createElement('a');
+				canvas.toBlob(function(blob) {
+					saveAs(blob, "screenshot.png", {type: "image/png"}); 
+				});
 			});
-		}
-
-		function clkScrSht()
-		{
-			document.getElementById("btnScrSht").style.display = "none";
-			makeScreenshot();
-			document.getElementById("btnDlSs").style.display = "inline";
 		};
-
-		function clkDlSs()
-		{
-			alert("Picked up save ss click");
-			document.getElementById("btnDlSs").style.display = "none";
-			document.getElementById("btnScrSht").style.display = "inline";
-			var thescrcanvas = document.getElementById("scrCanvas")
-			var scrCtx = thescrcanvas.getContext("2d");
-			thescrcanvas.toBlob(function(blob) {
-
-
-				var newImg = document.createElement('img'),
-					url = URL.createObjectURL(blob);
-				newImg.onload = function() {
-					// no longer need to read the blob so it's revoked
-					URL.revokeObjectURL(url);
-				};
-				newImg.src = url;
-				document.body.appendChild(newImg);
-			});
-			resetCanvas(thescrcanvas);
-			drawLoop();
-		};
-
 
 // after file is loaded into xmlDoc, here's where we read it and process data:
 		function processXmlDoc() {

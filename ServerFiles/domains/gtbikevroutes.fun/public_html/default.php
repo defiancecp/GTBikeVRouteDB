@@ -52,12 +52,6 @@
 	// if a route is passed, go to details.  If it isn't, show summary.
     if($route === NULL) {
 
-//		echo '<input type="button" width="40px" height="10px" value="Type ^" onclick="srtFn(2,1)">';
-//		echo '<input type="button" width="40px" height="10px" value="Author ^" onclick="srtFn(1,1)"><br>';
-//		echo '<input type="button" width="40px" height="10px" value="Type v" onclick="srtFn(2,-1)">';
-//		echo '<input type="button" width="40px" height="10px" value="Author v" onclick="srtFn(1,-1)">';
-// text sorting doesn't work ... and honestly doesn't seem important.
-
         $sql = "CALL GetRouteData('".get_ip_address()."','ALL');";
         // execute SQL query to get all the route data.
         $conn = myConnection();
