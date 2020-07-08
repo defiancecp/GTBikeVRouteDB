@@ -22,6 +22,7 @@
     <?php
     include('/home/u544302174/dbscripts/dbconfig.php');
     include('/home/u544302174/dbscripts/getip.php');
+	$unicodeUdArrow = '&#x21f5';
 
     // parameter handling: Metric vs. Imperial measures
     $met = $_GET['met'];
@@ -64,22 +65,22 @@
 
 				// Filter Controls (sort is with real header row):
 				echo '<tr id="rowSortFilter">';
-				echo '<th><input id="myInRoute" type="text" onkeyup="fltFn()" placeholder="search route.." title="f1"></th>';
-				echo '<th><input id="myInAuthor" type="text" onkeyup="fltFn()" placeholder="search author.." title="f2"></th>';
-				echo '<th><input id="myInType" type="text" onkeyup="fltFn()" placeholder="search type.." title="f3"></th>';
-				echo '<th id="dblFilt" colspan="2"><input id="myDistMin" type="number" onkeyup="fltFn()" placeholder=" Dist >" title="f5"><br>';
-				echo '<input id="myDistMax" onkeyup="fltFn()" placeholder="Dist <.." title="f7"></th>';
-				echo '<th id="dblFilt" colspan="2"><input id="myElvMin" type="number" onkeyup="fltFn()" placeholder="Elev >.." title="f6"><br>';
-				echo '<input id="myElvMax" type="number" onkeyup="fltFn()" placeholder="Elev <.." title="f8"></th>';
-				echo '<th colspan="2"><input stype="number" id="myRateMin" onkeyup="fltFn()" placeholder="Rated >.." title="f4"></th>';
+				echo '<th><input id="myInRoute" type="text" onkeyup="fltFn()" placeholder="Search route.." title="f1"></th>';
+				echo '<th><input id="myInAuthor" type="text" onkeyup="fltFn()" placeholder="Search author.." title="f2"></th>';
+				echo '<th><input id="myInType" type="text" onkeyup="fltFn()" placeholder="Search type.." title="f3"></th>';
+				echo '<th id="dblFilt" colspan="2"><input id="myDistMin" type="number" onkeyup="fltFn()" placeholder="Min distance" title="f5"><br>';
+				echo '<input id="myDistMax" onkeyup="fltFn()" placeholder="Max distance" title="f7"></th>';
+				echo '<th id="dblFilt" colspan="2"><input id="myElvMin" type="number" onkeyup="fltFn()" placeholder="Min elevation" title="f6"><br>';
+				echo '<input id="myElvMax" type="number" onkeyup="fltFn()" placeholder="Max elevation" title="f8"></th>';
+				echo '<th colspan="2"><input stype="number" id="myRateMin" onkeyup="fltFn()" placeholder="Min rating" title="f4"></th>';
 				echo '<th id="metSwCell"><a href="default.php'.$metswtag.$routetag.'"><img src="'.$metsw.'" height="30px"/></a>'.substr($met,0,3).'</th>';
 				echo '<th style="display:none;">map</th><th style="display:none;">rtg</th><th style="display:none;">numRating</th><th style="display:none;">numKM</th><th style="display:none;">numMI</th><th style="display:none;">numM</th><th style="display:none;">numFT</th></tr>';
 				// header row
 				echo '<tr id="tblHeaderRow">';
 				echo '<th>Route</th><th>Author</th><th>Type</th>';
-				echo '<th colspan="2" id="cellDstSort" onclick="srtFn(9,1)">Dist - &#x21d5;</th>';
-				echo '<th colspan="2" id="cellElvSort" onclick="srtFn(11,1)">Elev - &#x21d5;</th>';
-				echo '<th colspan="2" id="cellRtgSort" onclick="srtFn(8,1)">Rating - &#x21d5;</th>';
+				echo '<th colspan="2" id="cellDstSort" onclick="srtFn(9,1)">Dist - '.$unicodeUdArrow.'</th>';
+				echo '<th colspan="2" id="cellElvSort" onclick="srtFn(11,1)">Elev - '.$unicodeUdArrow.'</th>';
+				echo '<th colspan="2" id="cellRtgSort" onclick="srtFn(8,1)">Rating - '.$unicodeUdArrow.'</th>';
 				echo '<th>Download</th>';
 				echo '<th style="display:none">Map</th>';
 				// these entire columns are hidden - raw numeric values used for javascript sorting and filtering.
@@ -177,6 +178,10 @@ const minFileThreshold = 200;
 //  Intent of this threshold is to throw out bad results instead of giving them to the user as a file, with no indication
 //  that it's not a "real" file.
 
+const unicodeUpArrow = '\u2191';
+const unicodeDnArrow = '\u2193';
+const unicodeUdArrow = '\u21f5';
+
 	function fltFn() {
 		const defaultMet = "Metric";
 		const queryString = window.location.search;
@@ -261,46 +266,45 @@ const minFileThreshold = 200;
 
 
 function srtFn(sIndex, sOrder) {
-
 	// first handle updating the displayed text and onclick functions based on the user click.
 	if(sIndex === 9) {
 		//distance
 		if(sOrder === 1){
-			document.getElementById("cellDstSort").innerHTML = "Dist - &#x21d1;";
+			document.getElementById("cellDstSort").innerHTML = "Dist - "+unicodeUpArrow;
 			document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn(9,-1)");
 		} else {
-			document.getElementById("cellDstSort").innerHTML = "Dist - &#x21d3;";
+			document.getElementById("cellDstSort").innerHTML = "Dist - "+unicodeDnArrow;
 			document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn(9,1)");
 		}
-		document.getElementById("cellElvSort").innerHTML = "Elev - &#x21d5;";
+		document.getElementById("cellElvSort").innerHTML = "Elev - "+unicodeUdArrow;
 		document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn(11,1)");
-		document.getElementById("cellRtgSort").innerHTML = "Rating - &#x21d5;";
+		document.getElementById("cellRtgSort").innerHTML = "Rating - "+unicodeUdArrow;
 		document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn(8,1)");
 	} else if(sIndex === 11) {
 		//elevation
 		if(sOrder === 1){
-			document.getElementById("cellElvSort").innerHTML = "Elev - &#x21d1;";
+			document.getElementById("cellElvSort").innerHTML = "Elev - "+unicodeUpArrow;
 			document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn(11,-1)");
 		} else {
-			document.getElementById("cellElvSort").innerHTML = "Elev - &#x21d3;";
+			document.getElementById("cellElvSort").innerHTML = "Elev - "+unicodeDnArrow;
 			document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn(11,1)");
 		}srtFn
-		document.getElementById("cellDstSort").innerHTML = "Dist - &#x21d5;";
+		document.getElementById("cellDstSort").innerHTML = "Dist - "+unicodeUdArrow;
 		document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn(9,1)");
-		document.getElementById("cellRtgSort").innerHTML = "Rating - &#x21d5;";
+		document.getElementById("cellRtgSort").innerHTML = "Rating - "+unicodeUdArrow;
 		document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn(8,1)");
 	} else if(sIndex === 8) {
 		//rating
 		if(sOrder === 1){
-			document.getElementById("cellRtgSort").innerHTML = "Rating- &#x21d1;";
+			document.getElementById("cellRtgSort").innerHTML = "Rating- "+unicodeUpArrow;
 			document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn(8,-1)");
 		} else {
-			document.getElementById("cellRtgSort").innerHTML = "Rating - &#x21d3;";
+			document.getElementById("cellRtgSort").innerHTML = "Rating - "+unicodeDnArrow;
 			document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn(8,1)");
 		}
-		document.getElementById("cellDstSort").innerHTML= "Dist - &#x21d5;";
+		document.getElementById("cellDstSort").innerHTML= "Dist - "+unicodeUdArrow;
 		document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn(9,1)");
-		document.getElementById("cellElvSort").innerHTML = "Elev - &#x21d5;";
+		document.getElementById("cellElvSort").innerHTML = "Elev - "+unicodeUdArrow;
 		document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn(11,1)");
 	}
 
