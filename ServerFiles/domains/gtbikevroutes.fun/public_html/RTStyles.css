@@ -16,7 +16,14 @@
 
 #tblSummary {
   border: 0px solid black;
+  color:#a0b0a8;
 }
+
+#tblSingle {
+  border: 0px solid black;
+  color:#a0b0a8;
+}
+
 #rowSortFilter {
 	height: 36px;
 	background-color:#556065;
