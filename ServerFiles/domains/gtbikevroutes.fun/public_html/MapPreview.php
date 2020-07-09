@@ -30,6 +30,7 @@
 <div id="scrContainer" style="display:none"> 
 	<canvas id="scrCanvas" width="1280" height="720"></canvas><iframe src = 'SubmitGPXData.php' id="frmGPX" ></iframe>
 </div>
+    <script type="text/javascript" src="easy-fit.bundle.js"></script>
 <script>
 
 		// set up a bunch of constant definitions at the outset to simplify 
@@ -135,7 +136,7 @@
 		const aniframes = 243; // number of frames to display in animation
 	
 	// variables
-		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,gpxfilename,xhttp,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset;
+		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,docType;
 	
 	// array variables:
 		let xarray = []; 
@@ -151,16 +152,19 @@
 		// initializing some containers and variables that will be referenced by triggered functions so must be initialized globally
 		img = new Image();   // Create new img element
 		xhttp = new XMLHttpRequest();
+		checkFIT = new XMLHttpRequest();
 		xmlLoaded = 0;
 		imgLoaded = 0;
 		currAniIx = 0;
 		xmapoffset = 0;
 		ymapoffset = 0;
+		fileLoaded = 0;
 		mcanvas = document.getElementById("bmap"); // map canvas
 		elvc = document.getElementById("elv"); // elevation profile canvas
 		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
 		isLink2 = false; // indicates whether mouse position currently hovering is over link 2
 		isLink3 = false; // indicates whether mouse position currently hovering is over link 3
+		doctype = 0; // 1- fit 2- gpx
 
 		
 	/* -- list of uninitialized variables and their usage:
@@ -299,45 +303,19 @@
 			};
 		};
 
-	// This function is triggered when a 'load' is complete on the xhttp object.  xhttp is our xml file container, so when this
-	// is triggered it means the xml file load is complete and we can parse values into the array and cultivate/analyze the data.
-		xhttp.onload = function () {
-			if(route === null) {
-			} else {
-				// javascript with the libraries I'm using makes XML pretty effortless.
-				// so -- Pick out all the trkpt items and extract specfiic attributes:
-				xmlDoc = xhttp.responseXML;
-				processXmlDoc();
-			}
-		};
-
-	// if no file is passed as parameters, the user file button is enabled.
-	//  This function is triggered when a file is loaded.
-		$("#xmlfile").change(function(e){
-			var selectedFile = document.getElementById("xmlfile").files[0];
-			//You could insert a check here to ensure proper file type
-			var reader = new FileReader();
-			reader.onload = function(e){
-				readXml=e.target.result;
-				var parser = new DOMParser();
-				xmlDoc = parser.parseFromString(readXml, "application/xml");
-				processXmlDoc();
-			}
-			reader.readAsText(selectedFile);
-		});
 
 	// this switches from imperial to metric and triggers re-calculating.
 	// executed when the user clicks the button (onclick event)
 		function clkImpMet() {
 			if (met === "Metric") {met = "Imperial"} else {met = "Metric"};
-			processXmlDoc();
+			processData();
 		}
 
 	// this switches from time to distance axis and triggers re-calculating.
 	// executed when the user clicks the button (onclick event)
 		function clkTmDst() {
 			if (elex === "d") {elex = "t"} else {elex = "d"};
-			processXmlDoc();
+			processData();
 		}
 		
 		
@@ -366,9 +344,166 @@
 			});
 		};
 
+
+
+	// if no file is passed as parameters, the user file button is enabled.
+	//  This function is triggered when a file is loaded.
+		$("#xmlfile").change(function(e){
+			if (this.value.substring(this.value.length-3,this.value.length).toUpperCase() == "FIT") {
+				docType = 1;
+				fitFileLoad(this.files[0]);
+			} else if (this.value.substring(this.value.length-3,this.value.length).toUpperCase() == "GPX") {
+				docType = 2;
+				var selectedFile = document.getElementById("xmlfile").files[0];
+				//You could insert a check here to ensure proper file type
+				var reader = new FileReader();
+				reader.onload = function(e){
+					readXml=e.target.result;
+					var parser = new DOMParser();
+					xmlDoc = parser.parseFromString(readXml, "application/xml");
+					if(fileLoaded === 0) {
+						processGPXDoc();
+						fileLoaded === 1;
+					};
+				}
+				reader.readAsText(selectedFile);
+			};
+		});
+
+		xhttp.onload = function () {
+			if (this.status === 404) {
+				// not found, add some error handling
+				console.log("gpx check found no file");
+				return;
+			} else {
+				console.log("gpx check found a file");
+				if(route === null) {
+				} else {
+					// javascript with the libraries I'm using makes XML pretty effortless.
+					// so -- Pick out all the trkpt items and extract specfiic attributes:
+					if(fileLoaded === 0) {
+						docType = 2;
+						xmlDoc = xhttp.responseXML;
+						processGPXDoc();
+						fileLoaded === 1;
+					};
+				}
+			}
+		};
+
+		checkFIT.onload = function () {
+			if (this.status === 404) {
+				// not found, add some error handling
+				console.log("fit check found no file");
+				return;
+			} else {
+				console.log("fit check found a file");
+				if(route === null) {
+				} else {
+					fitFileLoad(checkFIT.response);
+				}
+			}
+		};
+
+		function fitFileLoad(file) { // file is a blob
+			var EasyFit = window.easyFit.default;
+			var reader = new FileReader();
+			reader.onloadend = function() {
+
+				// Create a EasyFit instance (options argument is optional)
+				var easyFit = new EasyFit({
+					force: true,
+					speedUnit: 'km/h',
+					lengthUnit: 'km',
+					temperatureUnit: 'celcius',
+					elapsedRecordField: true,
+					mode: 'list'
+				});
+
+				easyFit.parse(this.result, function (error, data) {
+					if (error) {
+						console.log(error);
+					} else {
+						if(fileLoaded === 0) {
+							docType = 1;
+							xmlDoc = xhttp.responseXML;
+							processFITDoc(data.records);
+							fileLoaded === 1;
+						};
+					}
+				});
+			};
+			reader.readAsArrayBuffer(file);
+
+		}
+
+		function processFITDoc(easyFit) {
+			xarray = []; 
+			yarray = []; 
+			zarray = []; 
+			tarray = []; 
+			darray = [];
+			iarray = [];
+			for (i = 0; i < easyFit.length; i++) { 
+				// load values from xml formatted gpx file into array, store in variable first for some stuff
+				thisLon=easyFit[i].position_long;
+				if(thisLon>180){thisLon=thisLon-360;}; // encoding format thing
+				thisLat=easyFit[i].position_lat;
+				if(thisLat>180){thisLat=thisLat-360;}; // encoding format thing
+				thisElev=(easyFit[i].altitude-1)*1000;
+				thisTimestamp=easyFit[i].timestamp;
+			
+				// for time convert from standardized text into time value and preserve in var
+
+				if(i===0) { // first iteration: Initialize to zero.
+					cmlDist = 0;
+					cmlTime = 0;
+					cmlElev = 0;
+					cmlDesc = 0;
+				} else {
+					// thereafter, calculate the difference and add too the cumulative values.
+					cmlTime=cmlTime+Math.abs(thisTimestamp-lastTimestamp);
+					if(thisElev>lastElev){
+						cmlElev=cmlElev+(thisElev-lastElev);
+					} else if(thisElev<lastElev) {
+						cmlDesc=cmlDesc+(lastElev-thisElev);
+					}
+					cmlDist = cmlDist + getDistanceFromLatLonInKm(lastLat,lastLon,thisLat,thisLon);
+				}
+				// then preserve current value as last in preparation for next cycle.
+				lastTimestamp = thisTimestamp;
+				lastElev = thisElev;
+				lastLat = thisLat;
+				lastLon = thisLon;
+
+				xarray[i]=(thisLon+(xoffset*1))*xfactor;
+				yarray[i]=(thisLat+(yoffset*1))*yfactor;
+				zarray[i]=thisElev;
+				tarray[i]=cmlTime;
+				darray[i]=cmlDist;
+
+
+				if(elex === "d") {
+					iarray[i]=cmlDist; 
+				}  else {
+					iarray[i]=cmlTime; 
+				};
+
+				// now impose sanity limits on values - just confirm they're not outside predefined limits.
+				if(xarray[i] > xhilim) {xarray[i] = xhilim;};
+				if(xarray[i] < xlolim) {xarray[i] = xlolim;};
+				if(yarray[i] > yhilim) {yarray[i] = yhilim;};
+				if(yarray[i] < ylolim) {yarray[i] = ylolim;};
+				if(zarray[i] > zhilim) {zarray[i] = zhilim;};
+				if(zarray[i] < zlolim) {zarray[i] = zlolim;};
+			}
+			processData();
+		}
+				
+
 	// after file is loaded into xmlDoc, here's where we read it and process data:
-	//  executed by initial page load if route is passed, or by user loading of a file.
-		function processXmlDoc() {
+	//  executed by initial page load if route is passed, or by user loading of a file.	
+		function processGPXDoc() {
 			x = xmlDoc.getElementsByTagName("trkpt");
 			xarray = []; 
 			yarray = []; 
@@ -427,7 +562,10 @@
 				if(zarray[i] > zhilim) {zarray[i] = zhilim;};
 				if(zarray[i] < zlolim) {zarray[i] = zlolim;};
 			}
-
+			processData();
+		}
+		
+		function processData() {
 	//  *** ANALYZE DATASET ***
 			// Preserve min and max values - we'll possibly use these to control zooming...
 			xmin = Math.min.apply(null, xarray); 
@@ -716,6 +854,7 @@
 		};
 		
 
+
 // *************** MAIN EXECUTION BEGINS HERE WHEN PAGE IS LOADED *********************
 // all other functions are triggered by events or by this script.
 // so if you're trying to follow, start here :)
@@ -749,12 +888,31 @@
 				hcont.style.display = "block";
 
 			} else {
-			// start loading the arrays from the selected route's associated gpx file
-			// again, trigged when load complete: xhttp.onload
-				document.getElementById("xmlfile").style.display = "hidden";
+				// this is tricky to follow becuase of asynchronous standards. 
+				// logical description is check for .fit an if found execute fit routine.  
+				//  Then if not found, then check for .gpx and if found execute gpx routine.
+				// Async means that has to be set up as:
+				// Set up a function to run when gpx file checking is complete. If found, load .gpx routine.
+				//  If not, end.
+				// Set up a function to run when fit file checking is complete. If found, load .fit routine.
+				//  If not, start checking for the gpx file.
+				// main code execution begins:: start checking for the fit file.  
+
+				fitfilename = "gpx/"+route+".fit";
 				gpxfilename = "gpx/"+route+".gpx";
-				xhttp.open("GET", gpxfilename, true);
+
+			// This function is triggered when a 'load' is complete on the xhttp object.  xhttp is our xml file container, so when this
+			// is triggered it means the xml file load is complete and we can parse values into the array and cultivate/analyze the data.
+
+				checkFIT.open('GET',fitfilename,true)
+				checkFIT.responseType = 'blob';
+				checkFIT.send();
+
+				xhttp.open("GET",gpxfilename,true)
+				xhttp.responseType = '';
 				xhttp.send();
+
+			// Nuttin'.  Maybe this should transition to user mode?
 			}
 			
 		// now this triggers image loading.  When it's finished, it'll load the img.onload routine.

@@ -18,5 +18,6 @@ András Beck, Adreas Otten, Matthias Urech, Heini Falk, and all the others I'm c
 
 FileSaver.js: https://github.com/eligrey/FileSaver.js/
 html2canvas.min.js: https://html2canvas.hertzen.com/
+easy-fit: https://github.com/pierremtb/easy-fit
  
 All the massive number of people responsible for underlying tools, ides, etc., those who have built tutorials and documentation, shared their projects, and generally helped to build open source software into a powerful, functional ecosystem.  

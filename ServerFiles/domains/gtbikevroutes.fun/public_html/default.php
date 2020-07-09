@@ -99,8 +99,7 @@
 					// which, to be clear, is on me: I submitted the pull request to structure the table in the readme :P 
 					// but for now just fixing. This will probably be better in the API.
                     $mapstring = "";
-					//if(file_exists ("./gpx/".$row["RouteName"].".gpx")) {$mapstring="(!)";};
-					if(file_exists ("./gpx/".$row["RouteName"].".gpx"))  {$mapstring = ' - <img src="images/map.png" height="15px"/>';}; //  class="link" height="15px"
+					if(file_exists ("./gpx/".$row["RouteName"].".gpx") OR file_exists ("./gpx/".$row["RouteName"].".fit"))  {$mapstring = ' - <img src="images/map.png" height="15px"/>';};
 					//$mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"/></a>',$row["Map"]);
 					// now build the tr.
                     echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a>'.$mapstring.'</td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td colspan="2">'.$vdistance.'</td><td colspan="2">'.$velevation.'</td><td colspan="2"><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td style="display:none;"></td><td style="display:none;">'.$row["CurrentRating"].'</td><td style="display:none;">'.$row["DistanceKM"].'</td><td style="display:none;">'.$row["DistanceMI"].'</td><td style="display:none;">'.$row["ElevationM"].'</td><td style="display:none;">'.$row["ElevationFT"].'</td></tr>';
@@ -149,7 +148,7 @@
 					echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
  
 					// but for the map link, if there's a GPX file for this route, skip the map and use route preview instead.
-					if(file_exists ("./gpx/".$row["RouteName"].".gpx")) { 
+					if(file_exists ("./gpx/".$row["RouteName"].".gpx") OR file_exists ("./gpx/".$row["RouteName"].".fit")) { 
 						echo '<tr><td colspan="8" height=100%><iframe src="MapPreview.php?route='.$row["RouteName"].'&met='.$met.'" class="embed-responsive-item" width="1280px" height="720px" allowtransparency="true" style="border:0px solid black;"></iframe></td></tr>';
 					} else {
 						echo '<tr><td colspan="8" height=100%><img src="'.$mappic.'"/></td></tr>';
