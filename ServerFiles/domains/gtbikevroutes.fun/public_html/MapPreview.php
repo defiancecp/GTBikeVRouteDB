@@ -27,9 +27,8 @@
 	</canvas>
 </div>
 </div>
-<div id="scrContainer" style="display:none">
-	<canvas id="scrCanvas" width="1280" height="720">
-	</canvas>
+<div id="scrContainer" style="display:none"> 
+	<canvas id="scrCanvas" width="1280" height="720"></canvas><iframe src = 'SubmitGPXData.php' id="frmGPX" ></iframe>
 </div>
 <script>
 
@@ -206,6 +205,7 @@
 	// To monitor for clicks on the map change tab.  
 	// credit for much of this part of code: http://www.authorcode.com/how-to-create-hyper-link-on-the-canvas-in-html5/
 	// modified for canvas-relevant position rather than absolute
+	//  This is executed every time mouse movement occurs over the button canvas (event handler)
         function CanvasMouseMove(e) {
             var x, y;
 			if (e.pageX || e.pageY) { 
@@ -251,6 +251,7 @@
 	// when a click is detcted, determine if it was on one of the map buttons.
 	//  position determination based on CanvasMouseMove
 	// if it was, reload with the selected map.
+	//  executed each time the button canvas is clicked (event handler)
 		function Link_click(e) {
 
 			if (isLink1) {
@@ -268,6 +269,7 @@
 		}
 
 	// getting distance based on standard earth-surface lat-long distance calc.  Result in kliometers.
+	// executed when processing data, used to calc point to point distance between each nav point.
 		function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
 			var R = earthRadius; // Radius of the earth in km
 			var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -280,23 +282,22 @@
 			return d;
 		}
 
-	// used in distance calc
+	// quick math function used in distance calc; executed by it.
 		function deg2rad(deg) {
 			return deg * (Math.PI/180)
 		}
 
+	// this function is triggered when the image is loaded.  Nothing more to do with the image specifically, but check animation readiness.
 		img.onload = function () {
+			img.draw; // put 'em on the canvas.
 			imgLoaded = 1;
-			img.draw;
-			// this is probably a kludgy/klunky approach...
-			// basically it needs both of these items processed before proceeding to this last draw
-			// because the order of drawn objects on the map pane is critical.
-			// so after each of the two, check load, and only run the final if the other has completed too.
+			
+	// here's where we confirm both xml and image are done, and if so, start the drawings.
+			// initially thought this was a bit klunky, but I think it works well here.
 			if(imgLoaded === 1 && xmlLoaded === 1) {
 				var thm = drawLoop();
 			};
 		};
-
 
 	// This function is triggered when a 'load' is complete on the xhttp object.  xhttp is our xml file container, so when this
 	// is triggered it means the xml file load is complete and we can parse values into the array and cultivate/analyze the data.
@@ -311,8 +312,7 @@
 		};
 
 	// if no file is passed as parameters, the user file button is enabled.
-	// This function is triggered when a file is loaded.
-	//  so far it seems to load a file, but passing the result to xml doc isn't working...
+	//  This function is triggered when a file is loaded.
 		$("#xmlfile").change(function(e){
 			var selectedFile = document.getElementById("xmlfile").files[0];
 			//You could insert a check here to ensure proper file type
@@ -326,20 +326,31 @@
 			reader.readAsText(selectedFile);
 		});
 
+	// this switches from imperial to metric and triggers re-calculating.
+	// executed when the user clicks the button (onclick event)
 		function clkImpMet() {
 			if (met === "Metric") {met = "Imperial"} else {met = "Metric"};
 			processXmlDoc();
 		}
 
+	// this switches from time to distance axis and triggers re-calculating.
+	// executed when the user clicks the button (onclick event)
 		function clkTmDst() {
 			if (elex === "d") {elex = "t"} else {elex = "d"};
 			processXmlDoc();
 		}
 		
 		
-		// ********** SCREENSHOT FUNCTIONALITY 
+	// ********** SCREENSHOT FUNCTIONALITY 
+	//  executed by user clicking screenshot (onclick event)
 		function clkScrSht()
 		{
+			//this works by using the hidden canvas object (inside a div with display:none)
+			// all the screen content is sent to that canvas, it's then converted to a blob, and
+			// then the blob is streamed to the user as a file. 
+			// all file/data handling client side, which allows us to work around cross domain link limitations.
+			// One downside right now: screenspace impacts the image, so it picks up extra whitespace, or 
+			// loses some image space if the user's window is small.
 			var thescrcanvas = document.getElementById("scrCanvas")
 			resetCanvas(thescrcanvas);
 			html2canvas(document.getElementById("main"), {scale: 1}).then(canvas =>
@@ -355,7 +366,8 @@
 			});
 		};
 
-// after file is loaded into xmlDoc, here's where we read it and process data:
+	// after file is loaded into xmlDoc, here's where we read it and process data:
+	//  executed by initial page load if route is passed, or by user loading of a file.
 		function processXmlDoc() {
 			x = xmlDoc.getElementsByTagName("trkpt");
 			xarray = []; 
@@ -416,7 +428,7 @@
 				if(zarray[i] < zlolim) {zarray[i] = zlolim;};
 			}
 
-		//  *** ANALYZE DATASET ***
+	//  *** ANALYZE DATASET ***
 			// Preserve min and max values - we'll possibly use these to control zooming...
 			xmin = Math.min.apply(null, xarray); 
 			xmax = Math.max.apply(null, xarray);
@@ -430,7 +442,7 @@
 			imax = Math.max.apply(null, iarray);
 			
 
-			// determine convesion for z into pixel value (0-60)
+	// determine convesion for z into pixel value (0-60)
 			// need to calculate before zmax and zmin are adjusted for metric/imperial so 
 			// that behavior is consistent.
 			if( (Math.max.apply(null, zarray) - Math.min.apply(null, zarray)) < 2 ) {
@@ -443,6 +455,14 @@
 				zoffset2 = 0-zmin; // (zmin*zfactor2)+20;
 			}
 			
+			if (urlParams.get('route') === null) {
+				// not logging in this case
+				console.log("not logging empty");
+			} else {
+				document.getElementById("frmGPX").src = 'SubmitGPXData.php?route='+urlParams.get('route')+'&dist='+cmlDist+'&asc='+cmlElev+'&desc='+cmlDesc;
+				console.log("just tried to submit.  Route = "+urlParams.get('route')+" dist = "+cmlDist+" asc = "+cmlElev+" desc = "+cmlDesc);
+			};
+
 			// convert from default metric values to imperial as needed.
 			if (met === "Imperial") {
 				zmin = zmin*meters2feet; // lowest elevation meters to feet
@@ -453,7 +473,8 @@
 				elunit = "ft"; // update unit tags
 				dstunit = "mi";
 			}
-			// determine convesion for index into animation index (0-243 because 243 works with this width)
+
+	// determine convesion for index into animation index (0-243 because 243 works with this width)
 			// intent is to display in ~4 seconds, so time equates to 16.67 milliseconds, ~60fps
 			ifactor2 = 243/(Math.max.apply(null, iarray) - Math.min.apply(null, iarray));
 			ioffset2 = 0-(imin*ifactor2);
@@ -464,21 +485,21 @@
 				iarray[i] = ((iarray[i]*1)+(ioffset2*1))*ifactor2;
 			}
 
-			// determine optimal scaling on each axis to fit most of the route onscreen
+	// this chunk determine optimal scaling on each axis to fit most of the route onscreen
 			zoomfactory = (655/(ymax - ymin));
 			zoomfactorx = (1280/(xmax - xmin));
-
 			if (zoomfactory < zoomfactorx) {
 				zoomfactorxy = zoomfactory*.98;
 				translatefactory = ymin*-1*zoomfactorxy;
-				translatefactory = translatefactory + (655*.01); // this is NICE :) 
+				translatefactory = translatefactory + (655*.01);
 				translatefactorx = xmin*-1*zoomfactorxy; 
+				// now to center the axis not filled by zoom:
 				xmapoffset =   
 					(((1280/zoomfactorxy) // total pixel space
-					-(xmax-xmin)) /2 // occupied pixel space /2
+					-(xmax-xmin)) /2 // subtract occupied pixel space which gives empty, divide by half to be one side
 					)*zoomfactorxy; // scaling factor applied to result
 				ymapoffset = 0;
-				translatefactorx = translatefactorx + (1280*.01) + xmapoffset; // this is hopefully now centered
+				translatefactorx = translatefactorx + (1280*.01) + xmapoffset;
 			} else {
 				zoomfactorxy = zoomfactorx*.98;
 				translatefactorx = xmin*-1*zoomfactorxy; 
@@ -489,7 +510,7 @@
 					-(ymax-ymin)) /2 // occupied pixel space /2
 					)*zoomfactorxy; // scaling factor applied to result
 				ymapoffset = 0;
-				translatefactory = translatefactory + (655*.01) + ymapoffset; // this is hopefully now centered
+				translatefactory = translatefactory + (655*.01) + ymapoffset;
 			}
 
 
@@ -498,7 +519,7 @@
 		mpAniR = mpLineWidth*2.25;
 
 	//  *** ANALYZE DATASET COMPLETE ***
-
+	// here's where we confirm both xml and image are done, and if so, start the drawings.
 			// initially thought this was a bit klunky, but I think it works well here.
 			xmlLoaded = 1;
 			if(imgLoaded === 1 && xmlLoaded === 1) {
@@ -506,9 +527,9 @@
 			};
 		};
 		
-// helpful to retain standard way of clearing canvases for redraw.
-// note that this function clears transforms and scales, but that's OK since
-// draw function applies them anyway.
+	// helpful to retain standard way of clearing canvases for redraw.
+	// note that this function clears transforms and scales, but that's OK since
+	// draw function applies them anyway.
 		function resetCanvas(inCvs)
 		{
 			var inCtx = inCvs.getContext("2d");
@@ -516,11 +537,8 @@
 			inCtx.clearRect(0,0, inCvs.width, inCvs.height);
 		};
 
-// More of a loop initializer.  Name stuck after I changed things :) The 0 check is to prevent overlaps.
-//  And operlaps... that was actually a fun bug: You could rapidly click and each click would lead to it 
-//  appending onto the array, so the animation-in-progress would bump up its speed...
-//  and it would keep going around and around ...
-//  The more you clicked, the faster it went! :)
+	// More of a loop initializer.  Name stuck after I changed things :) The 0 check is to prevent overlaps.
+	// executed any time both image and gpx loads are completed (when one completes, it confirms the other and runs this if true)
 		function drawLoop(e) {
 			if(currAniIx === 0) {
 				window.requestAnimationFrame(drawMapAndElv);
@@ -528,6 +546,8 @@
 		}
 		
 	// this is the function, run each frame, to draw the map and elevation profile.
+	// executed first when the loop is initialized by drawloop
+	//  then it then re-runs itself each frame until frame limit is complete (the number of frames to animate).
 		function drawMapAndElv(e) { 
 
 	//  *** MAP CANVAS HANDLING ***
@@ -644,11 +664,12 @@
 
 		};
 
-			// this pics up the map and loads it into the image object that's used by the canvas.
-			// note: this loading takes quite a bit of time (from a code perspective), so it happens
-			// async.  When the "src" of the image is changed loading is initialized, and when laoding
-			// completes it will trigger the function that's set to trigger on load of img: img.onload.
-			//  If the user changes it, it'll reset here and when loaded, again it will trigger the onload.
+	// this pics up the map and loads it into the image object that's used by the canvas.
+	// note: this loading takes quite a bit of time (from a code perspective), so it happens
+	// async.  When the "src" of the image is changed loading is initiated, and when laoding
+	// completes it will trigger the function that's set to trigger on load of img: img.onload.
+	//  If the user changes it, it'll reset here and when loaded, again it will trigger the onload.
+	// executed when called by initial load, or again when a user changes map type.
 		function procMapLoad() {
 			if (maptype === "atlas") {
 				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
@@ -695,7 +716,7 @@
 		};
 		
 
-// *************** MAIN LOAD BEGINS HERE *********************
+// *************** MAIN EXECUTION BEGINS HERE WHEN PAGE IS LOADED *********************
 // all other functions are triggered by events or by this script.
 // so if you're trying to follow, start here :)
 
@@ -738,7 +759,6 @@
 			
 		// now this triggers image loading.  When it's finished, it'll load the img.onload routine.
 			procMapLoad();
-
 
 	//  *** BUTTON CANVAS HANDLING *** -- handled here since nothing ever really happens to them.
 			// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
