@@ -76,10 +76,12 @@
         }
 
         //now that the right stars are mapped into the ordered array, cycle through it to display the link-driven stars.
-        foreach ($img as $key => $value) {
+        echo '<div class="container" height="12px" width="60px">';
+		foreach ($img as $key => $value) {
             echo '<a href=SubmitRating.php?route='.$route.'&rating='.($key*0.5).'&submit=TRUE&ratingcount='.$ratingcount.'><img src="'.$value.'" style=width:6px;height:12px;"></a>';
         }
         echo "<small style='color:#a0b0a8;'>(".$ratingcount.")</small>";
+        echo '</div>';
 
         // This is submitting: if submit parameter isn't set, skip and leave.
         if($submit === FALSE OR $rating === NULL) {

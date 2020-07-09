@@ -64,22 +64,22 @@
 
 				// Filter Controls (sort is with real header row):
 				echo '<tr id="rowSortFilter">';
-				echo '<th><input id="myInRoute" type="text" onkeyup="fltFn()" placeholder="Search route.." title="f1"></th>';
-				echo '<th><input id="myInAuthor" type="text" onkeyup="fltFn()" placeholder="Search author.." title="f2"></th>';
-				echo '<th><input id="myInType" type="text" onkeyup="fltFn()" placeholder="Search type.." title="f3"></th>';
-				echo '<th id="dblFilt" colspan="2"><input id="myDistMin" type="number" onkeyup="fltFn()" placeholder="Min distance" title="f5"><br>';
+				echo '<th id="colInRoute"><input id="myInRoute" type="text" onkeyup="fltFn()" placeholder="Search route.." title="f1"></th>';
+				echo '<th id="colInAuthor"><input id="myInAuthor" type="text" onkeyup="fltFn()" placeholder="Search author.." title="f2"></th>';
+				echo '<th id="colInType"><input id="myInType" type="text" onkeyup="fltFn()" placeholder="Search type.." title="f3"></th>';
+				echo '<th id="colDst" ><input id="myDistMin" type="number" onkeyup="fltFn()" placeholder="Min distance" title="f5"><br>';
 				echo '<input id="myDistMax" onkeyup="fltFn()" placeholder="Max distance" title="f7"></th>';
-				echo '<th id="dblFilt" colspan="2"><input id="myElvMin" type="number" onkeyup="fltFn()" placeholder="Min elevation" title="f6"><br>';
+				echo '<th id="colElv" ><input id="myElvMin" type="number" onkeyup="fltFn()" placeholder="Min elevation" title="f6"><br>';
 				echo '<input id="myElvMax" type="number" onkeyup="fltFn()" placeholder="Max elevation" title="f8"></th>';
-				echo '<th colspan="2"><input stype="number" id="myRateMin" onkeyup="fltFn()" placeholder="Min rating" title="f4"></th>';
+				echo '<th id="colRt"><input stype="number" id="myRateMin" onkeyup="fltFn()" placeholder="Min rating" title="f4"></th>';
 				echo '<th id="metSwCell"><a href="default.php'.$metswtag.$routetag.'"><img src="'.$metsw.'" height="30px"/></a>'.substr($met,0,3).'</th>';
 				echo '<th style="display:none;">map</th><th style="display:none;">rtg</th><th style="display:none;">numRating</th><th style="display:none;">numKM</th><th style="display:none;">numMI</th><th style="display:none;">numM</th><th style="display:none;">numFT</th></tr>';
 				// header row
 				echo '<tr id="tblHeaderRow">';
 				echo '<th>Route</th><th>Author</th><th>Type</th>';
-				echo '<th colspan="2" id="cellDstSort" onclick="srtFn(9,1)">Dist - '.$unicodeUdArrow.'</th>';
-				echo '<th colspan="2" id="cellElvSort" onclick="srtFn(11,1)">Elev - '.$unicodeUdArrow.'</th>';
-				echo '<th colspan="2" id="cellRtgSort" onclick="srtFn(8,1)">Rating - '.$unicodeUdArrow.'</th>';
+				echo '<th id="cellDstSort" onclick="srtFn(9,1)">Dist   '.$unicodeUdArrow.'</th>';
+				echo '<th id="cellElvSort" onclick="srtFn(11,1)">Elev   '.$unicodeUdArrow.'</th>';
+				echo '<th id="cellRtgSort" onclick="srtFn(8,1)">Rating   '.$unicodeUdArrow.'</th>';
 				echo '<th>Download</th>';
 				echo '<th style="display:none">Map</th>';
 				// these entire columns are hidden - raw numeric values used for javascript sorting and filtering.
@@ -99,10 +99,10 @@
 					// which, to be clear, is on me: I submitted the pull request to structure the table in the readme :P 
 					// but for now just fixing. This will probably be better in the API.
                     $mapstring = "";
-					if(file_exists ("./gpx/".$row["RouteName"].".gpx") OR file_exists ("./gpx/".$row["RouteName"].".fit"))  {$mapstring = ' - <img src="images/map.png" height="15px"/>';};
-					//$mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"/></a>',$row["Map"]);
+					if(file_exists ("./gpx/".$row["RouteName"].".gpx") OR file_exists ("./gpx/".$row["RouteName"].".fit"))  {$mapstring = '    <img src="images/map.png" height="15px"/>';};
+					//$mapstring = str_replace('Map</a>','<img src="images/map.png" class="link" height="20px"width="40"/></a>',$row["Map"]);
 					// now build the tr.
-                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a>'.$mapstring.'</td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td colspan="2">'.$vdistance.'</td><td colspan="2">'.$velevation.'</td><td colspan="2"><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td style="display:none;"></td><td style="display:none;">'.$row["CurrentRating"].'</td><td style="display:none;">'.$row["DistanceKM"].'</td><td style="display:none;">'.$row["DistanceMI"].'</td><td style="display:none;">'.$row["ElevationM"].'</td><td style="display:none;">'.$row["ElevationFT"].'</td></tr>';
+                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a>'.$mapstring.'</td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" height="20px" width="130px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td style="display:none;"></td><td style="display:none;">'.$row["CurrentRating"].'</td><td style="display:none;">'.$row["DistanceKM"].'</td><td style="display:none;">'.$row["DistanceMI"].'</td><td style="display:none;">'.$row["ElevationM"].'</td><td style="display:none;">'.$row["ElevationFT"].'</td></tr>';
 				}
 					// all tr's done, close it up.
 				echo "</table>"; // table opener & header row
@@ -144,7 +144,7 @@
 					// but for now just fixing. This will probably be better in the API.
                     $mappic = str_replace('">Map</a>','',str_replace('<a href="','',$row["Map"]));
 					// now build the row for this data...
-                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="100%" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td style="display:none"></td></tr>';
+                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" width="130px" height="20px" allowtransparency="true" style="border:0px solid black;"></iframe></td><td><img src=/images/dl.png class="link" height="20px" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td style="display:none"></td></tr>';
 					echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
  
 					// but for the map link, if there's a GPX file for this route, skip the map and use route preview instead.

@@ -15,62 +15,22 @@
 }
 
 #tblSummary {
+  width: 100%;
   border: 0px solid black;
   color:#a0b0a8;
 }
 
 #tblSingle {
+  width: 100%;
   border: 0px solid black;
   color:#a0b0a8;
 }
 
 #rowSortFilter {
-	height: 36px;
+	height: 30px;
 	background-color:#556065;
 }
 
-
-#myDistMin {
-	width:100%;
-	background-color:#303030;
-    height:17px;
-    font-size:6pt;
-	color:#C0D0C8;
-}
-#myDistMax {
-	width:100%;
-	background-color:#303030;
-    height:17px;
-    font-size:6pt;
-	color:#C0D0C8;
-}
-#myElvMin {
-	width:100%;
-	background-color:#303030;
-    height:17px;
-    font-size:6pt;
-	color:#C0D0C8;
-}
-#myElvMax {
-	width:100%;
-	background-color:#303030;
-    height:17px;
-    font-size:6pt;
-	color:#C0D0C8;
-}
-#myRateMin {
-	background-color:#303030;
-	width:100%;
-    height:35px;
-    font-size:8pt;
-	color:#C0D0C8;
-}
-#dblFilt {
-	font-size:0;
-}
-#metSwCell {
-	font-size:10pt;
-}
 #fltDescrip{
 	font-size:10pt;
 	color:#C0D0C8;
@@ -79,7 +39,36 @@
 	font-size:10pt;
 }
 
-#myInRoute {
+#colInRoute { 
+	width:75%;
+	font-size:0;
+}
+#colInAuthor {
+	width:75%; 
+	font-size:0;
+}
+#colInType {
+	width:12%;
+	font-size:0;
+}
+#colDst {
+	width:10%;
+	font-size:0;
+}
+#colElv {
+	width:10%;
+	font-size:0;
+}
+#colRt {
+	width:10%;
+	font-size:0;
+}
+#metSwCell {
+	width:8%;
+	font-size:10pt;
+}
+
+#myInRoute { 
 	background-color:#303030;
 	width:100%;
     height:35px;
@@ -100,11 +89,50 @@
     font-size:8pt;
 	color:#C0D0C8;
 }
+#myDistMin {
+	background-color:#303030;
+	width:100%;
+    height:17px;
+    font-size:6pt;
+	color:#C0D0C8;
+}
+#myDistMax {
+	background-color:#303030;
+	width:100%;
+    height:17px;
+    font-size:6pt;
+	color:#C0D0C8;
+}
+#myElvMin {
+	background-color:#303030;
+	width:100%;
+    height:17px;
+    font-size:6pt;
+	color:#C0D0C8;
+}
+#myElvMax {
+	background-color:#303030;
+	width:100%;
+    height:17px;
+    font-size:6pt;
+	color:#C0D0C8;
+}
+#myRateMin {
+	background-color:#303030;
+	width:140px;
+    height:35px;
+    font-size:8pt;
+	color:#C0D0C8;
+}
+
 #cellDstSort {
+	width:100%;
 }
 #cellElvSort {
+	width:100%;
 }
 #cellRtgSort {
+	width:100%;
 }
 
 
