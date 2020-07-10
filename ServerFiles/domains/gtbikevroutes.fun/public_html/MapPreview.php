@@ -132,6 +132,7 @@
 		const elvFlColorSatl = "#707070"; // color of the graph fill in elevation chart
 		const elvBgColorSatl = "#404040"; // color of the background in elevation chart
 		const elAniR = 5;
+		const minLineWidth = 0.25;
 
 		const aniframes = 243; // number of frames to display in animation
 	
@@ -654,6 +655,7 @@
 
 	// dynamic line sizing here :)
 		mpLineWidth = (zoomfactorxy*-0.4)+4.5;
+		if(mpLineWidth<minLineWidth){mpLineWidth=minLineWidth};
 		mpAniR = mpLineWidth*2.25;
 
 	//  *** ANALYZE DATASET COMPLETE ***

@@ -37,10 +37,10 @@ SELECT
     'Nestor Matas (Makinolo)',
     '',
     'Gravel',
-    8.9,
-    5.5,
-	14,
-    45,
+    14.00,
+    8.70,
+	206,
+    677,
     'One of the routes included in the GTBikeV mod by default',
     NOW()
 UNION ALL SELECT
@@ -59,10 +59,10 @@ UNION ALL SELECT
     'András Beck',
     '',
     'Road',
-    0,
-    0,
-	0,
-    0,
+    7.0,
+    4.4,
+	123,
+    406,
     'One of the routes included in the GTBikeV mod by default',
     NOW()
 UNION ALL SELECT
@@ -70,10 +70,10 @@ UNION ALL SELECT
     'András Beck',
     '',
     'Road',
-    0,
-    0,
-	0,
-    0,
+    1.4,
+    0.9,
+	10,
+    32,
     'One of the routes included in the GTBikeV mod by default',
     NOW()
 UNION ALL SELECT
@@ -83,8 +83,8 @@ UNION ALL SELECT
     'Road',
     30.1,
     18.7,
-	22,
-    73,
+	500,
+    1700,
     'One of the routes included in the GTBikeV mod by default',
     NOW()
 
