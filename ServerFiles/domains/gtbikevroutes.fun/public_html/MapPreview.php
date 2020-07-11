@@ -14,11 +14,11 @@
 </head> 
 <body>
 <div id="hiddenContainer">
-	<input type="file" id="xmlfile"></input>
 	<button onclick="clkImpMet()" id="btnImpMet">Imperial/Metric switch</button>
 	<button onclick="clkTmDst()" id="btnTmDst">Time/Distance switch</button>
 	<button onclick="clkScrSht()" id="btnScrSht">Take Screenshot</button> 
-	<br><div id="warntext">***NOTICE***: If loading multiple files, the auto-zoom-pan looks neat but starts to lose accuracy.  Troubleshooting --- meanwhile just refresh (F5) and reload your file to get zoom back in alignment.</div>
+	<input type="file" id="xmlfile"></input>
+	<br><div id="warntext"></div>
 </div>
 <div id="main">
 <div id="canvasContainer">
@@ -138,15 +138,29 @@
 		const initialTransY = 0;
 	
 	// variables
-		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY;
+		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit;
 	
+		EasyFit = window.easyFit.default;
+		EFreader = new FileReader();
+		inEasyFit = new EasyFit({
+			force: true,
+			speedUnit: 'km/h',
+			lengthUnit: 'km',
+			temperatureUnit: 'celcius',
+			elapsedRecordField: true,
+			mode: 'list'
+		});
 	// array variables:
 		let xarray = []; 
 		let yarray = []; 
 		let zarray = []; 
 		let tarray = []; 
 		let darray = []; // new array for cumulative distance
-		let iarray = []; // future use: Instead of just using the "t" array, build an index array based on either t or cumulative distance
+		let iarray = []; // Instead of just using the "t" array, build an index array based on either t or cumulative distance
+		
+		let hrmArray = [];
+		let cadArray = [];
+		let pwrArray = [];
 		
 		// now these arrays are for animated zoom/translate:
 		let aniZ = [];
@@ -374,24 +388,25 @@
 	// if no file is passed as parameters, the user file button is enabled.
 	//  This function is triggered when a file is loaded.
 		$("#xmlfile").change(function(e){
+			var hfbtn = document.getElementById("xmlfile")
+			hfbtn.style.display = "none";
 			if (this.value.substring(this.value.length-3,this.value.length).toUpperCase() == "FIT") {
-				actDocType = 1;
 				fitFileLoad(this.files[0]);
 			} else if (this.value.substring(this.value.length-3,this.value.length).toUpperCase() == "GPX") {
 				var selectedFile = document.getElementById("xmlfile").files[0];
 				//You could insert a check here to ensure proper file type
-				var reader = new FileReader();
-				reader.onload = function(e){
+				var xmreader = new FileReader();
+				xmreader.onload = function(e){
 					readXml=e.target.result;
 					var parser = new DOMParser();
 					if(fileLoaded === 0) {
 						actDocType = 2;
 						xmlDoc = parser.parseFromString(readXml, "application/xml");
+						fileLoaded = 1;
 						processDoc();
-						fileLoaded === 1;
 					};
 				}
-				reader.readAsText(selectedFile);
+				xmreader.readAsText(selectedFile);
 			};
 		});
 
@@ -409,8 +424,8 @@
 					if(fileLoaded === 0) {
 						actDocType = 2;
 						xmlDoc = xhttp.responseXML;
+						fileLoaded = 1;
 						processDoc();
-						fileLoaded === 1;
 					};
 				}
 			}
@@ -432,20 +447,9 @@
 
 
 
-			var EasyFit = window.easyFit.default;
-			var reader = new FileReader();
-			var inEasyFit = new EasyFit({
-				force: true,
-				speedUnit: 'km/h',
-				lengthUnit: 'km',
-				temperatureUnit: 'celcius',
-				elapsedRecordField: true,
-				mode: 'list'
-			});
-
 
 		function fitFileLoad(file) { // file is a blob.  This interprets it into an object and hands it to processor.
-			reader.onloadend = function() {
+			EFreader.onloadend = function() {
 				// Create a EasyFit instance (options argument is optional)
 
 				inEasyFit.parse(this.result, function (error, data) {
@@ -455,13 +459,13 @@
 						if(fileLoaded === 0) {
 							actDocType = 1;
 							easyFit = data.records;
+							fileLoaded = 1;
 							processDoc();
-							fileLoaded === 1;
 						};
 					}
 				});
 			};
-			reader.readAsArrayBuffer(file);
+			EFreader.readAsArrayBuffer(file);
 		}
 
 
@@ -472,6 +476,9 @@
 			tarray = []; 
 			darray = [];
 			iarray = [];
+			hrmArray = [];
+			cadArray = [];
+			pwrArray = [];
 			cmlDist = 0;
 			cmlTime = 0;
 			cmlElev = 0;
@@ -495,12 +502,24 @@
 					if(thisLat>180){thisLat=thisLat-360;}; // encoding format thing
 					thisElev=(easyFit[i].altitude-1)*1000;
 					thisTimestamp=easyFit[i].timestamp;
+					if(easyFit[i].heart_rate) {thisHRM=easyFit[i].heart_rate} else {thisHRM=0};
+					if(easyFit[i].cadence) {thisCAD=easyFit[i].cadence} else {thisCAD=0};
+					if(easyFit[i].power) {thisPWR=easyFit[i].power} else {thisPWR=0};
+
 				} else if(actDocType == 2) {
+
 					thisLon=(x[i].getAttribute("lon") *1);
 					thisLat=(x[i].getAttribute("lat") *1);
 					thisElev=(x[i].getElementsByTagName("ele")[0].childNodes[0].nodeValue *1);
 					// for time convert from standardized text into time value and preserve in var
 					thisTimestamp = new Date(x[i].getElementsByTagName("time")[0].childNodes[0].nodeValue);
+
+					if(x[i].getElementsByTagName("power")[0]) {thisPWR=(x[i].getElementsByTagName("power")[0].childNodes[0].nodeValue *1)} else {thisPWR=0};
+
+					if(x[i].getElementsByTagName("gpxdata:hr")[0]) {thisHRM=(x[i].getElementsByTagName("gpxdata:hr")[0].childNodes[0].nodeValue *1)} else {thisHRM=0};
+
+					if(x[i].getElementsByTagName("gpxdata:cadence")[0]) {thisCAD=(x[i].getElementsByTagName("gpxdata:cadence")[0].childNodes[0].nodeValue *1)} else {thisCAD=0};
+
 				}
 				if(i > 0) { // first iteration: Initialize to zero.
 					// thereafter, calculate the difference and add too the cumulative values.
@@ -523,7 +542,9 @@
 				zarray[i]=thisElev;
 				tarray[i]=cmlTime;
 				darray[i]=cmlDist;
-
+				hrmArray[i]=thisHRM;
+				cadArray[i]=thisCAD;
+				pwrArray[i]=thisPWR;
 
 				if(elex === "d") {
 					iarray[i]=cmlDist; 
@@ -539,6 +560,16 @@
 				if(zarray[i] > zhilim) {zarray[i] = zhilim;};
 				if(zarray[i] < zlolim) {zarray[i] = zlolim;};
 			}
+	
+	
+	// would be nice to implement these in a graph at some point :) 
+	// probably just for ride preview, not for route. dynhidden canvas below?
+	// oh yeah, could even dyn-hide-expose if the file has the data.
+			console.log(hrmArray);
+			console.log(cadArray);
+			console.log(pwrArray);
+	// ************************************************************
+
 			processData();
 		}
 
@@ -576,7 +607,7 @@
 				console.log("not logging empty");
 			} else {
 				document.getElementById("frmGPX").src = 'SubmitGPXData.php?route='+urlParams.get('route')+'&dist='+cmlDist+'&asc='+cmlElev+'&desc='+cmlDesc;
-				console.log("just tried to submit.  Route = "+urlParams.get('route')+" dist = "+cmlDist+" asc = "+cmlElev+" desc = "+cmlDesc);
+				console.log("just tried to submit GPX/Fit data back to db.  Route = "+urlParams.get('route')+" dist = "+cmlDist+" asc = "+cmlElev+" desc = "+cmlDesc);
 			};
 
 			// convert from default metric values to imperial as needed.
@@ -641,40 +672,24 @@
 //			if(lastZoom == 1 && lastTransX == 0 && lastTransY == 0) {
 			zFrames = 60;
 			for (i = 0; i <= zFrames; i++) { 
-/*				if(i<=45) {
-					aniZ[i] = lastZoom+(((initialZoom-lastZoom)/45)*i);
-					aniTX[i] = lastTransX+(((initialTransX-lastTransX)/45)*i);
-					aniTY[i] = lastTransY+(((initialTransY-lastTransY)/45)*i);
-				} else {
-					aniZ[i] = initialZoom+(((zoomfactorxy-initialZoom)/45)*(i-45));
-					aniTX[i] = initialTransX+(((translatefactorx-initialTransX)/45)*(i-45));
-					aniTY[i] = initialTransY+(((translatefactory-initialTransY)/45)*(i-45));
-				}
-*/
 					aniZ[i] = lastZoom+(((zoomfactorxy-lastZoom)/60)*i);
 					aniTX[i] = lastTransX+(((translatefactorx-lastTransX)/60)*i);
 					aniTY[i] = lastTransY+(((translatefactory-lastTransY)/60)*i);
 			}
-			console.log("Animated zoom calculations - zcount: "+zCount+" zframes: "+zFrames);
-			console.log("lastZoom: "+lastZoom+" zoomfactorxy: "+zoomfactorxy+" and the array:");
-			console.log(aniZ);
-			console.log("lastTransX: "+lastTransX+" translatefactorx: "+translatefactorx+" and the array:");
-			console.log(aniTX);
-			console.log("lastTransY: "+lastTransY+" translatefactory: "+translatefactory+" and the array:");
-			console.log(aniTY);
-			console.log("data dump complete.");
 
-	// dynamic line sizing here :)
-		mpLineWidth = (zoomfactorxy*-0.4)+4.5;
-		if(mpLineWidth<minLineWidth){mpLineWidth=minLineWidth};
-		mpAniR = mpLineWidth*2.25;
+		// dynamic line sizing here :)
+			mpLineWidth = (zoomfactorxy*-0.4)+4.5;
+			if(mpLineWidth<minLineWidth){mpLineWidth=minLineWidth};
+			mpAniR = mpLineWidth*2.25;
 
-	//  *** ANALYZE DATASET COMPLETE ***
-	// here's where we confirm both xml and image are done, and if so, start the drawings.
+		//  *** ANALYZE DATASET COMPLETE ***
+		// here's where we confirm both xml and image are done, and if so, start the drawings.
 			// initially thought this was a bit klunky, but I think it works well here.
 			xmlLoaded = 1;
 			if(imgLoaded === 1 && xmlLoaded === 1) {
 				var thm = drawLoop();
+				fileLoaded = 0;
+				// reset for further file loads if needed
 			};
 		};
 		
@@ -698,6 +713,8 @@
 	// executed any time both image and gpx loads are completed (when one completes, it confirms the other and runs this if true)
 		function drawLoop(e) {
 			if(currAniIx == 0 && zCount == 0) {
+				zAniRun = 1;
+				zRtRun = 0;
 				window.requestAnimationFrame(drawZoom);
 			};
 		}
@@ -712,11 +729,12 @@
 			ctx.scale(aniZ[zCount], aniZ[zCount]);  // same zoom factor to avoid weird aspect ratios
 			ctx.drawImage(img, 0, 0);
 			
-			console.log("Animated zooom frame: "+zCount+" --zoom level: "+aniZ[zCount]+" --tx: "+aniTX[zCount]+" --ty: "+aniTY[zCount]);
-
 			zCount += 1;
-			if( zCount > zFrames ) {
+			if( zCount > zFrames || zAniRun == 0) {
 				zCount= 0; // and we're done with anim.
+				zAniRun = 0;
+				zRtRun = 1;
+				currAniIx = 0;
 				window.requestAnimationFrame(drawMapAndElv);
 			}
 			else {
@@ -846,10 +864,14 @@
 			elvctx.fillText(link3Text, link3X+textoffsetx, link3Y+textoffsety);
 			elvctx.stroke();
 
+
 			// and monitor, run the below functions to determine mouse location and respond to clicks
 			currAniIx += 1;
-			if( currAniIx >= aniframes ) {
+			if( currAniIx > aniframes || zRtRun == 0) {
 				currAniIx = 0; // and we're done with anim.
+				zRtRun=0;
+				var hfbtn = document.getElementById("xmlfile")
+				hfbtn.style.display = "block";
 			}
 			else {
 				window.requestAnimationFrame(drawMapAndElv); // call itself again when finished to continue animating.

@@ -3,3 +3,5 @@ ServerFiles/domains/gtbikevroutes.fun/dist/binary.js
 ServerFiles/domains/gtbikevroutes.fun/dist/easy-fit.js
 ServerFiles/domains/gtbikevroutes.fun/dist/fit.js
 ServerFiles/domains/gtbikevroutes.fun/dist/messages.js
+ServerFiles/domains/gtbikevroutes.fun/public_html/gpx/SAMPLE_FULL_DETAILS_GPX.gpx
+ServerFiles/domains/gtbikevroutes.fun/public_html/gpx/SAMPLE_FULL_DETAILS_FIT.fit
