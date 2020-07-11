@@ -640,8 +640,7 @@
 			zCount = 0;
 //			if(lastZoom == 1 && lastTransX == 0 && lastTransY == 0) {
 			zFrames = 60;
-			console.log("Prepping calc - zcount: "+zCount+" zframes: "+zFrames+"lastZoom: "+lastZoom+" initialZoom: "+initialZoom+"zoomfactorxy: "+zoomfactorxy);
-			for (i = 0; i < zFrames; i++) { 
+			for (i = 0; i <= zFrames; i++) { 
 /*				if(i<=45) {
 					aniZ[i] = lastZoom+(((initialZoom-lastZoom)/45)*i);
 					aniTX[i] = lastTransX+(((initialTransX-lastTransX)/45)*i);
@@ -656,12 +655,14 @@
 					aniTX[i] = lastTransX+(((translatefactorx-lastTransX)/60)*i);
 					aniTY[i] = lastTransY+(((translatefactory-lastTransY)/60)*i);
 			}
+			console.log("Animated zoom calculations - zcount: "+zCount+" zframes: "+zFrames);
+			console.log("lastZoom: "+lastZoom+" zoomfactorxy: "+zoomfactorxy+" and the array:");
 			console.log(aniZ);
+			console.log("lastTransX: "+lastTransX+" translatefactorx: "+translatefactorx+" and the array:");
 			console.log(aniTX);
+			console.log("lastTransY: "+lastTransY+" translatefactory: "+translatefactory+" and the array:");
 			console.log(aniTY);
-			
-
-
+			console.log("data dump complete.");
 
 	// dynamic line sizing here :)
 		mpLineWidth = (zoomfactorxy*-0.4)+4.5;
@@ -683,7 +684,13 @@
 		function resetCanvas(inCvs)
 		{
 			var inCtx = inCvs.getContext("2d");
-			inCtx.setTransform(1, 0, 0, 1, 0, 0);
+			inCtx.setTransform(1, 0, 0, 1, 0, 0); // zoom is not absolute, but relative
+			// so to zoom from 1.2 to 1.3, for example, I can't just set zoom to 1.3...
+			// the resulting zoom would be 1.2 * 1.3 = 1.56...
+			// so to get to 1.3 there would have to be something like calculating zooom = (1.3/1.2=1.0833333) -- 
+			// this works because 1.2 * 1.088333333 is 1.3, target zoom.
+			//  BUT -- that math has been dropped because it's faster just to clear the transform matrix and 
+			//  set zoom = 1.3 - no math needed :)
 			inCtx.clearRect(0,0, inCvs.width, inCvs.height);
 		};
 
@@ -705,10 +712,10 @@
 			ctx.scale(aniZ[zCount], aniZ[zCount]);  // same zoom factor to avoid weird aspect ratios
 			ctx.drawImage(img, 0, 0);
 			
-			console.log("Animated zooom frame "+zCount+"zoom level "+aniZ[zCount]);
+			console.log("Animated zooom frame: "+zCount+" --zoom level: "+aniZ[zCount]+" --tx: "+aniTX[zCount]+" --ty: "+aniTY[zCount]);
 
 			zCount += 1;
-			if( zCount >= zFrames ) {
+			if( zCount > zFrames ) {
 				zCount= 0; // and we're done with anim.
 				window.requestAnimationFrame(drawMapAndElv);
 			}
@@ -724,17 +731,6 @@
 	// executed first when the loop is initialized by drawloop
 	//  then it then re-runs itself each frame until frame limit is complete (the number of frames to animate).
 		function drawMapAndElv(e) { 
-
-	//  *** MAP CANVAS HANDLING ***
-			// clear for re-draw, set up, and ensure foreground
-/*			resetCanvas(mcanvas);
-			ctx = mcanvas.getContext("2d"); // map canvas context
-			ctx.globalCompositeOperation = 'source-over';
-			// zoom and pan!
-			ctx.translate(translatefactorx,translatefactory);
-			ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
-			ctx.drawImage(img, 0, 0);
-*/
 
 			ctx.drawImage(img, 0, 0);
 			// now prep & draw route;
@@ -832,7 +828,7 @@
 
 
 
-	//  *** BUTTON CANVAS HANDLING *** -- handled here since nothing ever really happens to them.
+	//  *** BUTTON CANVAS HANDLING *** -- merged with elevation canvas to make formatting easier.
 			// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
 			elvctx.fillStyle=btnAtlsColr;
 			elvctx.fillRect(link1X,link1Y,link1Width,link1Height);
