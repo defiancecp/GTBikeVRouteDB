@@ -125,8 +125,8 @@
                 echo '<table id="tblSingle" class="table table-dark table-striped">';// table opener 
 
 				echo '<tr id="rowSortFilter">';
-				echo '<th colspan="5" id="colInRoute"></th>';
 				echo '<th id="retCell"><a class="link" href="default.php'.$mettag.'">Return<img id="stbkup" src="images/bkup.png" /></a></th>';
+				echo '<th colspan="5" id="colInRoute"></th>';
 				echo '<th id="metSwCell"><a href="default.php'.$metswtag.$routetag.'"><img id="metSwImg" src="'.$metsw.'"/></a>'.$met.'</th></tr>';
 
 			// header row
