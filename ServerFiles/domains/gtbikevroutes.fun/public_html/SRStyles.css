@@ -1,0 +1,26 @@
+body { /* body */
+	background-color:transparent;
+	color:white;
+} 
+#myHref { /* sizing of the clickable link segments */
+	width:6px;
+	height:12px;
+	font-size:9;
+}
+#myImg { /* sizing of the half-star images */
+	width:6px;
+	height:12px;
+}
+#starContainer { /* formatting and sizing of the star container 
+  (putting them in a locked-size-and-shape container is an easy way to ensure the stars dont shuffle around) */
+	height:12px;
+	width:88px; /* this width allows all 5 stars and up to 4 digit count of submissions.  More and it'll need expanding and reformatting around it. */
+	padding-left:0;
+	padding-right:0;
+	margin-left:0;
+	margin-right:0
+}
+#smallTxt { /* formatting for post-star text */
+	color:#a0b0a8;
+	font-size:10;
+}

@@ -1,13 +1,14 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="SRStyles.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="SRStyles.css">
 </head> 
-<body style="background-color: transparent; color:white">
+<body>
     <?php
+	/* Basically the straight HTML does nothing but load the stylesheet and required libraries (mostly for boostrap) */
     include('/home/u544302174/dbscripts/dbconfig.php');
     include('/home/u544302174/dbscripts/getip.php');
     // input parameters
@@ -76,11 +77,11 @@
         }
 
         //now that the right stars are mapped into the ordered array, cycle through it to display the link-driven stars.
-        echo '<div class="container" height="12px" width="60px">';
+        echo '<div id="starContainer" class="container">';
 		foreach ($img as $key => $value) {
-            echo '<a href=SubmitRating.php?route='.$route.'&rating='.($key*0.5).'&submit=TRUE&ratingcount='.$ratingcount.'><img src="'.$value.'" style=width:6px;height:12px;"></a>';
+            echo '<a id="myHref" href=SubmitRating.php?route='.$route.'&rating='.($key*0.5).'&submit=TRUE&ratingcount='.$ratingcount.'><img id="myImg" src="'.$value.'"></a>';
         }
-        echo "<small style='color:#a0b0a8;'>(".$ratingcount.")</small>";
+        echo '<small id="smallTxt">('.$ratingcount.')</small>';
         echo '</div>';
 
         // This is submitting: if submit parameter isn't set, skip and leave.

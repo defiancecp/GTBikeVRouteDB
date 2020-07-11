@@ -1,6 +1,71 @@
-canvas {
+
+body { /* */
+	background-color: transparent;
+	color:white;
+	vertical-align: top;
+	display: block;
+}
+
+canvas { /* */
 	vertical-align: top;
     border-style: solid;
     border-width: 1px;
     border-color: #222 #222 #222;
 }
+
+#hiddenContainer {
+	/* hidden container where I put user interface buttons that aren't part of 
+	normal route preview functionality.  If no route is passed, it falls back into
+	user direct mode, exposing the buttons and file loading form. */
+	display:none;
+	width:100%;
+}
+
+#xmlfile { /* file input form */
+	width=20%;
+}
+
+#btnImpMet { /* Imperial/Metric toggle button */
+	width=20%;
+}
+
+#btnTmDst { /* Time/Distance axis toggle button */
+	width=20%;
+}
+
+#btnScrSht { /* Screenshot button */
+	width=20%;
+}
+
+#main { /* outer container for the canvases */
+}
+
+#canvasContainer { /* inner container for canvases */
+	width:100%;
+}
+
+#elv { /* elevation profile canvas */
+	 width:1214px;
+	 height:62px;
+}
+
+#btn { /* button canvas */
+	 width:62px;
+	 height:62px;
+}
+
+#bmap { /* map canvas */
+	 width:1278px;
+	 height:654px;
+}
+
+#scrContainer { /* screenshot container */
+	 display:none;
+}
+
+#scrCanvas { /* screenshot canvas */
+	 width:1280;
+	 height:720;
+}
+
+

@@ -72,8 +72,8 @@ UNION ALL SELECT
     'Road',
     1.4,
     0.9,
-	10,
-    32,
+	6.4,
+    21,
     'One of the routes included in the GTBikeV mod by default',
     NOW()
 UNION ALL SELECT

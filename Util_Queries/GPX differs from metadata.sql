@@ -1,10 +1,11 @@
 use u544302174_GTBikeVRoutes;
 
--- Possible future enhancement: Could search for metric/imperial mismatches
+-- Possible future enhancement: Could search for metric/imperial mismatches   
 WITH agGPXLogs AS (
 	SELECT
 		gl.RouteKey,
         count(1) as SubmissionCount,
+        max(gl.SubmissionDateTime) as LastSubmission,
 		Avg(gl.DistanceKM) avgDistanceKM,
 		Max(gl.DistanceKM) maxDistanceKM,
 		Min(gl.DistanceKM) minDistanceKM,
@@ -26,6 +27,7 @@ SELECT
 	r.RouteName,
 	abs(gl.avgDistanceKM - r.DistanceKM)  as DistDeviation,
 	abs(gl.avgElevM - r.ElevationM)  as ElevDeviation,
+    gl.LastSubmission,
 
     r.DistanceKM as ReportedDistanceKM,
     gl.avgDistanceKM as GPXDistanceKM,
@@ -40,6 +42,6 @@ FROM
 	INNER JOIN agGPXLogs gl
 		ON r.RouteKey = gl.RouteKey
 ORDER BY
-	abs(gl.avgDistanceKM - r.DistanceKM) desc -- switch to this to focus on distance deviations
-	-- abs(gl.avgElevM - r.ElevationM) desc -- switch to this to focus on elevation deviations
+	-- abs(gl.avgDistanceKM - r.DistanceKM) desc -- switch to this to focus on distance deviations
+	abs(gl.avgElevM - r.ElevationM) desc -- switch to this to focus on elevation deviations
 	

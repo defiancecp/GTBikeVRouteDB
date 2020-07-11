@@ -2,7 +2,6 @@
 <html>
 <head>
 	<meta charset="utf-8" http-equiv="Content-Type" name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="MPStyles.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -10,27 +9,28 @@
 	<script src="html2canvas.min.js"></script>
 	<script src="FileSaver.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="easy-fit.bundle.js"></script>
+	<link rel="stylesheet" href="MPStyles.css">
 </head> 
-<body style="background-color: transparent; color:white; vertical-align: top; display: block" >
-<div id="hiddenContainer" style="display:none" width=100%>
-	<input type="file" id="xmlfile" width=20%></input>
-	<button onclick="clkImpMet()" id="btnImpMet" width=20%>Imperial/Metric switch</button>
-	<button onclick="clkTmDst()" id="btnTmDst" width=20%>Time/Distance switch</button>
-	<button onclick="clkScrSht()" id="btnScrSht" width=20%>Take Screenshot</button> 
+<body>
+<div id="hiddenContainer">
+	<input type="file" id="xmlfile"></input>
+	<button onclick="clkImpMet()" id="btnImpMet">Imperial/Metric switch</button>
+	<button onclick="clkTmDst()" id="btnTmDst">Time/Distance switch</button>
+	<button onclick="clkScrSht()" id="btnScrSht">Take Screenshot</button> 
 	<br>
 </div>
 <div id="main">
-<div id="canvasContainer" width=100%>
+<div id="canvasContainer">
 	<canvas id="elv" width="1214" height="62">
 	</canvas><canvas id="btn" width="62" height="62">
 	</canvas><canvas id="bmap" width="1278" height="654" >
 	</canvas>
 </div>
 </div>
-<div id="scrContainer" style="display:none"> 
-	<canvas id="scrCanvas" width="1280" height="720"></canvas><iframe src = 'SubmitGPXData.php' id="frmGPX" ></iframe>
+<div id="scrContainer"> 
+	<canvas id="scrCanvas" ></canvas><iframe src = 'SubmitGPXData.php' id="frmGPX" ></iframe>
 </div>
-    <script type="text/javascript" src="easy-fit.bundle.js"></script>
 <script>
 
 		// set up a bunch of constant definitions at the outset to simplify 
@@ -137,7 +137,7 @@
 		const aniframes = 243; // number of frames to display in animation
 	
 	// variables
-		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,docType;
+		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit;
 	
 	// array variables:
 		let xarray = []; 
@@ -146,26 +146,26 @@
 		let tarray = []; 
 		let darray = []; // new array for cumulative distance
 		let iarray = []; // future use: Instead of just using the "t" array, build an index array based on either t or cumulative distance
-		// based on user selection.
+	// based on zoom level, but initialize at these values
 		mpLineWidth = 1;
 		mpAniR = 5;
 
-		// initializing some containers and variables that will be referenced by triggered functions so must be initialized globally
+	// initializing some containers and variables that will be referenced by triggered functions so must be initialized globally
 		img = new Image();   // Create new img element
-		xhttp = new XMLHttpRequest();
-		checkFIT = new XMLHttpRequest();
-		xmlLoaded = 0;
-		imgLoaded = 0;
-		currAniIx = 0;
-		xmapoffset = 0;
-		ymapoffset = 0;
-		fileLoaded = 0;
+		xhttp = new XMLHttpRequest(); //handler for gpx files loaded from server
+		checkFIT = new XMLHttpRequest(); // handler fir fit files loaded from server
+		xmlLoaded = 0; // indicates that activity data is fully processed for display
+		imgLoaded = 0; // indicator that the map image has been loaded and is ready to display.
+		currAniIx = 0; // animation frame counter
+		xmapoffset = 0; // for map centering: offset
+		ymapoffset = 0; // for map centering: offset
+		fileLoaded = 0; // indicator that an activity file has been loaded and is ready for processing
 		mcanvas = document.getElementById("bmap"); // map canvas
 		elvc = document.getElementById("elv"); // elevation profile canvas
 		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
 		isLink2 = false; // indicates whether mouse position currently hovering is over link 2
 		isLink3 = false; // indicates whether mouse position currently hovering is over link 3
-		doctype = 0; // 1- fit 2- gpx
+		actDocType = 0; // 1- fit 2- gpx
 
 		
 	/* -- list of uninitialized variables and their usage:
@@ -207,7 +207,7 @@
 	// now function defines.
 
 
-	// To monitor for clicks on the map change tab.  
+	// To monitor for clicks on the map change buttons canvas.
 	// credit for much of this part of code: http://www.authorcode.com/how-to-create-hyper-link-on-the-canvas-in-html5/
 	// modified for canvas-relevant position rather than absolute
 	//  This is executed every time mouse movement occurs over the button canvas (event handler)
@@ -308,7 +308,14 @@
 	// this switches from imperial to metric and triggers re-calculating.
 	// executed when the user clicks the button (onclick event)
 		function clkImpMet() {
-			if (met === "Metric") {met = "Imperial"} else {met = "Metric"};
+			if (met === "Metric") {
+				met = "Imperial"
+			} else {
+				met = "Metric"
+				cmlElev = cmlElev/meters2feet; // total ascent feet to meters
+				cmlDesc = cmlDesc/meters2feet; // total descent feet to meters
+				cmlDist = cmlDist/km2mi; // total distance mi to km
+			};
 			processData();
 		}
 
@@ -316,7 +323,7 @@
 	// executed when the user clicks the button (onclick event)
 		function clkTmDst() {
 			if (elex === "d") {elex = "t"} else {elex = "d"};
-			processData();
+			processDoc(); // need to reprocess the whole doc since the axis need re-indexed
 		}
 		
 		
@@ -351,19 +358,19 @@
 	//  This function is triggered when a file is loaded.
 		$("#xmlfile").change(function(e){
 			if (this.value.substring(this.value.length-3,this.value.length).toUpperCase() == "FIT") {
-				docType = 1;
+				actDocType = 1;
 				fitFileLoad(this.files[0]);
 			} else if (this.value.substring(this.value.length-3,this.value.length).toUpperCase() == "GPX") {
-				docType = 2;
 				var selectedFile = document.getElementById("xmlfile").files[0];
 				//You could insert a check here to ensure proper file type
 				var reader = new FileReader();
 				reader.onload = function(e){
 					readXml=e.target.result;
 					var parser = new DOMParser();
-					xmlDoc = parser.parseFromString(readXml, "application/xml");
 					if(fileLoaded === 0) {
-						processGPXDoc();
+						actDocType = 2;
+						xmlDoc = parser.parseFromString(readXml, "application/xml");
+						processDoc();
 						fileLoaded === 1;
 					};
 				}
@@ -383,14 +390,14 @@
 					// javascript with the libraries I'm using makes XML pretty effortless.
 					// so -- Pick out all the trkpt items and extract specfiic attributes:
 					if(fileLoaded === 0) {
-						docType = 2;
+						actDocType = 2;
 						xmlDoc = xhttp.responseXML;
-						processGPXDoc();
+						processDoc();
 						fileLoaded === 1;
 					};
 				}
 			}
-		};
+		}; // runs when a gpx file is loaded from the server, just xml's it and starts the gpx processor.
 
 		checkFIT.onload = function () {
 			if (this.status === 404) {
@@ -404,15 +411,14 @@
 					fitFileLoad(checkFIT.response);
 				}
 			}
-		};
+		}; // runs when a fit file is loaded from the server, just xml's it and starts the fit processor.
 
-		function fitFileLoad(file) { // file is a blob
+		function fitFileLoad(file) { // file is a blob.  This interprets it into an object and hands it to processor.
 			var EasyFit = window.easyFit.default;
 			var reader = new FileReader();
 			reader.onloadend = function() {
-
 				// Create a EasyFit instance (options argument is optional)
-				var easyFit = new EasyFit({
+				var inEasyFit = new EasyFit({
 					force: true,
 					speedUnit: 'km/h',
 					lengthUnit: 'km',
@@ -421,47 +427,61 @@
 					mode: 'list'
 				});
 
-				easyFit.parse(this.result, function (error, data) {
+				inEasyFit.parse(this.result, function (error, data) {
 					if (error) {
 						console.log(error);
 					} else {
 						if(fileLoaded === 0) {
-							docType = 1;
-							xmlDoc = xhttp.responseXML;
-							processFITDoc(data.records);
+							actDocType = 1;
+							easyFit = data.records;
+							processDoc();
 							fileLoaded === 1;
 						};
 					}
 				});
 			};
 			reader.readAsArrayBuffer(file);
-
 		}
 
-		function processFITDoc(easyFit) {
+
+		function processDoc() { // handler to take the elements out of the object and load them into array.
 			xarray = []; 
 			yarray = []; 
 			zarray = []; 
 			tarray = []; 
 			darray = [];
 			iarray = [];
-			for (i = 0; i < easyFit.length; i++) { 
-				// load values from xml formatted gpx file into array, store in variable first for some stuff
-				thisLon=easyFit[i].position_long;
-				if(thisLon>180){thisLon=thisLon-360;}; // encoding format thing
-				thisLat=easyFit[i].position_lat;
-				if(thisLat>180){thisLat=thisLat-360;}; // encoding format thing
-				thisElev=(easyFit[i].altitude-1)*1000;
-				thisTimestamp=easyFit[i].timestamp;
-			
-				// for time convert from standardized text into time value and preserve in var
+			cmlDist = 0;
+			cmlTime = 0;
+			cmlElev = 0;
+			cmlDesc = 0;
+			lastTimestamp = "";
+			lastElev = "";
+			lastLat = "";
+			lastLon = "";
 
-				if(i===0) { // first iteration: Initialize to zero.
-					cmlDist = 0;
-					cmlTime = 0;
-					cmlElev = 0;
-					cmlDesc = 0;
-				} else {
+			if(actDocType == 1){
+				var lencount = easyFit.length;
+			} else if (actDocType == 2) {
+				var x = xmlDoc.getElementsByTagName("trkpt");
+				var lencount = x.length;
+			};
+			for (i = 0; i < lencount; i++) { 
+				if(actDocType == 1) {
+					thisLon=easyFit[i].position_long;
+					if(thisLon>180){thisLon=thisLon-360;}; // encoding format thing
+					thisLat=easyFit[i].position_lat;
+					if(thisLat>180){thisLat=thisLat-360;}; // encoding format thing
+					thisElev=(easyFit[i].altitude-1)*1000;
+					thisTimestamp=easyFit[i].timestamp;
+				} else if(actDocType == 2) {
+					thisLon=(x[i].getAttribute("lon") *1);
+					thisLat=(x[i].getAttribute("lat") *1);
+					thisElev=(x[i].getElementsByTagName("ele")[0].childNodes[0].nodeValue *1);
+					// for time convert from standardized text into time value and preserve in var
+					thisTimestamp = new Date(x[i].getElementsByTagName("time")[0].childNodes[0].nodeValue);
+				}
+				if(i > 0) { // first iteration: Initialize to zero.
 					// thereafter, calculate the difference and add too the cumulative values.
 					cmlTime=cmlTime+Math.abs(thisTimestamp-lastTimestamp);
 					if(thisElev>lastElev){
@@ -500,71 +520,7 @@
 			}
 			processData();
 		}
-				
 
-	// after file is loaded into xmlDoc, here's where we read it and process data:
-	//  executed by initial page load if route is passed, or by user loading of a file.	
-		function processGPXDoc() {
-			x = xmlDoc.getElementsByTagName("trkpt");
-			xarray = []; 
-			yarray = []; 
-			zarray = []; 
-			tarray = []; 
-			darray = [];
-			iarray = [];
-			for (i = 0; i < x.length; i++) { 
-
-				// load values from xml formatted gpx file into array, store in variable first for some stuff
-				thisLon=(x[i].getAttribute("lon") *1);
-				thisLat=(x[i].getAttribute("lat") *1);
-				thisElev=(x[i].getElementsByTagName("ele")[0].childNodes[0].nodeValue *1);
-				// for time convert from standardized text into time value and preserve in var
-				thisTimestamp = new Date(x[i].getElementsByTagName("time")[0].childNodes[0].nodeValue);
-
-				if(i===0) { // first iteration: Initialize to zero.
-					cmlDist = 0;
-					cmlTime = 0;
-					cmlElev = 0;
-					cmlDesc = 0;
-				} else {
-					// thereafter, calculate the difference and add too the cumulative values.
-					cmlTime=cmlTime+Math.abs(thisTimestamp-lastTimestamp);
-					if(thisElev>lastElev){
-						cmlElev=cmlElev+(thisElev-lastElev);
-					} else if(thisElev<lastElev) {
-						cmlDesc=cmlDesc+(lastElev-thisElev);
-					}
-					cmlDist = cmlDist + getDistanceFromLatLonInKm(lastLat,lastLon,thisLat,thisLon);
-				}
-				// then preserve current value as last in preparation for next cycle.
-				lastTimestamp = thisTimestamp;
-				lastElev = thisElev;
-				lastLat = thisLat;
-				lastLon = thisLon;
-
-				xarray[i]=(thisLon+(xoffset*1))*xfactor;
-				yarray[i]=(thisLat+(yoffset*1))*yfactor;
-				zarray[i]=thisElev;
-				tarray[i]=cmlTime;
-				darray[i]=cmlDist;
-
-
-				if(elex === "d") {
-					iarray[i]=cmlDist; 
-				}  else {
-					iarray[i]=cmlTime; 
-				};
-
-				// now impose sanity limits on values - just confirm they're not outside predefined limits.
-				if(xarray[i] > xhilim) {xarray[i] = xhilim;};
-				if(xarray[i] < xlolim) {xarray[i] = xlolim;};
-				if(yarray[i] > yhilim) {yarray[i] = yhilim;};
-				if(yarray[i] < ylolim) {yarray[i] = ylolim;};
-				if(zarray[i] > zhilim) {zarray[i] = zhilim;};
-				if(zarray[i] < zlolim) {zarray[i] = zlolim;};
-			}
-			processData();
-		}
 		
 		function processData() {
 	//  *** ANALYZE DATASET ***
@@ -611,7 +567,10 @@
 				cmlDist = cmlDist*km2mi; // total distance km to mi
 				elunit = "ft"; // update unit tags
 				dstunit = "mi";
-			}
+			} else {
+				elunit = "m"; // update unit tags
+				dstunit = "km";
+			};
 
 	// determine convesion for index into animation index (0-243 because 243 works with this width)
 			// intent is to display in ~4 seconds, so time equates to 16.67 milliseconds, ~60fps
@@ -929,7 +888,7 @@
 			btnctx.fillStyle=btnSatlColr;
 			btnctx.fillRect(0,43,63,21);
 			btnctx.stroke();
-
+			
 			// button labels
 			btnctx.fillStyle='rgb(0, 0, 0)';
 			btnctx.font = "12px Arial";
