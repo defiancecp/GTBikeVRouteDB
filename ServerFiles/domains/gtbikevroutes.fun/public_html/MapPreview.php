@@ -22,9 +22,11 @@
 </div>
 <div id="main">
 <div id="canvasContainer">
-	<canvas id="elv" width="1214" height="62">
-	</canvas><canvas id="btn" width="62" height="62">
-	</canvas><canvas id="bmap" width="1278" height="654" >
+	<div id="topCvsBar">
+		<canvas id="elv" width="1212px" height="62px">
+		</canvas><canvas id="btn" width="62px" height="62px">
+		</canvas></div>
+	<canvas id="bmap" width="1278" height="654" >
 	</canvas>
 </div>
 </div>
@@ -135,9 +137,12 @@
 		const minLineWidth = 0.25;
 
 		const aniframes = 243; // number of frames to display in animation
+		const initialZoom = 0.42;
+		const initialTransX = 0;
+		const initialTransY = 0;
 	
 	// variables
-		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit;
+		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY;
 	
 	// array variables:
 		let xarray = []; 
@@ -146,6 +151,20 @@
 		let tarray = []; 
 		let darray = []; // new array for cumulative distance
 		let iarray = []; // future use: Instead of just using the "t" array, build an index array based on either t or cumulative distance
+		
+		// now these arrays are for animated zoom/translate:
+		let aniZ = [];
+		let aniTX = [];
+		let aniTY = [];
+		zCount = 0;
+		zFrames = 60;
+		lastZoom = 1;
+		lastTransX = 0;
+		lastTransY = 0;
+		zoomfactorxy = initialZoom;
+		translatefactorx = initialTransX;
+		translatefactory = initialTransY;
+		
 	// based on zoom level, but initialize at these values
 		mpLineWidth = 1;
 		mpAniR = 5;
@@ -577,6 +596,10 @@
 			ifactor2 = 243/(Math.max.apply(null, iarray) - Math.min.apply(null, iarray));
 			ioffset2 = 0-(imin*ifactor2);
 			
+			lastZoom = zoomfactorxy;
+			lastTransX = translatefactorx;
+			lastTransY = translatefactory; 
+
 			// Now adjust to fit scales and zooms.
 			for (var i=0, len=xarray.length; i<len; i++) { 
 				zarray[i] = ((zarray[i]*1)+(zoffset2*1))*zfactor2;
@@ -610,6 +633,32 @@
 				ymapoffset = 0;
 				translatefactory = translatefactory + (655*.01) + ymapoffset;
 			}
+	
+			// now let's calculate the animated zoom sequence.
+			zCount = 0;
+//			if(lastZoom == 1 && lastTransX == 0 && lastTransY == 0) {
+			zFrames = 60;
+			console.log("Prepping calc - zcount: "+zCount+" zframes: "+zFrames+"lastZoom: "+lastZoom+" initialZoom: "+initialZoom+"zoomfactorxy: "+zoomfactorxy);
+			for (i = 0; i < zFrames; i++) { 
+/*				if(i<=45) {
+					aniZ[i] = lastZoom+(((initialZoom-lastZoom)/45)*i);
+					aniTX[i] = lastTransX+(((initialTransX-lastTransX)/45)*i);
+					aniTY[i] = lastTransY+(((initialTransY-lastTransY)/45)*i);
+				} else {
+					aniZ[i] = initialZoom+(((zoomfactorxy-initialZoom)/45)*(i-45));
+					aniTX[i] = initialTransX+(((translatefactorx-initialTransX)/45)*(i-45));
+					aniTY[i] = initialTransY+(((translatefactory-initialTransY)/45)*(i-45));
+				}
+*/
+					aniZ[i] = lastZoom+(((zoomfactorxy-lastZoom)/60)*i);
+					aniTX[i] = lastTransX+(((translatefactorx-lastTransX)/60)*i);
+					aniTY[i] = lastTransY+(((translatefactory-lastTransY)/60)*i);
+			}
+			console.log(aniZ);
+			console.log(aniTX);
+			console.log(aniTY);
+			
+
 
 
 	// dynamic line sizing here :)
@@ -639,11 +688,36 @@
 	// More of a loop initializer.  Name stuck after I changed things :) The 0 check is to prevent overlaps.
 	// executed any time both image and gpx loads are completed (when one completes, it confirms the other and runs this if true)
 		function drawLoop(e) {
-			if(currAniIx === 0) {
-				window.requestAnimationFrame(drawMapAndElv);
+			if(currAniIx == 0 && zCount == 0) {
+				window.requestAnimationFrame(drawZoom);
 			};
 		}
 		
+		function drawZoom(e) { 
+			
+			ctx = mcanvas.getContext("2d"); // map canvas context
+			ctx.globalCompositeOperation = 'source-over';
+			// zoom and pan!
+			resetCanvas(mcanvas);
+			ctx.translate(aniTX[zCount],aniTY[zCount]);
+			ctx.scale(aniZ[zCount], aniZ[zCount]);  // same zoom factor to avoid weird aspect ratios
+			ctx.drawImage(img, 0, 0);
+			
+			console.log("Animated zooom frame "+zCount+"zoom level "+aniZ[zCount]);
+
+			zCount += 1;
+			if( zCount >= zFrames ) {
+				zCount= 0; // and we're done with anim.
+				window.requestAnimationFrame(drawMapAndElv);
+			}
+			else {
+				window.requestAnimationFrame(drawZoom); // call itself again when finished to continue animating.
+				// at least until frames run out.
+				// each time it executes, it waits until the frame is ready and then draws.
+				// then executes itself again, unti the counter hits the aniframes (max).
+			};
+
+		}
 	// this is the function, run each frame, to draw the map and elevation profile.
 	// executed first when the loop is initialized by drawloop
 	//  then it then re-runs itself each frame until frame limit is complete (the number of frames to animate).
@@ -651,12 +725,15 @@
 
 	//  *** MAP CANVAS HANDLING ***
 			// clear for re-draw, set up, and ensure foreground
-			resetCanvas(mcanvas);
+/*			resetCanvas(mcanvas);
 			ctx = mcanvas.getContext("2d"); // map canvas context
 			ctx.globalCompositeOperation = 'source-over';
 			// zoom and pan!
 			ctx.translate(translatefactorx,translatefactory);
 			ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
+			ctx.drawImage(img, 0, 0);
+*/
+
 			ctx.drawImage(img, 0, 0);
 			// now prep & draw route;
 			ctx.beginPath();

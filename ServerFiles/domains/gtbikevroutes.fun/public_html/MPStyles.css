@@ -44,19 +44,24 @@ canvas { /* */
 	width:100%;
 }
 
-#elv { /* elevation profile canvas */
-	 width:1214px;
-	 height:62px;
+#topCvsBar {
+	width:1280px;
+	height:64px;
+	padding-left:0;
+	padding-right:0;
+	margin-left:0;
+	margin-right:0
+
+}
+
+
+#elv { /* elevation profile canvas  -- NOTE: CSS only sets canvas "box" so canvas size must be controlled in html. */
 }
 
 #btn { /* button canvas */
-	 width:62px;
-	 height:62px;
 }
 
 #bmap { /* map canvas */
-	 width:1278px;
-	 height:654px;
 }
 
 #scrContainer { /* screenshot container */
