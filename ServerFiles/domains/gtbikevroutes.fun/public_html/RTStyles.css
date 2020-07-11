@@ -1,4 +1,11 @@
-.topbanner {
+#topbanner {
+	background-image:url("images/gtbv_banr.jpg");
+	background-repeat: no-repeat;
+	background-size: 100% auto;
+	background-position: center; 
+}
+
+#topbanner {
 	background-image:url("images/gtbv_banr.jpg");
 	background-repeat: no-repeat;
 	background-size: 100% auto;
@@ -10,8 +17,41 @@
 	text-decoration: underline;
 } 
 
+body {
+	background-color:#49422D;
+}
+
+h1 {
+	color:#C0D0C8;
+}
+
 ::placeholder {
 	color: #A0B0A8;
+}
+
+#intro {
+	color:#C0D0C8;
+	font-size:10pt;
+}
+
+#smallMpIcn {
+	height:15px;
+}
+
+#tallDlIcn {
+	height:15px;
+}
+
+#metSwImg {
+	height:30px;
+}
+
+#grdMap {
+	height:15px;
+}
+
+#hdnCol {
+	display:none;
 }
 
 #tblSummary {
@@ -24,6 +64,14 @@
   width: 100%;
   border: 0px solid black;
   color:#a0b0a8;
+  
+}
+
+#linkIFrame {
+	height:20px;
+	width:94px;
+	background-color: transparent;
+	border:0px solid black;
 }
 
 #rowSortFilter {
@@ -35,8 +83,10 @@
 	font-size:10pt;
 	color:#C0D0C8;
 }
+
 #tblHeaderRow{
 	font-size:10pt;
+	color:#C0D0C8;
 }
 
 #colInRoute { 
@@ -64,6 +114,10 @@
 	font-size:0;
 }
 #metSwCell {
+	width:8%;
+	font-size:10pt;
+}
+#retCell {
 	width:8%;
 	font-size:10pt;
 }
@@ -119,7 +173,7 @@
 }
 #myRateMin {
 	background-color:#303030;
-	width:140px;
+	width:94px;
     height:35px;
     font-size:8pt;
 	color:#C0D0C8;
@@ -135,4 +189,17 @@
 	width:100%;
 }
 
+#mapRow {
+	height:100%;
+}
 
+#mapFrame {
+	width:1280px;
+	height:720px;
+	border:0px solid black;
+	background-color: transparent;
+}
+
+#stbkup {
+	height:20px;
+}
