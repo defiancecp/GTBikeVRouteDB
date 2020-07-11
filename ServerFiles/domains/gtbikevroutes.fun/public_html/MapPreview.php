@@ -18,17 +18,13 @@
 	<button onclick="clkImpMet()" id="btnImpMet">Imperial/Metric switch</button>
 	<button onclick="clkTmDst()" id="btnTmDst">Time/Distance switch</button>
 	<button onclick="clkScrSht()" id="btnScrSht">Take Screenshot</button> 
-	<br>
+	<br><div id="warntext">***NOTICE***: If loading multiple files, the auto-zoom-pan looks neat but starts to lose accuracy.  Troubleshooting --- meanwhile just refresh (F5) and reload your file to get zoom back in alignment.</div>
 </div>
 <div id="main">
 <div id="canvasContainer">
-	<div id="topCvsBar">
-		<canvas id="elv" width="1212px" height="62px">
-		</canvas><canvas id="btn" width="62px" height="62px">
-		</canvas></div>
-	<canvas id="bmap" width="1278" height="654" >
+	<canvas id="elv" width="1278" height="62">
+	</canvas><canvas id="bmap" width="1278" height="654" >
 	</canvas>
-</div>
 </div>
 <div id="scrContainer"> 
 	<canvas id="scrCanvas" ></canvas><iframe src = 'SubmitGPXData.php' id="frmGPX" ></iframe>
@@ -43,21 +39,21 @@
 
 		// details for first button
 		const link1Text = "Atlas"; // text
-		const link1X = 0; // position
+		const link1X = 1216; // position
 		const link1Y = 0;
 		const link1Height = 21; // size
 		const link1Width = 63;
 
 		// repeat for other buttons.
 		const link2Text = "Road";
-		const link2X = 0;
+		const link2X = 1216;
 		const link2Y = 20;
 		const link2Height = 21;
 		const link2Width = 63;
 
 		// repeat for other buttons.
 		const link3Text = "Satellite";
-		const link3X = 0;
+		const link3X = 1216;
 		const link3Y = 40;
 		const link3Height = 21;
 		const link3Width = 63;
@@ -142,7 +138,7 @@
 		const initialTransY = 0;
 	
 	// variables
-		var isLink1,isLink2,isLink3,btnc,btnctx,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY;
+		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY;
 	
 	// array variables:
 		let xarray = []; 
@@ -181,6 +177,8 @@
 		fileLoaded = 0; // indicator that an activity file has been loaded and is ready for processing
 		mcanvas = document.getElementById("bmap"); // map canvas
 		elvc = document.getElementById("elv"); // elevation profile canvas
+		elvc.addEventListener("mousemove", CanvasMouseMove, false);
+		elvc.addEventListener("click", Link_click, false);
 		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
 		isLink2 = false; // indicates whether mouse position currently hovering is over link 2
 		isLink3 = false; // indicates whether mouse position currently hovering is over link 3
@@ -240,9 +238,9 @@
 			  x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
 			  y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
 			} 
-			x -= btnc.offsetLeft;
-			y -= btnc.offsetTop;
- 
+			x -= elvc.offsetLeft;
+			y -= elvc.offsetTop;
+			
             if (x >= link1X && x <= (link1X + link1Width) 
                     && y >= link1Y && y <= (link1Y + link1Height)) {
                 document.body.style.cursor = "pointer";
@@ -432,19 +430,23 @@
 			}
 		}; // runs when a fit file is loaded from the server, just xml's it and starts the fit processor.
 
-		function fitFileLoad(file) { // file is a blob.  This interprets it into an object and hands it to processor.
+
+
 			var EasyFit = window.easyFit.default;
 			var reader = new FileReader();
+			var inEasyFit = new EasyFit({
+				force: true,
+				speedUnit: 'km/h',
+				lengthUnit: 'km',
+				temperatureUnit: 'celcius',
+				elapsedRecordField: true,
+				mode: 'list'
+			});
+
+
+		function fitFileLoad(file) { // file is a blob.  This interprets it into an object and hands it to processor.
 			reader.onloadend = function() {
 				// Create a EasyFit instance (options argument is optional)
-				var inEasyFit = new EasyFit({
-					force: true,
-					speedUnit: 'km/h',
-					lengthUnit: 'km',
-					temperatureUnit: 'celcius',
-					elapsedRecordField: true,
-					mode: 'list'
-				});
 
 				inEasyFit.parse(this.result, function (error, data) {
 					if (error) {
@@ -827,6 +829,28 @@
 			elvctx.stroke();
 			elvctx.globalCompositeOperation = 'source-over'; // just never ever leave this on background it's annoying :) 
 
+
+
+
+	//  *** BUTTON CANVAS HANDLING *** -- handled here since nothing ever really happens to them.
+			// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
+			elvctx.fillStyle=btnAtlsColr;
+			elvctx.fillRect(link1X,link1Y,link1Width,link1Height);
+			elvctx.fillStyle=btnRoadColr;
+			elvctx.fillRect(link2X,link2Y,link2Width,link2Height);
+			elvctx.fillStyle=btnSatlColr;
+			elvctx.fillRect(link3X,link3Y,link3Width,link3Height);
+			elvctx.stroke();
+			
+			// button labels
+			elvctx.fillStyle='rgb(0, 0, 0)';
+			elvctx.font = "12px Arial";
+			elvctx.fillText(link1Text, link1X+textoffsetx, link1Y+textoffsety);
+			elvctx.fillText(link2Text, link2X+textoffsetx, link2Y+textoffsety);
+			elvctx.fillText(link3Text, link3X+textoffsetx, link3Y+textoffsety);
+			elvctx.stroke();
+
+			// and monitor, run the below functions to determine mouse location and respond to clicks
 			currAniIx += 1;
 			if( currAniIx >= aniframes ) {
 				currAniIx = 0; // and we're done with anim.
@@ -900,8 +924,6 @@
 		//  This function is executed when the window loads
 		window.onload = function() {
 			// initialize values:
-			btnc = document.getElementById("btn"); // button canvas
-			btnctx = btnc.getContext("2d"); // button canvas context
 			elunit = "m"; // displays the type of elevation unit
 			dstunit = "km"; // displays the type of distance unit
 			elex = defaultElex; // default
@@ -956,27 +978,6 @@
 		// now this triggers image loading.  When it's finished, it'll load the img.onload routine.
 			procMapLoad();
 
-	//  *** BUTTON CANVAS HANDLING *** -- handled here since nothing ever really happens to them.
-			// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
-			btnctx.fillStyle=btnAtlsColr;
-			btnctx.fillRect(0,0,63,21);
-			btnctx.fillStyle=btnRoadColr;
-			btnctx.fillRect(0,22,63,21);
-			btnctx.fillStyle=btnSatlColr;
-			btnctx.fillRect(0,43,63,21);
-			btnctx.stroke();
-			
-			// button labels
-			btnctx.fillStyle='rgb(0, 0, 0)';
-			btnctx.font = "12px Arial";
-			btnctx.fillText(link1Text, link1X+textoffsetx, link1Y+textoffsety);
-			btnctx.fillText(link2Text, link2X+textoffsetx, link2Y+textoffsety);
-			btnctx.fillText(link3Text, link3X+textoffsetx, link3Y+textoffsety);
-			btnctx.stroke();
-
-			// and monitor, run the below functions to determine mouse location and respond to clicks
-			btnc.addEventListener("mousemove", CanvasMouseMove, false);
-			btnc.addEventListener("click", Link_click, false);
 
 		};
 	</script>
