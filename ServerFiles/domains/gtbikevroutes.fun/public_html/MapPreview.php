@@ -180,6 +180,8 @@
 		const pwrBgColorRoad = "#300000"; //
 		const pwrBgColorSatl = "#300000"; //
 		
+		const visBodyBG = '#A0A0A0';
+		
 		const minLineWidth = 0.25;
 		const elAniR = 5;
 		const hrmAniR = 5;
@@ -188,8 +190,8 @@
 
 		const aniframes = 243; // number of frames to display in animation
 		const initialZoom = 0.42;
-		const initialTransX = 0;
-		const initialTransY = 0;
+		const initialTransX = 180;
+		const initialTransY = -120;
 	
 	// variables
 		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,hrmdot,pwrdot,caddot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg,mouseMsgText,aniIndex;
@@ -306,11 +308,6 @@
 				$('#besideMouse').offset(cpos);
 				$("#besideMouse").html(mouseMsgText);
 			} else {
-				console.log("skip:");
-				console.log(currAniIx);
-				console.log(zCount);
-				console.log(imgLoaded);
-				console.log(xmlLoaded);
 			}
         }
 
@@ -344,16 +341,10 @@
 				if (this.id == "pwr") {
 					mouseMsgText = Math.round(pwrArray[aniIndex])+"w";
 				};
-				console.log(mouseMsgText);
 				$('#besideMouse').offset(cpos);
 				$("#besideMouse").html(mouseMsgText);
 
 			} else {
-				console.log("skip:");
-				console.log(currAniIx);
-				console.log(zCount);
-				console.log(imgLoaded);
-				console.log(xmlLoaded);
 			}
         }
 
@@ -403,13 +394,24 @@
 
 	// this function is triggered when the image is loaded.  Nothing more to do with the image specifically, but check animation readiness.
 		img.onload = function () {
+			ctx = mcanvas.getContext("2d"); // map canvas context
+			console.log("drawing...");
 			img.draw; // put 'em on the canvas.
 			imgLoaded = 1;
-			
 	// here's where we confirm both xml and image are done, and if so, start the drawings.
 			// initially thought this was a bit klunky, but I think it works well here.
 			if(imgLoaded === 1 && xmlLoaded === 1) {
 				var thm = drawLoop();
+			} else {
+				resetCanvas(mcanvas);
+				ctx.translate(translatefactorx,translatefactory);
+				ctx.scale(zoomfactorxy, zoomfactorxy);  // same zoom factor to avoid weird aspect ratios
+				ctx.drawImage(img, 0, 0);
+				ctx.globalCompositeOperation = 'destination-over'
+				ctx.fillStyle = mapbg;
+				ctx.fillRect(-5000, -5000, 10000, 10000); // in this case the point is to still show when panning and zooming.
+				ctx.stroke();
+				ctx.globalCompositeOperation = 'source-over'; // just never ever 
 			};
 		};
 
@@ -418,25 +420,29 @@
 	// executed when the user clicks the button (onclick event)
 		function clkImpMet() {
 			var hfbtn = document.getElementById("hiddenContainer")
-			hfbtn.style.display = "none";
-			if (met === "Metric") {
-				met = "Imperial"
-			} else {
-				met = "Metric"
-				cmlElev = cmlElev/meters2feet; // total ascent feet to meters
-				cmlDesc = cmlDesc/meters2feet; // total descent feet to meters
-				cmlDist = cmlDist/km2mi; // total distance mi to km
-			};
-			processData();
+			if(imgLoaded === 1 && xmlLoaded === 1) {
+				hfbtn.style.display = "none";
+				if (met === "Metric") {
+					met = "Imperial"
+				} else {
+					met = "Metric"
+					cmlElev = cmlElev/meters2feet; // total ascent feet to meters
+					cmlDesc = cmlDesc/meters2feet; // total descent feet to meters
+					cmlDist = cmlDist/km2mi; // total distance mi to km
+				};
+				processData();
+			} else {console.log("ignore user click on impet.");}
 		}
 
 	// this switches from time to distance axis and triggers re-calculating.
 	// executed when the user clicks the button (onclick event)
 		function clkTmDst() {
 			var hfbtn = document.getElementById("hiddenContainer")
-			hfbtn.style.display = "none";
-			if (elex === "d") {elex = "t"} else {elex = "d"};
-			processDoc(); // need to reprocess the whole doc since the axis need re-indexed
+			if(imgLoaded === 1 && xmlLoaded === 1) {
+				hfbtn.style.display = "none";
+				if (elex === "d") {elex = "t"} else {elex = "d"};
+				processDoc(); // need to reprocess the whole doc since the axis need re-indexed
+			} else {console.log("ignore user click on tmdst.");}
 		}
 		
 		
@@ -1290,6 +1296,7 @@
 			// see $("#xmlfile").change for that function.
 				var hcont = document.getElementById("hiddenContainer")
 				hcont.style.display = "block";
+				document.body.style.backgroundColor = visBodyBG;
 
 			} else {
 				// this is tricky to follow becuase of asynchronous standards. 
@@ -1321,8 +1328,6 @@
 			
 		// now this triggers image loading.  When it's finished, it'll load the img.onload routine.
 			procMapLoad();
-
-
 		};
 	</script>
 
