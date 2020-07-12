@@ -69,11 +69,12 @@ canvas { /* */
 }
 
 #main { /* outer container for the canvases */
+	overflow: hidden;
 }
 
 #canvasContainer { /* inner container for canvases */
 	width:1280px;
-	height:720px;
+	overflow: hidden;
 	width:100%;
 	padding-left:0;
 	padding-right:0;
