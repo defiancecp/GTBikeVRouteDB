@@ -15,26 +15,21 @@
 </head> 
 <body>
 <div id="hiddenContainer">
+	<input type="file" id="xmlfile"></input>
 	<button onclick="clkImpMet()" id="btnImpMet">Imperial/Metric switch</button>
 	<button onclick="clkTmDst()" id="btnTmDst">Time/Distance switch</button>
 	<button onclick="clkScrSht()" id="btnScrSht">Take Screenshot</button> 
-	<input type="file" id="xmlfile"></input>
 	<br><div id="warntext"></div>
 </div>
 <div id="main">
 <div id="canvasContainer">
 	<canvas id="elv" width="1278" height="62">
 	</canvas><canvas id="bmap" width="1278" height="654" >
-	</canvas><div id="hiddenCadGphCon">
-	<canvas id="cad" width="1278" height="62">
+	</canvas><div id="hiddenCadGphCon"><canvas id="cad" width="1278" height="62">
+	</div><div id="hiddenPwrGphCon"><canvas id="pwr" width="1278" height="62">
+	</div><div id="hiddenHrmGphCon"><canvas id="hrm" width="1278" height="62">
 	</div>
-	<div id="hiddenPwrGphCon">
-		<canvas id="pwr" width="1278" height="62">
-	</div>
-	<div id="hiddenHrmGphCon">
-		<canvas id="hrm" width="1278" height="62">
-	</div>
-
+</div>
 </div>
 <div id="scrContainer"> 
 	<canvas id="scrCanvas" ></canvas><iframe src = 'SubmitGPXData.php' id="frmGPX" ></iframe>

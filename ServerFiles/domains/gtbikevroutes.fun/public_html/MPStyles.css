@@ -26,6 +26,7 @@ canvas { /* */
 	user direct mode, exposing the buttons and file loading form. */
 	display:none;
 	width:100%;
+	background-color:#A0A0A0;
 }
 
 #hiddenCadGphCon {
