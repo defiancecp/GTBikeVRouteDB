@@ -14,9 +14,8 @@ canvas { /* */
 }
 
 #warntext {
-	color:#000000;
+	color:#400000;
 }
-
 #hiddenContainer {
 	/* hidden container where I put user interface buttons that aren't part of 
 	normal route preview functionality.  If no route is passed, it falls back into
@@ -25,23 +24,43 @@ canvas { /* */
 	width:100%;
 }
 
+#hiddenCadGphCon {
+	display:none;
+	width:100%;
+}
+
+#hiddenPwrGphCon {
+	display:none;
+	width:100%;
+}
+
+#hiddenHrmGphCon {
+	display:none;
+	width:100%;
+}
+
 #xmlfile { /* file input form */
 	width:20%;
+	font-size:8pt;
+	height:25px;
 }
 
 #btnImpMet { /* Imperial/Metric toggle button */
 	width:20%;
 	font-size:8pt;
+	height:25px;
 }
 
 #btnTmDst { /* Time/Distance axis toggle button */
 	width:20%;
 	font-size:8pt;
+	height:25px;
 }
 
 #btnScrSht { /* Screenshot button */
 	width:20%;
 	font-size:8pt;
+	height:25px;
 }
 
 #main { /* outer container for the canvases */

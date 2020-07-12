@@ -24,7 +24,16 @@
 <div id="canvasContainer">
 	<canvas id="elv" width="1278" height="62">
 	</canvas><canvas id="bmap" width="1278" height="654" >
-	</canvas>
+	</canvas><div id="hiddenCadGphCon">
+	<canvas id="cad" width="1278" height="62">
+	</div>
+	<div id="hiddenPwrGphCon">
+		<canvas id="pwr" width="1278" height="62">
+	</div>
+	<div id="hiddenHrmGphCon">
+		<canvas id="hrm" width="1278" height="62">
+	</div>
+
 </div>
 <div id="scrContainer"> 
 	<canvas id="scrCanvas" ></canvas><iframe src = 'SubmitGPXData.php' id="frmGPX" ></iframe>
@@ -83,12 +92,14 @@
 		const meters2feet = 3.28084; // this is multipler for conversion to either imperial
 		const km2mi = 0.621371; // this is multipler for conversion to either imperial
 		const earthRadius = 6371; // in km
-		const elvAxMxLabelX = 2; // pixels from left border for maximum elevation label on z axis
-		const elvAxMxLabelY = 10; //  pixels from top border for maximum elevation label on z axis
-		const elvAxMnLabelX = 2; // pixels from left border for minimum elevation label on z axis
-		const elvAxMnLabelY = 60; // pixels from top border for minimum elevation label on z axis
-		const elvAxCtLabelX = 2;
-		const elvAxCtLabelY = 35;
+		const AxMxLabelX = 2; // pixels from left border for maximum elevation label on z axis
+		const AxMxLabelY = 10; //  pixels from top border for maximum elevation label on z axis
+		const AxMnLabelX = 2; // pixels from left border for minimum elevation label on z axis
+		const AxMnLabelY = 60; // pixels from top border for minimum elevation label on z axis
+		const AxCtLabelX = 2;
+		const AxCtLabelY = 35;
+		const AxLabelX = 610;
+		const AxLabelY = 10;
 
 		const elvDistLabelX = 1130;
 		const elvDistLabelY = 15;
@@ -109,28 +120,75 @@
 
 		/// COLORS!!! woo.  Lots of colors for canvas elements defined here.
 		const atlasBg = "#0fa8d2"; // background color for atlas map
-		const atlasLn = "#0000ff"; // line color for atlas map
 		const roadBg = "#1862ad"; // background color for road map
-		const roadLn = "#ff0000"; // line color for road map
 		const satlBg = "#143d6b"; // background color for satellite map
+
+		const atlasLn = "#0000ff"; // line color for atlas map
+		const roadLn = "#ff0000"; // line color for road map
 		const satlLn = "#ff00ff"; // line color for satellite map
+
 		const btnAtlsColr = 'rgb(128,185,35)'; // color of bg for atlas
 		const btnRoadColr = 'rgb(146, 210, 187)'; // color of bg for road
 		const btnSatlColr = 'rgb(0, 153, 0)'; // color of bg for sat
-		const elvAxColorAtls = "#ffffff"; // color of the axis labels in elevation chart
-		const elvLnColorAtls = "#121280"; // color of the line in elevation chart
-		const elvFlColorAtls = "#707070"; // color of the graph fill in elevation chart
-		const elvBgColorAtls = "#404040"; // color of the background in elevation chart
-		const elvAxColorRoad = "#ffffff"; // color of the axis labels in elevation chart
-		const elvLnColorRoad = "#121280"; // color of the line in elevation chart
-		const elvFlColorRoad = "#707070"; // color of the graph fill in elevation chart
-		const elvBgColorRoad = "#404040"; // color of the background in elevation chart
-		const elvAxColorSatl = "#ffffff"; // color of the axis labels in elevation chart
-		const elvLnColorSatl = "#121280"; // color of the line in elevation chart
-		const elvFlColorSatl = "#707070"; // color of the graph fill in elevation chart
-		const elvBgColorSatl = "#404040"; // color of the background in elevation chart
-		const elAniR = 5;
+
+		const elvAxColorAtls = "#ffffff"; // color of the axis labels 
+		const elvAxColorRoad = "#ffffff"; // 
+		const elvAxColorSatl = "#ffffff"; // 
+		const hrmAxColorAtls = "#ffffff"; // 
+		const hrmAxColorRoad = "#ffffff"; // 
+		const hrmAxColorSatl = "#ffffff"; // 
+		const cadAxColorAtls = "#ffffff"; //
+		const cadAxColorRoad = "#ffffff"; //
+		const cadAxColorSatl = "#ffffff"; //
+		const pwrAxColorAtls = "#ffffff"; //
+		const pwrAxColorRoad = "#ffffff"; //
+		const pwrAxColorSatl = "#ffffff"; //
+
+		const elvLnColorAtls = "#D0D0D0"; // color of the line 
+		const elvLnColorRoad = "#D0D0D0"; //
+		const elvLnColorSatl = "#D0D0D0"; //
+		const hrmLnColorAtls = "#20FF20"; //
+		const hrmLnColorRoad = "#20FF20"; //
+		const hrmLnColorSatl = "#20FF20"; //
+		const cadLnColorAtls = "#6060FF"; //
+		const cadLnColorRoad = "#6060FF"; //
+		const cadLnColorSatl = "#6060FF"; //
+		const pwrLnColorAtls = "#FF2020"; //
+		const pwrLnColorRoad = "#FF2020"; //
+		const pwrLnColorSatl = "#FF2020"; //
+
+
+		const elvFlColorAtls = "#606060"; // color of the graph fill 
+		const elvFlColorRoad = "#606060"; // 
+		const elvFlColorSatl = "#606060"; // 
+		const hrmFlColorAtls = "#006000"; // 
+		const hrmFlColorRoad = "#006000"; // 
+		const hrmFlColorSatl = "#006000"; // 
+		const cadFlColorAtls = "#0040A0"; //
+		const cadFlColorRoad = "#0040A0"; //
+		const cadFlColorSatl = "#0040A0"; //
+		const pwrFlColorAtls = "#600000"; //
+		const pwrFlColorRoad = "#600000"; //
+		const pwrFlColorSatl = "#600000"; //
+
+		const elvBgColorAtls = "#303030"; // color of the background in elevation chart
+		const elvBgColorRoad = "#303030"; // 
+		const elvBgColorSatl = "#303030"; // 
+		const hrmBgColorAtls = "#003000"; // 
+		const hrmBgColorRoad = "#003000"; // 
+		const hrmBgColorSatl = "#003000"; // 
+		const cadBgColorAtls = "#002050"; //
+		const cadBgColorRoad = "#002050"; //
+		const cadBgColorSatl = "#002050"; //
+		const pwrBgColorAtls = "#300000"; //
+		const pwrBgColorRoad = "#300000"; //
+		const pwrBgColorSatl = "#300000"; //
+		
 		const minLineWidth = 0.25;
+		const elAniR = 5;
+		const hrmAniR = 5;
+		const pwrAniR = 5;
+		const cadAniR = 5;
 
 		const aniframes = 243; // number of frames to display in animation
 		const initialZoom = 0.42;
@@ -138,7 +196,7 @@
 		const initialTransY = 0;
 	
 	// variables
-		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit;
+		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,hrmdot,pwrdot,caddot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg;
 	
 		EasyFit = window.easyFit.default;
 		EFreader = new FileReader();
@@ -191,52 +249,18 @@
 		fileLoaded = 0; // indicator that an activity file has been loaded and is ready for processing
 		mcanvas = document.getElementById("bmap"); // map canvas
 		elvc = document.getElementById("elv"); // elevation profile canvas
+		hrmc = document.getElementById("hrm"); //  canvas
+		pwrc = document.getElementById("pwr"); //  canvas
+		cadc = document.getElementById("cad"); //  canvas
 		elvc.addEventListener("mousemove", CanvasMouseMove, false);
+		hrmc.addEventListener("mousemove", CanvasMouseMoveLower, false);
+		cadc.addEventListener("mousemove", CanvasMouseMoveLower, false);
+		pwrc.addEventListener("mousemove", CanvasMouseMoveLower, false);
 		elvc.addEventListener("click", Link_click, false);
 		isLink1 = false; // indicates whether mouse position currently hovering is over link 1
 		isLink2 = false; // indicates whether mouse position currently hovering is over link 2
 		isLink3 = false; // indicates whether mouse position currently hovering is over link 3
 		actDocType = 0; // 1- fit 2- gpx
-
-		
-	/* -- list of uninitialized variables and their usage:
-			zfactor2 = 1; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels.  Calculated, initial is meaningless.
-			zoffset2 = 0; // zfactor2&zoffset2 are used to scale from "real" numbers to pixels.  Calculated, initial is meaningless.
-			ifactor2 = 1; // and ifactor/offset converts the time units into a scale of 0-240 for various purposes.  Calculated, initial is meaningless.
-			ioffset2 = 0; // .  Calculated, initial is meaningless.
-			zoomfactorx = 1; // handles x/y zoom for main panel.  Calculated, initial is meaningless.
-			zoomfactory = 1; // handles x/y zoom for main panel.  Calculated, initial is meaningless.
-			zoomfactorxy = 1; // handles x/y zoom for main panel.  Calculated, initial is meaningless.
-			translatefactorx = 0; // shift to center for x.  Calculated, initial is meaningless.
-			translatefactory = 0; // shift to center for y.  Calculated, initial is meaningless.
-			mapbg = "#ffffff"; // background color for map canvas
-			mapline = "#ffffff"; // color for map line
-			cmlDist = 0; // cumulative distance
-			cmlTime = 0; // cumulative time
-			cmlElev = 0; // cumulative ascent
-			cmlDesc = 0; // cumulative descent
-			xmlDoc = 0; // holder for xmldoc
-			x = 0; // xml file referencer
-			lastTimestamp = 0; // most recent point timestamp
-			thisTimestamp = 0; // current point timestamp
-			lastLat = 0; // most recent lat
-			thislat = 0; // current lat
-			lastLon = 0; // most recent long
-			thisLon = 0; // current long
-			lastElev = 0; // most recent elevation
-			thisElev = 0; // curent elevation
-			xmin = 0; // min and max on each axis
-			xmax = 0; // ..
-			ymin = 0; // ..
-			ymax = 0; // ..
-			zmin = 0; // ..
-			zmax = 0; // ..
-			tmin = 0; // ..
-			tmax = 0; // ..
-	*/
-
-	// now function defines.
-
 
 	// To monitor for clicks on the map change buttons canvas.
 	// credit for much of this part of code: http://www.authorcode.com/how-to-create-hyper-link-on-the-canvas-in-html5/
@@ -260,47 +284,68 @@
                 document.body.style.cursor = "pointer";
                 isLink1 = true;
             }
-            else {
-                document.body.style.cursor = "";
-                isLink1 = false;
-            }
-            if (x >= link2X && x <= (link2X + link2Width) 
+            else if (x >= link2X && x <= (link2X + link2Width) 
                     && y >= link2Y && y <= (link2Y + link2Height)) {
                 document.body.style.cursor = "pointer";
                 isLink2 = true;
             }
-            else {
-                document.body.style.cursor = "";
-                isLink2 = false;
-            }
-            if (x >= link3X && x <= (link3X + link3Width) 
+            else if (x >= link3X && x <= (link3X + link3Width) 
                     && y >= link3Y && y <= (link3Y + link3Height)) {
                 document.body.style.cursor = "pointer";
                 isLink3 = true;
-            }
-            else {
+            } else if (currAniIx == 0 && zCount == 0 && x >= 0 &&x < link3X && imgLoaded === 1 && xmlLoaded === 1) {
+				displayFrame(Math.round(x/5));
+			} else {
                 document.body.style.cursor = "";
                 isLink3 = false;
+                isLink1 = false;
+                isLink2 = false;
             }
         }
+
+
+        function CanvasMouseMoveLower(e) {
+            var x, y;
+			if (e.pageX || e.pageY) { 
+			  x = e.pageX;
+			  y = e.pageY;
+			}
+			else { 
+			  x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+			  y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+			} 
+			x -= elvc.offsetLeft;
+			y -= elvc.offsetTop;
+			
+			if (currAniIx == 0 && zCount == 0 && imgLoaded === 1 && xmlLoaded === 1) {
+				displayFrame(Math.round(x/5.25));
+			} else {
+                document.body.style.cursor = "";
+            }
+        }
+
 
 	// when a click is detcted, determine if it was on one of the map buttons.
 	//  position determination based on CanvasMouseMove
 	// if it was, reload with the selected map.
 	//  executed each time the button canvas is clicked (event handler)
-		function Link_click(e) {
+		function Link_click() {
+			var hfcnt = document.getElementById("hiddenContainer")
 
 			if (isLink1) {
 				maptype = "atlas";
 				procMapLoad();
+				hfcnt.style.display = "none";
 			}
 			if (isLink2) {
 				maptype = "road";
 				procMapLoad();
+				hfcnt.style.display = "none";
 			}
 			if (isLink3) {
 				maptype = "satellite";
 				procMapLoad();
+				hfcnt.style.display = "none";
 			}
 		}
 
@@ -339,6 +384,8 @@
 	// this switches from imperial to metric and triggers re-calculating.
 	// executed when the user clicks the button (onclick event)
 		function clkImpMet() {
+			var hfbtn = document.getElementById("hiddenContainer")
+			hfbtn.style.display = "none";
 			if (met === "Metric") {
 				met = "Imperial"
 			} else {
@@ -353,6 +400,8 @@
 	// this switches from time to distance axis and triggers re-calculating.
 	// executed when the user clicks the button (onclick event)
 		function clkTmDst() {
+			var hfbtn = document.getElementById("hiddenContainer")
+			hfbtn.style.display = "none";
 			if (elex === "d") {elex = "t"} else {elex = "d"};
 			processDoc(); // need to reprocess the whole doc since the axis need re-indexed
 		}
@@ -388,8 +437,8 @@
 	// if no file is passed as parameters, the user file button is enabled.
 	//  This function is triggered when a file is loaded.
 		$("#xmlfile").change(function(e){
-			var hfbtn = document.getElementById("xmlfile")
-			hfbtn.style.display = "none";
+			var hfcnt = document.getElementById("hiddenContainer")
+			hfcnt.style.display = "none";
 			if (this.value.substring(this.value.length-3,this.value.length).toUpperCase() == "FIT") {
 				fitFileLoad(this.files[0]);
 			} else if (this.value.substring(this.value.length-3,this.value.length).toUpperCase() == "GPX") {
@@ -513,11 +562,8 @@
 					thisElev=(x[i].getElementsByTagName("ele")[0].childNodes[0].nodeValue *1);
 					// for time convert from standardized text into time value and preserve in var
 					thisTimestamp = new Date(x[i].getElementsByTagName("time")[0].childNodes[0].nodeValue);
-
 					if(x[i].getElementsByTagName("power")[0]) {thisPWR=(x[i].getElementsByTagName("power")[0].childNodes[0].nodeValue *1)} else {thisPWR=0};
-
 					if(x[i].getElementsByTagName("gpxdata:hr")[0]) {thisHRM=(x[i].getElementsByTagName("gpxdata:hr")[0].childNodes[0].nodeValue *1)} else {thisHRM=0};
-
 					if(x[i].getElementsByTagName("gpxdata:cadence")[0]) {thisCAD=(x[i].getElementsByTagName("gpxdata:cadence")[0].childNodes[0].nodeValue *1)} else {thisCAD=0};
 
 				}
@@ -561,19 +607,14 @@
 				if(zarray[i] < zlolim) {zarray[i] = zlolim;};
 			}
 	
-	
 	// would be nice to implement these in a graph at some point :) 
 	// probably just for ride preview, not for route. dynhidden canvas below?
 	// oh yeah, could even dyn-hide-expose if the file has the data.
-			console.log(hrmArray);
-			console.log(cadArray);
-			console.log(pwrArray);
 	// ************************************************************
 
 			processData();
 		}
 
-		
 		function processData() {
 	//  *** ANALYZE DATASET ***
 			// Preserve min and max values - we'll possibly use these to control zooming...
@@ -587,9 +628,93 @@
 			tmax = Math.max.apply(null, tarray);
 			imin = Math.min.apply(null, iarray);
 			imax = Math.max.apply(null, iarray);
+			hrmmin = Math.min.apply(null, hrmArray);
+			hrmmax = Math.max.apply(null, hrmArray);
+			pwrmin = Math.min.apply(null, pwrArray);
+			pwrmax = Math.max.apply(null, pwrArray);
+			cadmin = Math.min.apply(null, cadArray);
+			cadmax = Math.max.apply(null, cadArray);
 			
+			
+			var sum = 0;
+			for( var i = 0; i < hrmArray.length; i++ ){
+				sum += parseInt(hrmArray[i], 10 ); //don't forget to add the base
+			}
+			hrmavg = sum/hrmArray.length;
+			
+			sum = 0;
+			for( var i = 0; i < cadArray.length; i++ ){
+				sum += parseInt(cadArray[i], 10 ); //don't forget to add the base
+			}
+			cadavg = sum/cadArray.length;
+			
+			sum = 0;
+			for( var i = 0; i < pwrArray.length; i++ ){
+				sum += parseInt(pwrArray[i], 10 ); //don't forget to add the base
+			}
+			pwravg = sum/pwrArray.length;
 
-	// determine convesion for z into pixel value (0-60)
+			var canCon = document.getElementById("hiddenCadGphCon")
+			if(cadmax > 0 && route === null){
+
+				canCon.style.display = "block";
+				console.log("cadence found range: "+cadmin+" - "+cadmax);
+				if( (cadmax - cadmin) < 2 ) {
+					// if the values are too low to scale
+					cadscale = 25; // just scale at the closest level allowed
+					cadoffset = -55; // and offset to near the bottom
+				} else {
+					// otherwise scale
+					cadscale = 60/(cadmax-cadmin);
+					cadoffset = 0-cadmin; // (zmin*zfactor2)+20;
+				}
+			} else {
+				canCon.style.display = "none";
+				console.log("no cadence");
+				cadscale=0;
+				cadoffset=0;
+			};
+			var canHrm = document.getElementById("hiddenHrmGphCon")
+			if(hrmmax > 0 && route === null){
+				canHrm.style.display = "block";
+				console.log("hrm found range: "+hrmmin+" - "+hrmmax);
+				
+				if( (hrmmax - hrmmin) < 2 ) {
+					// if the values are too low to scale
+					hrmscale = 25; // just scale at the closest level allowed
+					hrmoffset = -55; // and offset to near the bottom
+				} else {
+					// otherwise scale
+					hrmscale = 60/(hrmmax-hrmmin);
+					hrmoffset = 0-hrmmin; // (zmin*zfactor2)+20;
+				}
+			} else {
+				canHrm.style.display = "none";
+				console.log("no hrm");
+				hrmscale=0;
+				hrmoffset=0;
+			};
+			var canPwr = document.getElementById("hiddenPwrGphCon")
+			if(pwrmax > 0 && route === null){
+				canPwr.style.display = "block";
+				console.log("power found range: "+pwrmin+" - "+pwrmax);
+				if( (pwrmax - pwrmin) < 2 ) {
+					// if the values are too low to scale
+					pwrscale = 25; // just scale at the closest level allowed
+					pwroffset = -55; // and offset to near the bottom
+				} else {
+					// otherwise scale
+					pwrscale = 60/(pwrmax-pwrmin);
+					pwroffset = 0-pwrmin; // (zmin*zfactor2)+20;
+				};
+			} else {
+				canPwr.style.display = "none";
+				console.log("no power");
+				pwrscale=0;
+				pwroffset=0;
+			};
+
+	// determine conversion for z into pixel value (0-60)
 			// need to calculate before zmax and zmin are adjusted for metric/imperial so 
 			// that behavior is consistent.
 			if( (Math.max.apply(null, zarray) - Math.min.apply(null, zarray)) < 2 ) {
@@ -694,24 +819,17 @@
 		};
 		
 	// helpful to retain standard way of clearing canvases for redraw.
-	// note that this function clears transforms and scales, but that's OK since
-	// draw function applies them anyway.
+	// note that this function clears transforms and scales - this is done because zoom is not absolute, but relative -- so rather than tracking and adjusting, better to just clear between frames.
 		function resetCanvas(inCvs)
 		{
 			var inCtx = inCvs.getContext("2d");
-			inCtx.setTransform(1, 0, 0, 1, 0, 0); // zoom is not absolute, but relative
-			// so to zoom from 1.2 to 1.3, for example, I can't just set zoom to 1.3...
-			// the resulting zoom would be 1.2 * 1.3 = 1.56...
-			// so to get to 1.3 there would have to be something like calculating zooom = (1.3/1.2=1.0833333) -- 
-			// this works because 1.2 * 1.088333333 is 1.3, target zoom.
-			//  BUT -- that math has been dropped because it's faster just to clear the transform matrix and 
-			//  set zoom = 1.3 - no math needed :)
+			inCtx.setTransform(1, 0, 0, 1, 0, 0);
 			inCtx.clearRect(0,0, inCvs.width, inCvs.height);
 		};
 
 	// More of a loop initializer.  Name stuck after I changed things :) The 0 check is to prevent overlaps.
 	// executed any time both image and gpx loads are completed (when one completes, it confirms the other and runs this if true)
-		function drawLoop(e) {
+		function drawLoop() {
 			if(currAniIx == 0 && zCount == 0) {
 				zAniRun = 1;
 				zRtRun = 0;
@@ -719,7 +837,7 @@
 			};
 		}
 		
-		function drawZoom(e) { 
+		function drawZoom() { 
 			
 			ctx = mcanvas.getContext("2d"); // map canvas context
 			ctx.globalCompositeOperation = 'source-over';
@@ -738,18 +856,17 @@
 				window.requestAnimationFrame(drawMapAndElv);
 			}
 			else {
-				window.requestAnimationFrame(drawZoom); // call itself again when finished to continue animating.
-				// at least until frames run out.
-				// each time it executes, it waits until the frame is ready and then draws.
-				// then executes itself again, unti the counter hits the aniframes (max).
+				window.requestAnimationFrame(drawZoom); // call itself again when finished to continue animating- at least until frames run out. Each time it executes, it waits until the frame is ready and then draws, then executes itself again, unti the counter hits the aniframes (max).
 			};
-
 		}
 	// this is the function, run each frame, to draw the map and elevation profile.
-	// executed first when the loop is initialized by drawloop
-	//  then it then re-runs itself each frame until frame limit is complete (the number of frames to animate).
-		function drawMapAndElv(e) { 
+	// executed first when the loop is initialized by drawloop then reruns itself.
 
+
+
+// this function displayse frame number (frameNumber).
+// it's called by the animation as well as by the mouseover positioning.
+		function displayFrame(frameNumber,hovertext) {
 			ctx.drawImage(img, 0, 0);
 			// now prep & draw route;
 			ctx.beginPath();
@@ -757,64 +874,166 @@
 			ctx.strokeStyle = mapline;
 			ctx.lineWidth = mpLineWidth;
 
-	// **** ELEVATION CANVAS HANDLING
-			// clear for re-draw, set up, and ensure foreground
 			resetCanvas(elvc);
 			elvctx = elvc.getContext("2d"); // elevation profile canvas context
 			elvctx.globalCompositeOperation = 'source-over';
 
-			// use path to trace the elevation line, then loop back along the bottom edge of the canvas to create a 'shape'
-			// then close and fill it.
+			resetCanvas(hrmc);
+			hrmctx = hrmc.getContext("2d");
+			hrmctx.globalCompositeOperation = 'source-over';
+
+			resetCanvas(pwrc);
+			pwrctx = pwrc.getContext("2d");
+			pwrctx.globalCompositeOperation = 'source-over';
+
+			resetCanvas(cadc);
+			cadctx = cadc.getContext("2d");
+			cadctx.globalCompositeOperation = 'source-over';
+
+			elvctx.strokeStyle = elvLnColor;
+			elvctx.fillStyle = elvFlColor;
+			hrmctx.strokeStyle = hrmLnColor;
+			hrmctx.fillStyle = hrmFlColor;
+
+ 			pwrctx.strokeStyle = pwrLnColor;
+			pwrctx.fillStyle = pwrFlColor;
+			cadctx.strokeStyle = cadLnColor;
+			cadctx.fillStyle = cadFlColor;
+			
 			elvctx.beginPath();
 			elvctx.moveTo(0,63);
 			elvctx.lineTo(0,60-zarray[0]);
 
+			hrmctx.beginPath();
+			hrmctx.moveTo(0,63);
+			hrmctx.lineTo(0,60-((hrmArray[0]+hrmoffset)*hrmscale));
+
+			cadctx.beginPath();
+			cadctx.moveTo(0,63);
+			cadctx.lineTo(0,60-((cadArray[0]+cadoffset)*cadscale));
+
+			pwrctx.beginPath();
+			pwrctx.moveTo(0,63);
+			pwrctx.lineTo(0,60-((pwrArray[0]+pwroffset)*pwrscale));
+
+			// use path to trace the elevation line, then loop back along the bottom edge of the canvas to create a 'shape'
+			// then close and fill it.
 			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
 				ctx.lineTo(xarray[i],yarray[i]);
 				elvctx.lineTo((iarray[i]*5),60-zarray[i]);
-				if(iarray[i] <= currAniIx) {
+				hrmctx.lineTo((iarray[i]*5.25),60-((hrmArray[i]+hrmoffset)*hrmscale));
+				cadctx.lineTo((iarray[i]*5.25),60-((cadArray[i]+cadoffset)*cadscale));
+				pwrctx.lineTo((iarray[i]*5.25),60-((pwrArray[i]+pwroffset)*pwrscale)); 
+				// this just keeps updating until it finds the last rendedered
+				// thus the result after the loop will be location for the dot now.
+				if(iarray[i] <= frameNumber) {
 					elAniX = (iarray[i]*5);
 					elAniY = 60-zarray[i];
+					hrmAniX = (iarray[i]*5.25);
+					hrmAniY = 60-((hrmArray[i]+hrmoffset)*hrmscale);
+					cadAniX = (iarray[i]*5.25);
+					cadAniY = 60-((cadArray[i]+cadoffset)*cadscale);
+					pwrAniX = (iarray[i]*5.25);
+					pwrAniY = 60-((pwrArray[i]+pwroffset)*pwrscale);
 					mpAniX = (xarray[i]);
 					mpAniY = yarray[i];
 				}
 			}
 			ctx.stroke();
 
-			// now close off the shape
+			// now close off the shapes and fill
 			elvctx.lineTo(1214,63);
 			elvctx.lineTo(0,63);
 			elvctx.closePath();
-			elvctx.strokeStyle = elvLnColor;
 			elvctx.stroke();
-			// and fill
-			elvctx.fillStyle = elvFlColor;
 			elvctx.fill();
+			hrmctx.lineTo(1280,63);
+			hrmctx.lineTo(0,63);
+			hrmctx.closePath();
+			hrmctx.stroke(); 
+			hrmctx.fill();
+			pwrctx.lineTo(1280,63);
+			pwrctx.lineTo(0,63);
+			pwrctx.closePath();
+			pwrctx.stroke();
+			pwrctx.fill();
+			cadctx.lineTo(1280,63);
+			cadctx.lineTo(0,63);
+			cadctx.closePath();
+			cadctx.stroke();
+			cadctx.fill();
 
 		// And finally, trace with an animated dot:
-			ctx.fillStyle = mapdot;
-			elvctx.fillStyle = elvdot;
+
 			ctx.font = "12px Arial";
 			elvctx.font = "12px Arial";
+			hrmctx.font = "12px Arial";
+			cadctx.font = "12px Arial";
+			pwrctx.font = "12px Arial";
+
 			ctx.beginPath();
+			ctx.fillStyle = mapdot;
 			ctx.arc(mpAniX, mpAniY, mpAniR, 0, 2 * Math.PI, false);
+			ctx.closePath();
 			ctx.fill();
+
 			elvctx.beginPath();
+			elvctx.fillStyle = elvdot;
 			elvctx.arc(elAniX, elAniY, elAniR, 0, 2 * Math.PI, false);
+			elvctx.closePath();
 			elvctx.fill();
+
+			hrmctx.beginPath();
+			hrmctx.fillStyle = hrmdot;
+			hrmctx.arc(hrmAniX, hrmAniY, hrmAniR, 0, 2 * Math.PI, false);
+			hrmctx.closePath();
+			hrmctx.fill();
+
+			cadctx.beginPath();
+			cadctx.fillStyle = caddot;
+			cadctx.arc(cadAniX, cadAniY, cadAniR, 0, 2 * Math.PI, false);
+			cadctx.closePath();
+			cadctx.fill();
+
+			pwrctx.beginPath();
+			pwrctx.fillStyle = pwrdot;
+			pwrctx.arc(pwrAniX, pwrAniY, pwrAniR, 0, 2 * Math.PI, false);
+			pwrctx.closePath();
+			pwrctx.fill();
 
 		// Now display z axis min max and chosen axis type
 			elvctx.fillStyle = elvAxColor;
-			elvctx.font = "12px Arial";
-			elvctx.fillText(Math.round(zmax)+" "+elunit, elvAxMxLabelX, elvAxMxLabelY);
-			elvctx.fillText(Math.round(zmin)+" "+elunit, elvAxMnLabelX, elvAxMnLabelY);
+			elvctx.fillText(Math.round(zmax)+" "+elunit, AxMxLabelX, AxMxLabelY);
+			elvctx.fillText(Math.round(zmin)+" "+elunit, AxMnLabelX, AxMnLabelY);
 			if (elex === "d") {
-				elvctx.fillText("X Axis: Dist", elvAxCtLabelX,elvAxCtLabelY);
+				elvctx.fillText("X Axis: Dist", AxCtLabelX,AxCtLabelY);
 			} else {
-				elvctx.fillText("X Axis: Time", elvAxCtLabelX,elvAxCtLabelY);
+				elvctx.fillText("X Axis: Time", AxCtLabelX,AxCtLabelY);
 			};
+			elvctx.fillText("Elevation", AxLabelX, AxLabelY);
 			elvctx.stroke();
 			
+			hrmctx.fillStyle = hrmAxColor;
+			hrmctx.fillText(Math.round(hrmmax)+" bpm", AxMxLabelX, AxMxLabelY);
+			hrmctx.fillText("Avg: "+Math.round(hrmavg)+"bpm", AxCtLabelX,AxCtLabelY);
+			hrmctx.fillText(Math.round(hrmmin)+" bpm", AxMnLabelX, AxMnLabelY);
+			hrmctx.fillText("Heart Rate", AxLabelX, AxLabelY);
+			hrmctx.stroke();
+
+			pwrctx.fillStyle = pwrAxColor;
+			pwrctx.fillText(Math.round(pwrmax)+" w", AxMxLabelX, AxMxLabelY);
+			pwrctx.fillText("Avg: "+Math.round(pwravg)+"w", AxCtLabelX,AxCtLabelY);
+			pwrctx.fillText(Math.round(pwrmin)+" w", AxMnLabelX, AxMnLabelY);
+			pwrctx.fillText("Power", AxLabelX, AxLabelY);
+			pwrctx.stroke();
+			
+			cadctx.fillStyle = cadAxColor;
+			cadctx.fillText(Math.round(cadmax)+" rpm", AxMxLabelX, AxMxLabelY);
+			cadctx.fillText("Avg: "+Math.round(cadavg)+"rpm", AxCtLabelX,AxCtLabelY);
+			cadctx.fillText(Math.round(cadmin)+" rpm", AxMnLabelX, AxMnLabelY);
+			cadctx.fillText("Cadence", AxLabelX, AxLabelY);
+			cadctx.stroke();
+
 
 		// Now display ride stats.
 			elvctx.fillStyle = elvAxColor;
@@ -838,11 +1057,28 @@
 			ctx.stroke();
 			ctx.globalCompositeOperation = 'source-over'; // just never ever leave this on background it's annoying :) 
 			elvctx.globalCompositeOperation = 'destination-over';
-			elvctx.fillStyle = elvBgColor; // "#A0A0A0"
+			elvctx.fillStyle = elvBgColor;
 			elvctx.fillRect(0, 0, elvc.width, elvc.height);
 			elvctx.stroke();
-			elvctx.globalCompositeOperation = 'source-over'; // just never ever leave this on background it's annoying :) 
+			elvctx.globalCompositeOperation = 'source-over';
 
+			hrmctx.globalCompositeOperation = 'destination-over'
+			hrmctx.fillStyle = hrmBgColor;
+			hrmctx.fillRect(-5000, -5000, 10000, 10000);
+			hrmctx.stroke();
+			hrmctx.globalCompositeOperation = 'source-over';
+
+			cadctx.globalCompositeOperation = 'destination-over'
+			cadctx.fillStyle = cadBgColor;
+			cadctx.fillRect(-5000, -5000, 10000, 10000);
+			cadctx.stroke();
+			cadctx.globalCompositeOperation = 'source-over';
+
+			pwrctx.globalCompositeOperation = 'destination-over'
+			pwrctx.fillStyle = pwrBgColor;
+			pwrctx.fillRect(-5000, -5000, 10000, 10000);
+			pwrctx.stroke();
+			pwrctx.globalCompositeOperation = 'source-over';
 
 
 
@@ -864,14 +1100,17 @@
 			elvctx.fillText(link3Text, link3X+textoffsetx, link3Y+textoffsety);
 			elvctx.stroke();
 
+			}
 
-			// and monitor, run the below functions to determine mouse location and respond to clicks
+		function drawMapAndElv() { 
+			displayFrame(currAniIx,false);
+			var hfbtn = document.getElementById("hiddenContainer")
+
 			currAniIx += 1;
 			if( currAniIx > aniframes || zRtRun == 0) {
 				currAniIx = 0; // and we're done with anim.
 				zRtRun=0;
-				var hfbtn = document.getElementById("xmlfile")
-				hfbtn.style.display = "block";
+				if (route === null) {hfbtn.style.display = "block"};
 			}
 			else {
 				window.requestAnimationFrame(drawMapAndElv); // call itself again when finished to continue animating.
@@ -891,45 +1130,93 @@
 		function procMapLoad() {
 			if (maptype === "atlas") {
 				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
-				mapbg = atlasBg; //"#0fa8d2";
-				mapline = atlasLn; //"#0000ff";
-				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
-				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
-				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
-				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
+				mapbg = atlasBg;
+				mapline = atlasLn; 
+				elvAxColor = elvAxColorAtls;
+				elvLnColor = elvLnColorAtls;
+				elvFlColor = elvFlColorAtls;
+				elvBgColor = elvBgColorAtls;
+				hrmAxColor = hrmAxColorAtls;
+				hrmLnColor = hrmLnColorAtls;
+				hrmFlColor = hrmFlColorAtls;
+				hrmBgColor = hrmBgColorAtls;
+				cadAxColor = cadAxColorAtls;
+				cadLnColor = cadLnColorAtls;
+				cadFlColor = cadFlColorAtls;
+				cadBgColor = cadBgColorAtls;
+				pwrAxColor = pwrAxColorAtls;
+				pwrLnColor = pwrLnColorAtls;
+				pwrFlColor = pwrFlColorAtls;
+				pwrBgColor = pwrBgColorAtls;
 				mapdot = mapline;
-				elvdot = mapline;
+				elvdot = elvLnColor;
+				hrmdot = hrmLnColor;
+				caddot = cadLnColor;
+				pwrdot = pwrLnColor;
 			} else if (maptype === "road") {
-				img.src = roadPng; //'images/map_road.png'; // Set source path -- triggers loading!
-				mapbg = roadBg; //"#1862ad";
-				mapline = roadLn; //"#ff0000";
-				elvAxColor = elvAxColorRoad; // "#ffffff"; // color of the axis labels in elevation chart
-				elvLnColor = elvLnColorRoad; // "#121280"; // color of the line in elevation chart
-				elvFlColor = elvFlColorRoad; // "#707070"; // color of the graph fill in elevation chart
-				elvBgColor = elvBgColorRoad; // "#404040"; // color of the background in elevation chart
+				img.src = roadPng;
+				mapbg = roadBg;
+				mapline = roadLn;
+				elvAxColor = elvAxColorRoad;
+				elvLnColor = elvLnColorRoad;
+				elvFlColor = elvFlColorRoad;
+				elvBgColor = elvBgColorRoad;
+				hrmAxColor = hrmAxColorRoad;
+				hrmLnColor = hrmLnColorRoad;
+				hrmFlColor = hrmFlColorRoad;
+				hrmBgColor = hrmBgColorRoad;
+				cadAxColor = cadAxColorRoad;
+				cadLnColor = cadLnColorRoad;
+				cadFlColor = cadFlColorRoad;
+				cadBgColor = cadBgColorRoad;
+				pwrAxColor = pwrAxColorRoad;
+				pwrLnColor = pwrLnColorRoad;
+				pwrFlColor = pwrFlColorRoad;
+				pwrBgColor = pwrBgColorRoad;
 				mapdot = mapline;
-				elvdot = mapline;
+				elvdot = elvLnColor;
+				hrmdot = hrmLnColor;
+				caddot = cadLnColor;
+				pwrdot = pwrLnColor;
 			} else if (maptype === "satellite") {
-				img.src = satlPng; //'images/map_satl.png'; // Set source path -- triggers loading!
-				mapbg = satlBg; //"#143d6b";
-				mapline = satlLn; //"#ff00ff";
-				elvAxColor = elvAxColorSatl; // "#ffffff"; // color of the axis labels in elevation chart
-				elvLnColor = elvLnColorSatl; // "#121280"; // color of the line in elevation chart
-				elvFlColor = elvFlColorSatl; // "#707070"; // color of the graph fill in elevation chart
-				elvBgColor = elvBgColorSatl; // "#404040"; // color of the background in elevation chart
+				img.src = satlPng;
+				mapbg = satlBg; 
+				mapline = satlLn; 
+				elvAxColor = elvAxColorSatl;
+				elvLnColor = elvLnColorSatl;
+				elvFlColor = elvFlColorSatl;
+				elvBgColor = elvBgColorSatl;
+				hrmAxColor = hrmAxColorSatl;
+				hrmLnColor = hrmLnColorSatl;
+				hrmFlColor = hrmFlColorSatl;
+				hrmBgColor = hrmBgColorSatl;
+				cadAxColor = cadAxColorSatl;
+				cadLnColor = cadLnColorSatl;
+				cadFlColor = cadFlColorSatl;
+				cadBgColor = cadBgColorSatl;
+				pwrAxColor = pwrAxColorSatl;
+				pwrLnColor = pwrLnColorSatl;
+				pwrFlColor = pwrFlColorSatl;
+				pwrBgColor = pwrBgColorSatl;
 				mapdot = mapline;
-				elvdot = mapline;
+				elvdot = elvLnColor;
+				hrmdot = hrmLnColor;
+				caddot = cadLnColor;
+				pwrdot = pwrLnColor;
 			} else  {
 				maptype = defaultMaptype;
-				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
-				mapbg = atlasBg; //"#0fa8d2";
-				mapline = atlasLn; //"#0000ff";
-				elvAxColor = elvAxColorAtls; // "#ffffff"; // color of the axis labels in elevation chart
-				elvLnColor = elvLnColorAtls; // "#121280"; // color of the line in elevation chart
-				elvFlColor = elvFlColorAtls; // "#707070"; // color of the graph fill in elevation chart
-				elvBgColor = elvBgColorAtls; // "#404040"; // color of the background in elevation chart
+				img.src = atlasPng;
+				mapbg = atlasBg;
+				mapline = atlasLn;
+				elvAxColor = elvAxColorAtls; 
+				elvLnColor = elvLnColorAtls; 
+				elvFlColor = elvFlColorAtls; 
+				elvBgColor = elvBgColorAtls; 
 				mapdot = mapline;
-				elvdot = mapline;
+				elvdot = elvLnColor;
+				hrmdot = hrmLnColor;
+				caddot = cadLnColor;
+				pwrdot = pwrLnColor;
 			}
 		};
 		
