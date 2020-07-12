@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- <a id="start">Start</a> <a id="stop">Stop</a> -->
 	<meta charset="utf-8" http-equiv="Content-Type" name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -196,8 +197,8 @@
 		const initialTransY = 0;
 	
 	// variables
-		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,hrmdot,pwrdot,caddot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg;
-	
+		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,hrmdot,pwrdot,caddot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg,mouseMsgText,aniIndex;
+
 		EasyFit = window.easyFit.default;
 		EFreader = new FileReader();
 		inEasyFit = new EasyFit({
@@ -212,6 +213,7 @@
 		let xarray = []; 
 		let yarray = []; 
 		let zarray = []; 
+		let elevarray = []; 
 		let tarray = []; 
 		let darray = []; // new array for cumulative distance
 		let iarray = []; // Instead of just using the "t" array, build an index array based on either t or cumulative distance
@@ -268,6 +270,7 @@
 	//  This is executed every time mouse movement occurs over the button canvas (event handler)
         function CanvasMouseMove(e) {
             var x, y;
+			var cpos = { top: e.pageY + 10, left: e.pageX + 10 };
 			if (e.pageX || e.pageY) { 
 			  x = e.pageX;
 			  y = e.pageY;
@@ -300,12 +303,26 @@
             }
 			if (currAniIx == 0 && zCount == 0 && imgLoaded === 1 && xmlLoaded === 1 && x < link1X) {
 				displayFrame(Math.round(x/5));
+				if(met === "Imperial") {
+					mouseMsgText = Math.round(elevarray[aniIndex]*meters2feet)+elunit;
+				} else {
+					mouseMsgText = Math.round(elevarray[aniIndex])+elunit;
+				}
+				$('#besideMouse').offset(cpos);
+				$("#besideMouse").html(mouseMsgText);
+			} else {
+				console.log("skip:");
+				console.log(currAniIx);
+				console.log(zCount);
+				console.log(imgLoaded);
+				console.log(xmlLoaded);
 			}
         }
 
 
         function CanvasMouseMoveLower(e) {
             var x, y;
+			var cpos = { top: e.pageY + 10, left: e.pageX + 10 };
 			if (e.pageX || e.pageY) { 
 			  x = e.pageX;
 			  y = e.pageY;
@@ -317,11 +334,32 @@
 			x -= elvc.offsetLeft;
 			y -= elvc.offsetTop;
 			
+			document.body.style.cursor = "";
 			if (currAniIx == 0 && zCount == 0 && imgLoaded === 1 && xmlLoaded === 1) {
+
+				mouseMsgText = "figure this out";
 				displayFrame(Math.round(x/5.25));
+
+				if (this.id == "hrm") {
+					mouseMsgText = Math.round(hrmArray[aniIndex])+"bpm";
+				};
+				if (this.id == "cad") {
+					mouseMsgText = Math.round(cadArray[aniIndex])+"rpm";
+				};
+				if (this.id == "pwr") {
+					mouseMsgText = Math.round(pwrArray[aniIndex])+"w";
+				};
+				console.log(mouseMsgText);
+				$('#besideMouse').offset(cpos);
+				$("#besideMouse").html(mouseMsgText);
+
 			} else {
-                document.body.style.cursor = "";
-            }
+				console.log("skip:");
+				console.log(currAniIx);
+				console.log(zCount);
+				console.log(imgLoaded);
+				console.log(xmlLoaded);
+			}
         }
 
 
@@ -522,6 +560,7 @@
 			xarray = []; 
 			yarray = []; 
 			zarray = []; 
+			elevarray = [];
 			tarray = []; 
 			darray = [];
 			iarray = [];
@@ -586,6 +625,7 @@
 				xarray[i]=(thisLon+(xoffset*1))*xfactor;
 				yarray[i]=(thisLat+(yoffset*1))*yfactor;
 				zarray[i]=thisElev;
+				elevarray[i]=thisElev;
 				tarray[i]=cmlTime;
 				darray[i]=cmlDist;
 				hrmArray[i]=thisHRM;
@@ -605,6 +645,8 @@
 				if(yarray[i] < ylolim) {yarray[i] = ylolim;};
 				if(zarray[i] > zhilim) {zarray[i] = zhilim;};
 				if(zarray[i] < zlolim) {zarray[i] = zlolim;};
+				if(elevarray[i] > zhilim) {elevarray[i] = zhilim;};
+				if(elevarray[i] < zlolim) {elevarray[i] = zlolim;};
 			}
 	
 	// would be nice to implement these in a graph at some point :) 
@@ -866,7 +908,7 @@
 
 // this function displayse frame number (frameNumber).
 // it's called by the animation as well as by the mouseover positioning.
-		function displayFrame(frameNumber,hovertext) {
+		function displayFrame(frameNumber) {
 			ctx.drawImage(img, 0, 0);
 			// now prep & draw route;
 			ctx.beginPath();
@@ -918,6 +960,7 @@
 
 			// use path to trace the elevation line, then loop back along the bottom edge of the canvas to create a 'shape'
 			// then close and fill it.
+			aniIndex=0;
 			for (var i=1, len=xarray.length; i<len; i++) { // note: assumes length alignment x/y/z/t
 				ctx.lineTo(xarray[i],yarray[i]);
 				elvctx.lineTo((iarray[i]*5),60-zarray[i]);
@@ -937,6 +980,7 @@
 					pwrAniY = 60-((pwrArray[i]+pwroffset)*pwrscale);
 					mpAniX = (xarray[i]);
 					mpAniY = yarray[i];
+					aniIndex = i;
 				}
 			}
 			ctx.stroke();
@@ -1103,7 +1147,7 @@
 			}
 
 		function drawMapAndElv() { 
-			displayFrame(currAniIx,false);
+			displayFrame(currAniIx);
 			var hfbtn = document.getElementById("hiddenContainer")
 
 			currAniIx += 1;
@@ -1287,6 +1331,7 @@
 		};
 	</script>
 
+<p id="besideMouse"></p>
 </body>
 </html>
 

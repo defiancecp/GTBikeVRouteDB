@@ -12,6 +12,10 @@ canvas { /* */
     border-width: 1px;
     border-color: #222 #222 #222;
 }
+#besideMouse {
+	height:0px;
+	width:0px;
+}
 
 #warntext {
 	color:#400000;
@@ -67,7 +71,13 @@ canvas { /* */
 }
 
 #canvasContainer { /* inner container for canvases */
+	width:1280px;
+	height:720px;
 	width:100%;
+	padding-left:0;
+	padding-right:0;
+	margin-left:0;
+	margin-right:0;
 }
 
 #topCvsBar {
