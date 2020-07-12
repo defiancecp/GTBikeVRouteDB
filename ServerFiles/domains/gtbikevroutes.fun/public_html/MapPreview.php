@@ -279,28 +279,28 @@
 			x -= elvc.offsetLeft;
 			y -= elvc.offsetTop;
 			
+			isLink3 = false;
+			isLink1 = false;
+			isLink2 = false;
+			document.body.style.cursor = "";
             if (x >= link1X && x <= (link1X + link1Width) 
                     && y >= link1Y && y <= (link1Y + link1Height)) {
                 document.body.style.cursor = "pointer";
                 isLink1 = true;
             }
-            else if (x >= link2X && x <= (link2X + link2Width) 
+            if (x >= link2X && x <= (link2X + link2Width) 
                     && y >= link2Y && y <= (link2Y + link2Height)) {
                 document.body.style.cursor = "pointer";
                 isLink2 = true;
             }
-            else if (x >= link3X && x <= (link3X + link3Width) 
+            if (x >= link3X && x <= (link3X + link3Width) 
                     && y >= link3Y && y <= (link3Y + link3Height)) {
                 document.body.style.cursor = "pointer";
                 isLink3 = true;
-            } else if (currAniIx == 0 && zCount == 0 && x >= 0 &&x < link3X && imgLoaded === 1 && xmlLoaded === 1) {
-				displayFrame(Math.round(x/5));
-			} else {
-                document.body.style.cursor = "";
-                isLink3 = false;
-                isLink1 = false;
-                isLink2 = false;
             }
+			if (currAniIx == 0 && zCount == 0 && imgLoaded === 1 && xmlLoaded === 1 && x < link1X) {
+				displayFrame(Math.round(x/5));
+			}
         }
 
 
