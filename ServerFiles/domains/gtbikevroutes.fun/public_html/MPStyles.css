@@ -12,9 +12,23 @@ canvas { /* */
     border-width: 1px;
     border-color: #222 #222 #222;
 }
+
+h1 {
+	color:#C0D0C8;
+}
+
 #besideMouse {
 	height:0px;
 	width:0px;
+}
+
+#topbanner {
+	display:none;
+	background-image:url("images/gtbv_banr.jpg");
+	background-repeat: no-repeat;
+	background-size: 100% auto;
+	background-position: center; 
+	height: 120px;
 }
 
 #warntext {
@@ -23,10 +37,11 @@ canvas { /* */
 #hiddenContainer {
 	/* hidden container where I put user interface buttons that aren't part of 
 	normal route preview functionality.  If no route is passed, it falls back into
-	user direct mode, exposing the buttons and file loading form. */
+	user direct mode, exposing the buttons and file loading form.
+	background-color:#A0A0A0;
+	*/
 	display:none;
 	width:100%;
-	background-color:#A0A0A0;
 }
 
 #hiddenCadGphCon {

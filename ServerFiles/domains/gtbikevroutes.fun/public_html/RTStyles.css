@@ -5,13 +5,6 @@
 	background-position: center; 
 }
 
-#topbanner {
-	background-image:url("images/gtbv_banr.jpg");
-	background-repeat: no-repeat;
-	background-size: 100% auto;
-	background-position: center; 
-}
-
 .link {
 	color: #7080C0;
 	text-decoration: underline;

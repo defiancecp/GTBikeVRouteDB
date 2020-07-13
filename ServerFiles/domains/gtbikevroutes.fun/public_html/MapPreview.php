@@ -14,12 +14,16 @@
 	<link rel="stylesheet" href="MPStyles.css">
 </head> 
 <body>
-<div id="hiddenContainer">
+<div id="topbanner">
+  <h1>GTBike V Ride Viewer</h1>
+  <div id="hiddenContainer">
+	<br>
 	<input type="file" id="xmlfile"></input>
 	<button onclick="clkImpMet()" id="btnImpMet">Imperial/Metric switch</button>
 	<button onclick="clkTmDst()" id="btnTmDst">Time/Distance switch</button>
 	<button onclick="clkScrSht()" id="btnScrSht">Take Screenshot</button> 
 	<br><div id="warntext"></div>
+  </div>
 </div>
 <div id="main">
 <div id="canvasContainer">
@@ -1297,6 +1301,8 @@
 				var hcont = document.getElementById("hiddenContainer")
 				hcont.style.display = "block";
 				document.body.style.backgroundColor = visBodyBG;
+				var tbcont = document.getElementById("topbanner")
+				tbcont.style.display = "block";
 
 			} else {
 				// this is tricky to follow becuase of asynchronous standards. 
