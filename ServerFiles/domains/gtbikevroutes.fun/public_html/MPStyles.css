@@ -121,8 +121,13 @@ h1 {
 }
 
 #scrCanvas { /* screenshot canvas */
-	 width:1280;
-	 height:720;
+	width:1280px;
+	overflow: hidden;
+	width:100%;
+	padding-left:0;
+	padding-right:0;
+	margin-left:0;
+	margin-right:0;
 }
 
 
