@@ -9,6 +9,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 	<script src="html2canvas.min.js"></script>
 	<script src="FileSaver.js"></script>
+	<script src="mpconsts.js"></script> 
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
     <script type="text/javascript" src="easy-fit.bundle.js"></script>
 	<link rel="stylesheet" href="MPStyles.css">
@@ -40,165 +41,8 @@
 </div>
 <script>
 
-		// set up a bunch of constant definitions at the outset to simplify 
-		// adjusting if needed.
-		// first set define aspects of the map style buttons.
-		const textoffsetx = 12; // how far all button text is offset from top
-		const textoffsety = 14; // how far all button text is offset from left
-
-		// details for first button
-		const link1Text = "Atlas"; // text
-		const link1X = 1216; // position
-		const link1Y = 0;
-		const link1Height = 21; // size
-		const link1Width = 63;
-
-		// repeat for other buttons.
-		const link2Text = "Road";
-		const link2X = 1216;
-		const link2Y = 20;
-		const link2Height = 21;
-		const link2Width = 63;
-
-		// repeat for other buttons.
-		const link3Text = "Satellite";
-		const link3X = 1216;
-		const link3Y = 40;
-		const link3Height = 21;
-		const link3Width = 63;
-		
-		// set up params from the URL for use in the rest of the script
-		const queryString = window.location.search;
-		const urlParams = new URLSearchParams(queryString);
-
-		// These define conversion factors to convert from the .fit x/y lat/long to
-		//  equivalent map pixels, based on 2048x2048 map images with 0,0 being top left 
-		const xfactor = 17375; // this is multipler to convert to latlong to pixels
-		const xoffset = 169.9250; // this is offset to convert latlong to to pixels
-	// note that it's not quite the same as the offset in the ini, since game 0's from map center, html from top/left.
-		const yfactor = -18275; // this is multipler to convert latlong to to pixels
-		const yoffset = 19.0309	; // this is offset to convert latlong to to pixels
-		// not sure why x/y are different, but they are ... maybe the map images are squished slightly?
-
-		// sanity limits on values
-		const xhilim = 2007; // the map has wide boundaries with no roads
-		const xlolim = 41; // and limiting this makes some other stuff easier
-		const yhilim = 2007; // so we use 98% of 2048= 2007
-		const ylolim = 41; // and 2048-2007=41
-		const zhilim = 50000; // just sanity imposed here - you're not 50km in the air
-		const zlolim = -5000; // or 5km underground 
-		
-		// metric/imperial conversion factors.
-		const meters2feet = 3.28084; // this is multipler for conversion to either imperial
-		const km2mi = 0.621371; // this is multipler for conversion to either imperial
-		const earthRadius = 6371; // in km
-		const AxMxLabelX = 2; // pixels from left border for maximum elevation label on z axis
-		const AxMxLabelY = 10; //  pixels from top border for maximum elevation label on z axis
-		const AxMnLabelX = 2; // pixels from left border for minimum elevation label on z axis
-		const AxMnLabelY = 60; // pixels from top border for minimum elevation label on z axis
-		const AxCtLabelX = 2;
-		const AxCtLabelY = 35;
-		const AxLabelX = 610;
-		const AxLabelY = 10;
-
-		const elvDistLabelX = 1130;
-		const elvDistLabelY = 15;
-		const elvTimeLabelX = 1130;
-		const elvTimeLabelY = 30;
-		const elvAsceLabelX = 1130;
-		const elvAsceLabelY = 45;
-		const elvDescLabelX = 1130;
-		const elvDescLabelY = 60;
-
-		const defaultMaptype = "atlas"; // just setting a default
-		const defaultMet = "Metric"; // just setting a default
-		const defaultElex = "d";
-		
-		const atlasPng = 'images/map_atls.png'; // file source for atlas map
-		const roadPng = 'images/map_road.png'; // file source for road map
-		const satlPng = 'images/map_satl.png'; // file source for satellite map
-
-		/// COLORS!!! woo.  Lots of colors for canvas elements defined here.
-		const atlasBg = "#0fa8d2"; // background color for atlas map
-		const roadBg = "#1862ad"; // background color for road map
-		const satlBg = "#143d6b"; // background color for satellite map
-
-		const atlasLn = "#0000ff"; // line color for atlas map
-		const roadLn = "#ff0000"; // line color for road map
-		const satlLn = "#ff00ff"; // line color for satellite map
-
-		const btnAtlsColr = 'rgb(128,185,35)'; // color of bg for atlas
-		const btnRoadColr = 'rgb(146, 210, 187)'; // color of bg for road
-		const btnSatlColr = 'rgb(0, 153, 0)'; // color of bg for sat
-
-		const elvAxColorAtls = "#ffffff"; // color of the axis labels 
-		const elvAxColorRoad = "#ffffff"; // 
-		const elvAxColorSatl = "#ffffff"; // 
-		const hrmAxColorAtls = "#ffffff"; // 
-		const hrmAxColorRoad = "#ffffff"; // 
-		const hrmAxColorSatl = "#ffffff"; // 
-		const cadAxColorAtls = "#ffffff"; //
-		const cadAxColorRoad = "#ffffff"; //
-		const cadAxColorSatl = "#ffffff"; //
-		const pwrAxColorAtls = "#ffffff"; //
-		const pwrAxColorRoad = "#ffffff"; //
-		const pwrAxColorSatl = "#ffffff"; //
-
-		const elvLnColorAtls = "#D0D0D0"; // color of the line 
-		const elvLnColorRoad = "#D0D0D0"; //
-		const elvLnColorSatl = "#D0D0D0"; //
-		const hrmLnColorAtls = "#20FF20"; //
-		const hrmLnColorRoad = "#20FF20"; //
-		const hrmLnColorSatl = "#20FF20"; //
-		const cadLnColorAtls = "#6060FF"; //
-		const cadLnColorRoad = "#6060FF"; //
-		const cadLnColorSatl = "#6060FF"; //
-		const pwrLnColorAtls = "#FF2020"; //
-		const pwrLnColorRoad = "#FF2020"; //
-		const pwrLnColorSatl = "#FF2020"; //
-
-
-		const elvFlColorAtls = "#606060"; // color of the graph fill 
-		const elvFlColorRoad = "#606060"; // 
-		const elvFlColorSatl = "#606060"; // 
-		const hrmFlColorAtls = "#006000"; // 
-		const hrmFlColorRoad = "#006000"; // 
-		const hrmFlColorSatl = "#006000"; // 
-		const cadFlColorAtls = "#0040A0"; //
-		const cadFlColorRoad = "#0040A0"; //
-		const cadFlColorSatl = "#0040A0"; //
-		const pwrFlColorAtls = "#600000"; //
-		const pwrFlColorRoad = "#600000"; //
-		const pwrFlColorSatl = "#600000"; //
-
-		const elvBgColorAtls = "#303030"; // color of the background in elevation chart
-		const elvBgColorRoad = "#303030"; // 
-		const elvBgColorSatl = "#303030"; // 
-		const hrmBgColorAtls = "#003000"; // 
-		const hrmBgColorRoad = "#003000"; // 
-		const hrmBgColorSatl = "#003000"; // 
-		const cadBgColorAtls = "#002050"; //
-		const cadBgColorRoad = "#002050"; //
-		const cadBgColorSatl = "#002050"; //
-		const pwrBgColorAtls = "#300000"; //
-		const pwrBgColorRoad = "#300000"; //
-		const pwrBgColorSatl = "#300000"; //
-		
-		const visBodyBG = '#A0A0A0';
-		
-		const minLineWidth = 0.25;
-		const elAniR = 5;
-		const hrmAniR = 5;
-		const pwrAniR = 5;
-		const cadAniR = 5;
-
-		const aniframes = 243; // number of frames to display in animation
-		const initialZoom = 0.42;
-		const initialTransX = 180;
-		const initialTransY = -120;
-	
 	// variables
-		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,elvAxColor,elvLnColor,elvFlColor,elvBgColor,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,elvdot,hrmdot,pwrdot,caddot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg,mouseMsgText,aniIndex;
+		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg,mouseMsgText,aniIndex;
 
 		EasyFit = window.easyFit.default;
 		EFreader = new FileReader();
@@ -232,9 +76,9 @@
 		lastZoom = 1;
 		lastTransX = 0;
 		lastTransY = 0;
-		zoomfactorxy = initialZoom;
-		translatefactorx = initialTransX;
-		translatefactory = initialTransY;
+		zoomfactorxy = INITIAL_ZOOM;
+		translatefactorx = INITIAL_TRANSLATION_X;
+		translatefactory = INITIAL_TRANSLATION_Y;
 		
 	// based on zoom level, but initialize at these values
 		mpLineWidth = 1;
@@ -287,25 +131,25 @@
 			isLink1 = false;
 			isLink2 = false;
 			document.body.style.cursor = "";
-            if (x >= link1X && x <= (link1X + link1Width) 
-                    && y >= link1Y && y <= (link1Y + link1Height)) {
+            if (x >= LINK_1_X && x <= (LINK_1_X + link1Width) 
+                    && y >= LINK_1_Y && y <= (LINK_1_Y + LINK_1_HEIGHT)) {
                 document.body.style.cursor = "pointer";
                 isLink1 = true;
             }
-            if (x >= link2X && x <= (link2X + link2Width) 
-                    && y >= link2Y && y <= (link2Y + link2Height)) {
+            if (x >= LINK_2_X && x <= (LINK_2_X + LINK_2_WIDTHh) 
+                    && y >= LINK_2_Y && y <= (LINK_2_Y + LINK_2_HEIGHT)) {
                 document.body.style.cursor = "pointer";
                 isLink2 = true;
             }
-            if (x >= link3X && x <= (link3X + link3Width) 
-                    && y >= link3Y && y <= (link3Y + link3Height)) {
+            if (x >= LINK_3_X && x <= (LINK_3_X + LINK_3_WIDTHh) 
+                    && y >= LINK_3_Y && y <= (LINK_3_Y + LINK_3_HEIGHT)) {
                 document.body.style.cursor = "pointer";
                 isLink3 = true;
             }
-			if (currAniIx == 0 && zCount == 0 && imgLoaded === 1 && xmlLoaded === 1 && x < link1X) {
+			if (currAniIx == 0 && zCount == 0 && imgLoaded === 1 && xmlLoaded === 1 && x < LINK_1_X) {
 				displayFrame(Math.round(x/5));
 				if(met === "Imperial") {
-					mouseMsgText = Math.round(elevarray[aniIndex]*meters2feet)+elunit;
+					mouseMsgText = Math.round(elevarray[aniIndex]*METERS_2_FEET)+elunit;
 				} else {
 					mouseMsgText = Math.round(elevarray[aniIndex])+elunit;
 				}
@@ -380,7 +224,7 @@
 	// getting distance based on standard earth-surface lat-long distance calc.  Result in kliometers.
 	// executed when processing data, used to calc point to point distance between each nav point.
 		function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-			var R = earthRadius; // Radius of the earth in km
+			var R = EARTH_RADIUS; // Radius of the earth in km
 			var dLat = deg2rad(lat2-lat1);  // deg2rad below
 			var dLon = deg2rad(lon2-lon1); 
 			var lat1 = deg2rad(lat1);
@@ -430,9 +274,9 @@
 					met = "Imperial"
 				} else {
 					met = "Metric"
-					cmlElev = cmlElev/meters2feet; // total ascent feet to meters
-					cmlDesc = cmlDesc/meters2feet; // total descent feet to meters
-					cmlDist = cmlDist/km2mi; // total distance mi to km
+					cmlElev = cmlElev/METERS_2_FEET; // total ascent feet to meters
+					cmlDesc = cmlDesc/METERS_2_FEET; // total descent feet to meters
+					cmlDist = cmlDist/KM_2_MI; // total distance mi to km
 				};
 				processData();
 			} else {console.log("ignore user click on impet.");}
@@ -627,8 +471,8 @@
 				lastLat = thisLat;
 				lastLon = thisLon;
 
-				xarray[i]=(thisLon+(xoffset*1))*xfactor;
-				yarray[i]=(thisLat+(yoffset*1))*yfactor;
+				xarray[i]=(thisLon+(XOFFSET*1))*XFACTOR;
+				yarray[i]=(thisLat+(YOFFSET*1))*YFACTOR;
 				zarray[i]=thisElev;
 				elevarray[i]=thisElev;
 				tarray[i]=cmlTime;
@@ -644,21 +488,15 @@
 				};
 
 				// now impose sanity limits on values - just confirm they're not outside predefined limits.
-				if(xarray[i] > xhilim) {xarray[i] = xhilim;};
-				if(xarray[i] < xlolim) {xarray[i] = xlolim;};
-				if(yarray[i] > yhilim) {yarray[i] = yhilim;};
-				if(yarray[i] < ylolim) {yarray[i] = ylolim;};
-				if(zarray[i] > zhilim) {zarray[i] = zhilim;};
-				if(zarray[i] < zlolim) {zarray[i] = zlolim;};
-				if(elevarray[i] > zhilim) {elevarray[i] = zhilim;};
-				if(elevarray[i] < zlolim) {elevarray[i] = zlolim;};
+				if(xarray[i] > X_HI_LIM) {xarray[i] = X_HI_LIM;};
+				if(xarray[i] < X_LO_LIM) {xarray[i] = X_LO_LIM;};
+				if(yarray[i] > Y_HI_LIM) {yarray[i] = Y_HI_LIM;};
+				if(yarray[i] < Y_LO_LIM) {yarray[i] = Y_LO_LIM;};
+				if(zarray[i] > Z_HI_LIM) {zarray[i] = Z_HI_LIM;};
+				if(zarray[i] < Z_LO_LIM) {zarray[i] = Z_LO_LIM;};
+				if(elevarray[i] > Z_HI_LIM) {elevarray[i] = Z_HI_LIM;};
+				if(elevarray[i] < Z_LO_LIM) {elevarray[i] = Z_LO_LIM;};
 			}
-	
-	// would be nice to implement these in a graph at some point :) 
-	// probably just for ride preview, not for route. dynhidden canvas below?
-	// oh yeah, could even dyn-hide-expose if the file has the data.
-	// ************************************************************
-
 			processData();
 		}
 
@@ -774,21 +612,21 @@
 				zoffset2 = 0-zmin; // (zmin*zfactor2)+20;
 			}
 			
-			if (urlParams.get('route') === null) {
+			if (URLPARAMS.get('route') === null) {
 				// not logging in this case
 				console.log("not logging empty");
 			} else {
-				document.getElementById("frmGPX").src = 'SubmitGPXData.php?route='+urlParams.get('route')+'&dist='+cmlDist+'&asc='+cmlElev+'&desc='+cmlDesc;
-				console.log("just tried to submit GPX/Fit data back to db.  Route = "+urlParams.get('route')+" dist = "+cmlDist+" asc = "+cmlElev+" desc = "+cmlDesc);
+				document.getElementById("frmGPX").src = 'SubmitGPXData.php?route='+URLPARAMS.get('route')+'&dist='+cmlDist+'&asc='+cmlElev+'&desc='+cmlDesc;
+				console.log("just tried to submit GPX/Fit data back to db.  Route = "+URLPARAMS.get('route')+" dist = "+cmlDist+" asc = "+cmlElev+" desc = "+cmlDesc);
 			};
 
 			// convert from default metric values to imperial as needed.
 			if (met === "Imperial") {
-				zmin = zmin*meters2feet; // lowest elevation meters to feet
-				zmax = zmax*meters2feet; // highest elevation meters to feet
-				cmlElev = cmlElev*meters2feet; // total ascent meters to feet
-				cmlDesc = cmlDesc*meters2feet; // total descent meters to feet
-				cmlDist = cmlDist*km2mi; // total distance km to mi
+				zmin = zmin*METERS_2_FEET; // lowest elevation meters to feet
+				zmax = zmax*METERS_2_FEET; // highest elevation meters to feet
+				cmlElev = cmlElev*METERS_2_FEET; // total ascent meters to feet
+				cmlDesc = cmlDesc*METERS_2_FEET; // total descent meters to feet
+				cmlDist = cmlDist*KM_2_MI; // total distance km to mi
 				elunit = "ft"; // update unit tags
 				dstunit = "mi";
 			} else {
@@ -851,7 +689,7 @@
 
 		// dynamic line sizing here :)
 			mpLineWidth = (zoomfactorxy*-0.4)+4.5;
-			if(mpLineWidth<minLineWidth){mpLineWidth=minLineWidth};
+			if(mpLineWidth<MIN_LN_WIDTH){mpLineWidth=MIN_LN_WIDTH};
 			mpAniR = mpLineWidth*2.25;
 
 		//  *** ANALYZE DATASET COMPLETE ***
@@ -903,7 +741,7 @@
 				window.requestAnimationFrame(drawMapAndElv);
 			}
 			else {
-				window.requestAnimationFrame(drawZoom); // call itself again when finished to continue animating- at least until frames run out. Each time it executes, it waits until the frame is ready and then draws, then executes itself again, unti the counter hits the aniframes (max).
+				window.requestAnimationFrame(drawZoom); // call itself again when finished to continue animating- at least until frames run out. Each time it executes, it waits until the frame is ready and then draws, then executes itself again, unti the counter hits the ANIMATED_FRAMES (max).
 			};
 		}
 	// this is the function, run each frame, to draw the map and elevation profile.
@@ -911,8 +749,8 @@
 
 
 
-// this function displayse frame number (frameNumber).
-// it's called by the animation as well as by the mouseover positioning.
+	// this function displays frame number (frameNumber).
+	// it's called by the animation as well as by the mouseover positioning.
 		function displayFrame(frameNumber) {
 			ctx.drawImage(img, 0, 0);
 			// now prep & draw route;
@@ -937,15 +775,15 @@
 			cadctx = cadc.getContext("2d");
 			cadctx.globalCompositeOperation = 'source-over';
 
-			elvctx.strokeStyle = elvLnColor;
-			elvctx.fillStyle = elvFlColor;
-			hrmctx.strokeStyle = hrmLnColor;
-			hrmctx.fillStyle = hrmFlColor;
+			elvctx.strokeStyle = ELV_LN_COLOR;
+			elvctx.fillStyle = ELV_FL_COLOR;
+			hrmctx.strokeStyle = HRM_LN_COLOR;
+			hrmctx.fillStyle = HRM_FL_COLOR;
 
- 			pwrctx.strokeStyle = pwrLnColor;
-			pwrctx.fillStyle = pwrFlColor;
-			cadctx.strokeStyle = cadLnColor;
-			cadctx.fillStyle = cadFlColor;
+ 			pwrctx.strokeStyle = PWR_LN_COLOR;
+			pwrctx.fillStyle = PWR_FL_COLOR;
+			cadctx.strokeStyle = CAD_LN_COLOR;
+			cadctx.fillStyle = CAD_FL_COLOR;
 			
 			elvctx.beginPath();
 			elvctx.moveTo(0,63);
@@ -1027,76 +865,76 @@
 			ctx.fill();
 
 			elvctx.beginPath();
-			elvctx.fillStyle = elvdot;
-			elvctx.arc(elAniX, elAniY, elAniR, 0, 2 * Math.PI, false);
+			elvctx.fillStyle = ELV_LN_COLOR;
+			elvctx.arc(elAniX, elAniY, ANI_DOT_R, 0, 2 * Math.PI, false);
 			elvctx.closePath();
 			elvctx.fill();
 
 			hrmctx.beginPath();
-			hrmctx.fillStyle = hrmdot;
-			hrmctx.arc(hrmAniX, hrmAniY, hrmAniR, 0, 2 * Math.PI, false);
+			hrmctx.fillStyle = HRM_LN_COLOR;
+			hrmctx.arc(hrmAniX, hrmAniY, ANI_DOT_R, 0, 2 * Math.PI, false);
 			hrmctx.closePath();
 			hrmctx.fill();
 
 			cadctx.beginPath();
-			cadctx.fillStyle = caddot;
-			cadctx.arc(cadAniX, cadAniY, cadAniR, 0, 2 * Math.PI, false);
+			cadctx.fillStyle = CAD_LN_COLOR;
+			cadctx.arc(cadAniX, cadAniY, ANI_DOT_R, 0, 2 * Math.PI, false);
 			cadctx.closePath();
 			cadctx.fill();
 
 			pwrctx.beginPath();
-			pwrctx.fillStyle = pwrdot;
-			pwrctx.arc(pwrAniX, pwrAniY, pwrAniR, 0, 2 * Math.PI, false);
+			pwrctx.fillStyle = PWR_LN_COLOR;
+			pwrctx.arc(pwrAniX, pwrAniY, ANI_DOT_R, 0, 2 * Math.PI, false);
 			pwrctx.closePath();
 			pwrctx.fill();
 
 		// Now display z axis min max and chosen axis type
-			elvctx.fillStyle = elvAxColor;
-			elvctx.fillText(Math.round(zmax)+" "+elunit, AxMxLabelX, AxMxLabelY);
-			elvctx.fillText(Math.round(zmin)+" "+elunit, AxMnLabelX, AxMnLabelY);
+			elvctx.fillStyle = AXIS_COLOR;
+			elvctx.fillText(Math.round(zmax)+" "+elunit, AX_MX_LABEL_X, AX_MX_LABEL_Y);
+			elvctx.fillText(Math.round(zmin)+" "+elunit, AX_MN_LABEL_X, AX_MN_LABEL_Y);
 			if (elex === "d") {
-				elvctx.fillText("X Axis: Dist", AxCtLabelX,AxCtLabelY);
+				elvctx.fillText("X Axis: Dist", AX_CT_LABEL_X,AX_CT_LABEL_Y);
 			} else {
-				elvctx.fillText("X Axis: Time", AxCtLabelX,AxCtLabelY);
+				elvctx.fillText("X Axis: Time", AX_CT_LABEL_X,AX_CT_LABEL_Y);
 			};
-			elvctx.fillText("Elevation", AxLabelX, AxLabelY);
+			elvctx.fillText("Elevation", AX_LABEL_X, AX_LABEL_Y);
 			elvctx.stroke();
 			
-			hrmctx.fillStyle = hrmAxColor;
-			hrmctx.fillText(Math.round(hrmmax)+" bpm", AxMxLabelX, AxMxLabelY);
-			hrmctx.fillText("Avg: "+Math.round(hrmavg)+"bpm", AxCtLabelX,AxCtLabelY);
-			hrmctx.fillText(Math.round(hrmmin)+" bpm", AxMnLabelX, AxMnLabelY);
-			hrmctx.fillText("Heart Rate", AxLabelX, AxLabelY);
+			hrmctx.fillStyle = AXIS_COLOR;
+			hrmctx.fillText(Math.round(hrmmax)+" bpm", AX_MX_LABEL_X, AX_MX_LABEL_Y);
+			hrmctx.fillText("Avg: "+Math.round(hrmavg)+"bpm", AX_CT_LABEL_X,AX_CT_LABEL_Y);
+			hrmctx.fillText(Math.round(hrmmin)+" bpm", AX_MN_LABEL_X, AX_MN_LABEL_Y);
+			hrmctx.fillText("Heart Rate", AX_LABEL_X, AX_LABEL_Y);
 			hrmctx.stroke();
 
-			pwrctx.fillStyle = pwrAxColor;
-			pwrctx.fillText(Math.round(pwrmax)+" w", AxMxLabelX, AxMxLabelY);
-			pwrctx.fillText("Avg: "+Math.round(pwravg)+"w", AxCtLabelX,AxCtLabelY);
-			pwrctx.fillText(Math.round(pwrmin)+" w", AxMnLabelX, AxMnLabelY);
-			pwrctx.fillText("Power", AxLabelX, AxLabelY);
+			pwrctx.fillStyle = AXIS_COLOR;
+			pwrctx.fillText(Math.round(pwrmax)+" w", AX_MX_LABEL_X, AX_MX_LABEL_Y);
+			pwrctx.fillText("Avg: "+Math.round(pwravg)+"w", AX_CT_LABEL_X,AX_CT_LABEL_Y);
+			pwrctx.fillText(Math.round(pwrmin)+" w", AX_MN_LABEL_X, AX_MN_LABEL_Y);
+			pwrctx.fillText("Power", AX_LABEL_X, AX_LABEL_Y);
 			pwrctx.stroke();
 			
-			cadctx.fillStyle = cadAxColor;
-			cadctx.fillText(Math.round(cadmax)+" rpm", AxMxLabelX, AxMxLabelY);
-			cadctx.fillText("Avg: "+Math.round(cadavg)+"rpm", AxCtLabelX,AxCtLabelY);
-			cadctx.fillText(Math.round(cadmin)+" rpm", AxMnLabelX, AxMnLabelY);
-			cadctx.fillText("Cadence", AxLabelX, AxLabelY);
+			cadctx.fillStyle = AXIS_COLOR;
+			cadctx.fillText(Math.round(cadmax)+" rpm", AX_MX_LABEL_X, AX_MX_LABEL_Y);
+			cadctx.fillText("Avg: "+Math.round(cadavg)+"rpm", AX_CT_LABEL_X,AX_CT_LABEL_Y);
+			cadctx.fillText(Math.round(cadmin)+" rpm", AX_MN_LABEL_X, AX_MN_LABEL_Y);
+			cadctx.fillText("Cadence", AX_LABEL_X, AX_LABEL_Y);
 			cadctx.stroke();
 
 
 		// Now display ride stats.
-			elvctx.fillStyle = elvAxColor;
+			elvctx.fillStyle = AXIS_COLOR;
 			elvctx.font = "12px Arial";
-			elvctx.fillText("Dist:   "+Math.round(cmlDist*10)/10+" "+dstunit, elvDistLabelX, elvDistLabelY);
+			elvctx.fillText("Dist:   "+Math.round(cmlDist*10)/10+" "+dstunit, ELV_DIST_LABEL_X, ELV_DIST_LABEL_Y);
 
 			var hrs=Math.trunc(cmlTime/(3600000));
 			var mins=Math.trunc((cmlTime-(hrs*3600000))/60000);
 			if(mins<10) {dph=hrs+":0"+mins+":";} else {dph=hrs+":"+mins+":";};
 			var secs=Math.trunc((cmlTime-(hrs*3600000)-(mins*60000))/1000);
 			if(secs<10) {dph=dph+"0"+secs;} else {dph=dph+""+secs;};
-			elvctx.fillText("Time: "+dph, elvTimeLabelX, elvTimeLabelY);
-			elvctx.fillText("Asc:   "+Math.round(cmlElev)+" "+elunit, elvAsceLabelX, elvAsceLabelY);
-			elvctx.fillText("Desc: "+Math.round(cmlDesc)+" "+elunit, elvDescLabelX, elvDescLabelY);
+			elvctx.fillText("Time: "+dph, ELV_TIME_LABEL_X, ELV_TIME_LABEL_Y);
+			elvctx.fillText("Asc:   "+Math.round(cmlElev)+" "+elunit, ELV_ASCE_LABEL_X, ELV_ASCE_LABEL_Y);
+			elvctx.fillText("Desc: "+Math.round(cmlDesc)+" "+elunit, ELV_DESC_LABEL_X, ELV_DESC_LABEL_Y);
 			elvctx.stroke();
 
 		// draw backgrounds last, and draw behind.
@@ -1106,25 +944,25 @@
 			ctx.stroke();
 			ctx.globalCompositeOperation = 'source-over'; // just never ever leave this on background it's annoying :) 
 			elvctx.globalCompositeOperation = 'destination-over';
-			elvctx.fillStyle = elvBgColor;
+			elvctx.fillStyle = ELV_BG_COLOR;
 			elvctx.fillRect(0, 0, elvc.width, elvc.height);
 			elvctx.stroke();
 			elvctx.globalCompositeOperation = 'source-over';
 
 			hrmctx.globalCompositeOperation = 'destination-over'
-			hrmctx.fillStyle = hrmBgColor;
+			hrmctx.fillStyle = HRM_BG_COLOR;
 			hrmctx.fillRect(-5000, -5000, 10000, 10000);
 			hrmctx.stroke();
 			hrmctx.globalCompositeOperation = 'source-over';
 
 			cadctx.globalCompositeOperation = 'destination-over'
-			cadctx.fillStyle = cadBgColor;
+			cadctx.fillStyle = CAD_BG_COLOR;
 			cadctx.fillRect(-5000, -5000, 10000, 10000);
 			cadctx.stroke();
 			cadctx.globalCompositeOperation = 'source-over';
 
 			pwrctx.globalCompositeOperation = 'destination-over'
-			pwrctx.fillStyle = pwrBgColor;
+			pwrctx.fillStyle = PWR_BG_COLOR;
 			pwrctx.fillRect(-5000, -5000, 10000, 10000);
 			pwrctx.stroke();
 			pwrctx.globalCompositeOperation = 'source-over';
@@ -1133,20 +971,20 @@
 
 	//  *** BUTTON CANVAS HANDLING *** -- merged with elevation canvas to make formatting easier.
 			// implement buttons - basically just make 3 21*63 image-buttons and stripe them, click and reload with appropriate.
-			elvctx.fillStyle=btnAtlsColr;
-			elvctx.fillRect(link1X,link1Y,link1Width,link1Height);
-			elvctx.fillStyle=btnRoadColr;
-			elvctx.fillRect(link2X,link2Y,link2Width,link2Height);
-			elvctx.fillStyle=btnSatlColr;
-			elvctx.fillRect(link3X,link3Y,link3Width,link3Height);
+			elvctx.fillStyle=BTN_ATLAS_COLOR;
+			elvctx.fillRect(LINK_1_X,LINK_1_Y,link1Width,LINK_1_HEIGHT);
+			elvctx.fillStyle=BTN_ROAD_COLOR;
+			elvctx.fillRect(LINK_2_X,LINK_2_Y,LINK_2_WIDTHh,LINK_2_HEIGHT);
+			elvctx.fillStyle=BTN_SATL_COLOR;
+			elvctx.fillRect(LINK_3_X,LINK_3_Y,LINK_3_WIDTHh,LINK_3_HEIGHT);
 			elvctx.stroke();
 			
 			// button labels
 			elvctx.fillStyle='rgb(0, 0, 0)';
 			elvctx.font = "12px Arial";
-			elvctx.fillText(link1Text, link1X+textoffsetx, link1Y+textoffsety);
-			elvctx.fillText(link2Text, link2X+textoffsetx, link2Y+textoffsety);
-			elvctx.fillText(link3Text, link3X+textoffsetx, link3Y+textoffsety);
+			elvctx.fillText(LINK_1_TEXT, LINK_1_X+TEXT_OFFSET_X, LINK_1_Y+TEXT_OFFSET_Y);
+			elvctx.fillText(LINK_2_TEXT, LINK_2_X+TEXT_OFFSET_X, LINK_2_Y+TEXT_OFFSET_Y);
+			elvctx.fillText(LINK_3_TEXT, LINK_3_X+TEXT_OFFSET_X, LINK_3_Y+TEXT_OFFSET_Y);
 			elvctx.stroke();
 
 			}
@@ -1156,7 +994,7 @@
 			var hfbtn = document.getElementById("hiddenContainer")
 
 			currAniIx += 1;
-			if( currAniIx > aniframes || zRtRun == 0) {
+			if( currAniIx > ANIMATED_FRAMES || zRtRun == 0) {
 				currAniIx = 0; // and we're done with anim.
 				zRtRun=0;
 				if (route === null) {hfbtn.style.display = "block"};
@@ -1165,7 +1003,7 @@
 				window.requestAnimationFrame(drawMapAndElv); // call itself again when finished to continue animating.
 				// at least until frames run out.
 				// each time it executes, it waits until the frame is ready and then draws.
-				// then executes itself again, unti the counter hits the aniframes (max).
+				// then executes itself again, unti the counter hits the ANIMATED_FRAMES (max).
 			};
 
 		};
@@ -1178,98 +1016,29 @@
 	// executed when called by initial load, or again when a user changes map type.
 		function procMapLoad() {
 			if (maptype === "atlas") {
-				img.src = atlasPng; //'images/map_atls.png'; // Set source path -- triggers loading!
-				mapbg = atlasBg;
-				mapline = atlasLn; 
-				elvAxColor = elvAxColorAtls;
-				elvLnColor = elvLnColorAtls;
-				elvFlColor = elvFlColorAtls;
-				elvBgColor = elvBgColorAtls;
-				hrmAxColor = hrmAxColorAtls;
-				hrmLnColor = hrmLnColorAtls;
-				hrmFlColor = hrmFlColorAtls;
-				hrmBgColor = hrmBgColorAtls;
-				cadAxColor = cadAxColorAtls;
-				cadLnColor = cadLnColorAtls;
-				cadFlColor = cadFlColorAtls;
-				cadBgColor = cadBgColorAtls;
-				pwrAxColor = pwrAxColorAtls;
-				pwrLnColor = pwrLnColorAtls;
-				pwrFlColor = pwrFlColorAtls;
-				pwrBgColor = pwrBgColorAtls;
+				img.src = ATLAS_PNG; //'images/map_atls.png'; // Set source path -- triggers loading!
+				mapbg = ATLAS_BG;
+				mapline = ATLAS_LN; 
 				mapdot = mapline;
-				elvdot = elvLnColor;
-				hrmdot = hrmLnColor;
-				caddot = cadLnColor;
-				pwrdot = pwrLnColor;
 			} else if (maptype === "road") {
-				img.src = roadPng;
-				mapbg = roadBg;
-				mapline = roadLn;
-				elvAxColor = elvAxColorRoad;
-				elvLnColor = elvLnColorRoad;
-				elvFlColor = elvFlColorRoad;
-				elvBgColor = elvBgColorRoad;
-				hrmAxColor = hrmAxColorRoad;
-				hrmLnColor = hrmLnColorRoad;
-				hrmFlColor = hrmFlColorRoad;
-				hrmBgColor = hrmBgColorRoad;
-				cadAxColor = cadAxColorRoad;
-				cadLnColor = cadLnColorRoad;
-				cadFlColor = cadFlColorRoad;
-				cadBgColor = cadBgColorRoad;
-				pwrAxColor = pwrAxColorRoad;
-				pwrLnColor = pwrLnColorRoad;
-				pwrFlColor = pwrFlColorRoad;
-				pwrBgColor = pwrBgColorRoad;
+				img.src = ROAD_PNG;
+				mapbg = ROAD_BG;
+				mapline = ROAD_LN;
 				mapdot = mapline;
-				elvdot = elvLnColor;
-				hrmdot = hrmLnColor;
-				caddot = cadLnColor;
-				pwrdot = pwrLnColor;
 			} else if (maptype === "satellite") {
-				img.src = satlPng;
-				mapbg = satlBg; 
-				mapline = satlLn; 
-				elvAxColor = elvAxColorSatl;
-				elvLnColor = elvLnColorSatl;
-				elvFlColor = elvFlColorSatl;
-				elvBgColor = elvBgColorSatl;
-				hrmAxColor = hrmAxColorSatl;
-				hrmLnColor = hrmLnColorSatl;
-				hrmFlColor = hrmFlColorSatl;
-				hrmBgColor = hrmBgColorSatl;
-				cadAxColor = cadAxColorSatl;
-				cadLnColor = cadLnColorSatl;
-				cadFlColor = cadFlColorSatl;
-				cadBgColor = cadBgColorSatl;
-				pwrAxColor = pwrAxColorSatl;
-				pwrLnColor = pwrLnColorSatl;
-				pwrFlColor = pwrFlColorSatl;
-				pwrBgColor = pwrBgColorSatl;
+				img.src = SATL_PNG;
+				mapbg = SATL_BG; 
+				mapline = SATL_LN; 
 				mapdot = mapline;
-				elvdot = elvLnColor;
-				hrmdot = hrmLnColor;
-				caddot = cadLnColor;
-				pwrdot = pwrLnColor;
 			} else  {
-				maptype = defaultMaptype;
-				img.src = atlasPng;
-				mapbg = atlasBg;
-				mapline = atlasLn;
-				elvAxColor = elvAxColorAtls; 
-				elvLnColor = elvLnColorAtls; 
-				elvFlColor = elvFlColorAtls; 
-				elvBgColor = elvBgColorAtls; 
+				maptype = DEFAULT_MAP_TYPE;
+				img.src = ATLAS_PNG;
+				mapbg = ATLAS_BG;
+				mapline = ATLAS_LN;
 				mapdot = mapline;
-				elvdot = elvLnColor;
-				hrmdot = hrmLnColor;
-				caddot = cadLnColor;
-				pwrdot = pwrLnColor;
 			}
 		};
 		
-
 
 // *************** MAIN EXECUTION BEGINS HERE WHEN PAGE IS LOADED *********************
 // all other functions are triggered by events or by this script.
@@ -1280,17 +1049,17 @@
 			// initialize values:
 			elunit = "m"; // displays the type of elevation unit
 			dstunit = "km"; // displays the type of distance unit
-			elex = defaultElex; // default
+			elex = DEFAULT_ELEX; // default
 			// url parameter handling
-			maptype = urlParams.get('maptype'); // this carries user selection of the map type
+			maptype = URLPARAMS.get('maptype'); // this carries user selection of the map type
 			if (maptype === null) {
-				maptype = defaultMaptype; // default
+				maptype = DEFAULT_MAP_TYPE; // default
 			}	
-			met = urlParams.get('met'); // this carries user selection of the units of measurement
+			met = URLPARAMS.get('met'); // this carries user selection of the units of measurement
 			if (met === null){
-				met = defaultMet; // default
+				met = DEFAULT_MET; // default
 			}
-			route = urlParams.get('route'); // this drives loading of the file.  Required.
+			route = URLPARAMS.get('route'); // this drives loading of the file.  Required.
 			// main variable initialization complete! :)	
 
 		// now trigger file & image loading, which is all async so not consumed in this loop..
@@ -1300,7 +1069,7 @@
 			// see $("#xmlfile").change for that function.
 				var hcont = document.getElementById("hiddenContainer")
 				hcont.style.display = "block";
-				document.body.style.backgroundColor = visBodyBG;
+				document.body.style.backgroundColor = VISIBLE_BODY_BG;
 				var tbcont = document.getElementById("topbanner")
 				tbcont.style.display = "block";
 

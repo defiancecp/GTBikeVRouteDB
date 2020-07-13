@@ -6,6 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<script src="rtconsts.js"></script> 
     <link rel="stylesheet" href="RTStyles.css">
 </head> 
 <body>
@@ -20,7 +21,7 @@
     <?php
     include('/home/u544302174/dbscripts/dbconfig.php');
     include('/home/u544302174/dbscripts/getip.php');
-	$unicodeUdArrow = '&#x21f5';
+	$UNICODE_UPDOWN_ARROW = '&#x21f5';
 
     // parameter handling: Metric vs. Imperial measures
     $met = $_GET['met'];
@@ -76,9 +77,9 @@
 				// header row
 				echo '<tr id="tblHeaderRow">';
 				echo '<th>Route</th><th>Author</th><th>Type</th>';
-				echo '<th id="cellDstSort" onclick="srtFn(8,1)">Dist   '.$unicodeUdArrow.'</th>';
-				echo '<th id="cellElvSort" onclick="srtFn(10,1)">Elev   '.$unicodeUdArrow.'</th>';
-				echo '<th id="cellRtgSort" onclick="srtFn(7,1)">Rating   '.$unicodeUdArrow.'</th>';
+				echo '<th id="cellDstSort" onclick="srtFn(8,1)">Dist   '.$UNICODE_UPDOWN_ARROW.'</th>';
+				echo '<th id="cellElvSort" onclick="srtFn(10,1)">Elev   '.$UNICODE_UPDOWN_ARROW.'</th>';
+				echo '<th id="cellRtgSort" onclick="srtFn(7,1)">Rating   '.$UNICODE_UPDOWN_ARROW.'</th>';
 				echo '<th>Download</th>';
 				// these entire columns are hidden - raw numeric values used for javascript sorting and filtering.
 				echo '<th id="hdnCol">rtg</th><th id="hdnCol">numRating</th><th id="hdnCol">numKM</th><th id="hdnCol">numMI</th><th id="hdnCol">numM</th><th id="hdnCol">numFT</th></tr>'; // table opener & header row
@@ -171,30 +172,13 @@
 ?>
 
 <script>
-const minFileThreshold = 200; 
-const distOffset = 8;
-const elevOffset = 10;
-const ratgOffset = 7;
-
-// minimum number of bytes for valid file
-// cross-domain download requires client .js to pull into a blob and reconstruct the file.  This is critical because
-//  it means the file could possibly be created out of (for example) a 404 message.
-//  Intent of this threshold is to throw out bad results instead of giving them to the user as a file, with no indication
-//  that it's not a "real" file.
-
-const unicodeUpArrow = '\u2191';
-const unicodeDnArrow = '\u2193';
-const unicodeUdArrow = '\u21f5';
 
 	// this function is called by filter text entry boxes.  They all call a common routine, which checks all filters.
 	function fltFn() {
-		const defaultMet = "Metric";
-		const queryString = window.location.search;
-		const urlParams = new URLSearchParams(queryString);
 		var rtTable,filterRoute,filterAuthor,filterType,filterRateMin,filterDistMin,filterElvMin,filterDistMax,filterElvMax,tblRow,tdRoute,tdAuthor,tdType,tdDistance,tdElv,tdRating,rowRoute,rowAuthor,rowType,rowDistance,rowElv,rowRating,met;
-		met = urlParams.get('met'); // this carries user selection of the units of measurement
+		met = URL_PARAMS.get('met'); // this carries user selection of the units of measurement
 		if (met === null){
-			met = defaultMet; // default
+			met = DEFAULT_MET; // default
 		}
 		filterRoute = document.getElementById("myInRoute").value.toUpperCase();
 		filterAuthor = document.getElementById("myInAuthor").value.toUpperCase();
@@ -217,13 +201,13 @@ const unicodeUdArrow = '\u21f5';
 			tdType = tblRow[i].getElementsByTagName("td")[2];
 			if (tdType) {rowType  = tdType .textContent || tdType .innerText;};
 			
-			if(met === "Imperial"){tdDistance = tblRow[i].getElementsByTagName("td")[distOffset+1];} else {tdDistance = tblRow[i].getElementsByTagName("td")[distOffset];};
+			if(met === "Imperial"){tdDistance = tblRow[i].getElementsByTagName("td")[DIST_OFFSET+1];} else {tdDistance = tblRow[i].getElementsByTagName("td")[DIST_OFFSET];};
 			if (tdDistance) {rowDistance = tdDistance.textContent || tdDistance.innerText;};
 			
-			if(met === "Imperial"){tdElv = tblRow[i].getElementsByTagName("td")[elevOffset+1];} else {tdElv = tblRow[i].getElementsByTagName("td")[elevOffset];};
+			if(met === "Imperial"){tdElv = tblRow[i].getElementsByTagName("td")[ELEV_OFFSET+1];} else {tdElv = tblRow[i].getElementsByTagName("td")[ELEV_OFFSET];};
 			if (tdElv) {rowElv = tdElv.textContent || tdElv.innerText;};
 			
-			tdRating = tblRow[i].getElementsByTagName("td")[ratgOffset];
+			tdRating = tblRow[i].getElementsByTagName("td")[RATG_OFFSET];
 			if (tdRating) {rowRating = tdRating.textContent || tdRating.innerText;};
 
 			if (tdRating || tdElv || tdDistance || tdType || tdAuthor || tdRoute){
@@ -273,45 +257,45 @@ const unicodeUdArrow = '\u21f5';
 // this routine is called by sort buttons, which pass it these values:
 function srtFn(sIndex, sOrder) {
 	// first handle updating the displayed text and onclick functions based on the user click.
-	if(sIndex === distOffset) {
+	if(sIndex === DIST_OFFSET) {
 		//distance
 		if(sOrder === 1){
-			document.getElementById("cellDstSort").innerHTML = "Dist - "+unicodeUpArrow;
-			document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn("+distOffset+",-1)");
+			document.getElementById("cellDstSort").innerHTML = "Dist - "+UNICODE_UP_ARROW;
+			document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn("+DIST_OFFSET+",-1)");
 		} else {
-			document.getElementById("cellDstSort").innerHTML = "Dist - "+unicodeDnArrow;
-			document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn("+distOffset+",1)");
+			document.getElementById("cellDstSort").innerHTML = "Dist - "+UNICODE_DOWN_ARROW;
+			document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn("+DIST_OFFSET+",1)");
 		}
-		document.getElementById("cellElvSort").innerHTML = "Elev - "+unicodeUdArrow;
-		document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn("+elevOffset+",1)");
-		document.getElementById("cellRtgSort").innerHTML = "Rating - "+unicodeUdArrow;
-		document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn("+ratgOffset+",1)");
-	} else if(sIndex === elevOffset) {
+		document.getElementById("cellElvSort").innerHTML = "Elev - "+UNICODE_UPDOWN_ARROW;
+		document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn("+ELEV_OFFSET+",1)");
+		document.getElementById("cellRtgSort").innerHTML = "Rating - "+UNICODE_UPDOWN_ARROW;
+		document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn("+RATG_OFFSET+",1)");
+	} else if(sIndex === ELEV_OFFSET) {
 		//elevation
 		if(sOrder === 1){
-			document.getElementById("cellElvSort").innerHTML = "Elev - "+unicodeUpArrow;
-			document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn("+elevOffset+",-1)");
+			document.getElementById("cellElvSort").innerHTML = "Elev - "+UNICODE_UP_ARROW;
+			document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn("+ELEV_OFFSET+",-1)");
 		} else {
-			document.getElementById("cellElvSort").innerHTML = "Elev - "+unicodeDnArrow;
-			document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn("+elevOffset+",1)");
+			document.getElementById("cellElvSort").innerHTML = "Elev - "+UNICODE_DOWN_ARROW;
+			document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn("+ELEV_OFFSET+",1)");
 		}srtFn
-		document.getElementById("cellDstSort").innerHTML = "Dist - "+unicodeUdArrow;
-		document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn("+distOffset+",1)");
-		document.getElementById("cellRtgSort").innerHTML = "Rating - "+unicodeUdArrow;
-		document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn("+ratgOffset+",1)");
-	} else if(sIndex === ratgOffset) {
+		document.getElementById("cellDstSort").innerHTML = "Dist - "+UNICODE_UPDOWN_ARROW;
+		document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn("+DIST_OFFSET+",1)");
+		document.getElementById("cellRtgSort").innerHTML = "Rating - "+UNICODE_UPDOWN_ARROW;
+		document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn("+RATG_OFFSET+",1)");
+	} else if(sIndex === RATG_OFFSET) {
 		//rating
 		if(sOrder === 1){
-			document.getElementById("cellRtgSort").innerHTML = "Rating- "+unicodeUpArrow;
-			document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn("+ratgOffset+",-1)");
+			document.getElementById("cellRtgSort").innerHTML = "Rating- "+UNICODE_UP_ARROW;
+			document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn("+RATG_OFFSET+",-1)");
 		} else {
-			document.getElementById("cellRtgSort").innerHTML = "Rating - "+unicodeDnArrow;
-			document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn("+ratgOffset+",1)");
+			document.getElementById("cellRtgSort").innerHTML = "Rating - "+UNICODE_DOWN_ARROW;
+			document.getElementById("cellRtgSort").setAttribute( "onClick", "srtFn("+RATG_OFFSET+",1)");
 		}
-		document.getElementById("cellDstSort").innerHTML= "Dist - "+unicodeUdArrow;
-		document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn("+distOffset+",1)");
-		document.getElementById("cellElvSort").innerHTML = "Elev - "+unicodeUdArrow;
-		document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn("+elevOffset+",1)");
+		document.getElementById("cellDstSort").innerHTML= "Dist - "+UNICODE_UPDOWN_ARROW;
+		document.getElementById("cellDstSort").setAttribute( "onClick", "srtFn("+DIST_OFFSET+",1)");
+		document.getElementById("cellElvSort").innerHTML = "Elev - "+UNICODE_UPDOWN_ARROW;
+		document.getElementById("cellElvSort").setAttribute( "onClick", "srtFn("+ELEV_OFFSET+",1)");
 	}
 
 	var table, rows, switching, i, x, y, shouldSwitch, sOrder, sIndex;
@@ -371,7 +355,7 @@ function downloadResource(url, filename) {
     .then(response => response.blob())
     .then(blob => {
       let blobUrl = window.URL.createObjectURL(blob);
-	  if(blob.size>minFileThreshold){;
+	  if(blob.size>MIN_FILE_THRESHOLD){;
 		forceDownload(blobUrl, filename)
 	  } else {alert("File not found on github server. This is normal for original included routes (no need to download them, they're included!).  If this was not an included route, please submit an issue in the github repository linked at https://github.com/defiancecp/GTBikeVRouteDB .  Thanks!")};
     })
