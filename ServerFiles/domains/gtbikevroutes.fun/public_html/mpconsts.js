@@ -68,9 +68,14 @@
 		const ATLAS_BG = "#0fa8d2"; // background color for atlas map
 		const ROAD_BG = "#1862ad"; // background color for road map
 		const SATL_BG = "#143d6b"; // background color for satellite map
-		const ATLAS_LN = "#0000ff"; // line color for atlas map
-		const ROAD_LN = "#ff0000"; // line color for road map
-		const SATL_LN = "#ff00ff"; // line color for satellite map
+
+		const ATLAS_LN_EDGE = "#FFFFFF"; // line color for atlas map
+		const ROAD_LN_EDGE = "#000000"; // line color for road map
+		const SATL_LN_EDGE = "#404040"; // line color for satellite map
+		const ATLAS_LN = "#252598"; // line color for atlas map
+		const ROAD_LN = "#FF7070"; // line color for road map
+		const SATL_LN = "#20DF20"; // line color for satellite map
+
 		const BTN_ATLAS_COLOR = '#808923';//'rgb(128,185,35)'; // color of bg for atlas
 		const BTN_ROAD_COLOR = '#92D2BB';//'rgb(146, 210, 187)'; // color of bg for road
 		const BTN_SATL_COLOR = '#009900'; // color of bg for sat
@@ -90,6 +95,9 @@
 
 		const VISIBLE_BODY_BG = '#A0A0A0';
 		const MIN_LN_WIDTH = 0.25;
+		const LINE_EDGE_MULT = 0.8; 
+		const ZOOM2LINE_FACTOR = -0.4;
+		const ZOOM2LINE_OFFSET = 4.5;
 		const ANI_DOT_R = 5;
 		const ANIMATED_FRAMES = 243; // number of frames to display in animation
 		const INITIAL_ZOOM = 0.42;

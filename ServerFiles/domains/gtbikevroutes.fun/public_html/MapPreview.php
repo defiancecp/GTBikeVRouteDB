@@ -42,7 +42,7 @@
 <script>
 
 	// variables
-		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg,mouseMsgText,aniIndex;
+		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg,mouseMsgText,aniIndex,maplineedge;
 
 		EasyFit = window.easyFit.default;
 		EFreader = new FileReader();
@@ -688,7 +688,7 @@
 			}
 
 		// dynamic line sizing here :)
-			mpLineWidth = (zoomfactorxy*-0.4)+4.5;
+			mpLineWidth = (zoomfactorxy*ZOOM2LINE_FACTOR)+ZOOM2LINE_OFFSET;
 			if(mpLineWidth<MIN_LN_WIDTH){mpLineWidth=MIN_LN_WIDTH};
 			mpAniR = mpLineWidth*2.25;
 
@@ -756,8 +756,6 @@
 			// now prep & draw route;
 			ctx.beginPath();
 			ctx.moveTo(xarray[0],yarray[0]);
-			ctx.strokeStyle = mapline;
-			ctx.lineWidth = mpLineWidth;
 
 			resetCanvas(elvc);
 			elvctx = elvc.getContext("2d"); // elevation profile canvas context
@@ -826,7 +824,14 @@
 					aniIndex = i;
 				}
 			}
+			// ok so lines with border colors turned out to be absurdly easy :)
+			ctx.strokeStyle = maplineedge;
+			ctx.lineWidth = mpLineWidth;
 			ctx.stroke();
+			ctx.strokeStyle = mapline;
+			ctx.lineWidth = mpLineWidth*LINE_EDGE_MULT;
+			ctx.stroke();
+
 
 			// now close off the shapes and fill
 			elvctx.lineTo(1214,63);
@@ -1019,22 +1024,26 @@
 				img.src = ATLAS_PNG; //'images/map_atls.png'; // Set source path -- triggers loading!
 				mapbg = ATLAS_BG;
 				mapline = ATLAS_LN; 
+				maplineedge = ATLAS_LN_EDGE; 
 				mapdot = mapline;
 			} else if (maptype === "road") {
 				img.src = ROAD_PNG;
 				mapbg = ROAD_BG;
 				mapline = ROAD_LN;
+				maplineedge = ROAD_LN_EDGE; 
 				mapdot = mapline;
 			} else if (maptype === "satellite") {
 				img.src = SATL_PNG;
 				mapbg = SATL_BG; 
 				mapline = SATL_LN; 
+				maplineedge = SATL_LN_EDGE; 
 				mapdot = mapline;
 			} else  {
 				maptype = DEFAULT_MAP_TYPE;
 				img.src = ATLAS_PNG;
 				mapbg = ATLAS_BG;
 				mapline = ATLAS_LN;
+				maplineedge = ATLAS_LN_EDGE; 
 				mapdot = mapline;
 			}
 		};
