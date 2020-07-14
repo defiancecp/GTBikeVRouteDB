@@ -48,6 +48,10 @@
 		const AX_MN_LABEL_Y = 60; // pixels from top border for minimum elevation label on z axis
 		const AX_CT_LABEL_X = 2;
 		const AX_CT_LABEL_Y = 35;
+		const AX_CT1_LABEL_X = 2;
+		const AX_CT1_LABEL_Y = 27;
+		const AX_CT2_LABEL_X = 2;
+		const AX_CT2_LABEL_Y = 43;
 		const AX_LABEL_X = 610;
 		const AX_LABEL_Y = 10;
 		const ELV_DIST_LABEL_X = 1130;

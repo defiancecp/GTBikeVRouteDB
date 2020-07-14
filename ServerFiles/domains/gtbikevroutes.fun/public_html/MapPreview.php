@@ -42,7 +42,7 @@
 <script>
 
 	// variables
-		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg,mouseMsgText,aniIndex,maplineedge;
+		var isLink1,isLink2,isLink3,link1URL,link2URL,link3URL,elvc,elvctx,mcanvas,ctx,hrmc,hrmctx,pwrc,pwrctx,cadc,cadctx,img,xmlDoc,blobDoc,gpxfilename,fitfilename,xhttp,checkFIT,zfactor2,zoffset2,ifactor2,ioffset2,zoomfactorx,zoomfactory,zoomfactorxy,translatefactorx,translatefactory,img,elunit,dstunit,mapbg,mapline,route,maptype,met,elex,cmlDist,cmlTime,cmlElev,cmlDesc,cmlKCal,x,lastTimestamp,thisTimestamp,lastLat,thislat,lastLon,thisLon,thisElev,lastElev,xmin,xmax,ymin,ymax,zmin,zmax,tmin,tmax,imin,imax,xmlLoaded,imgLoaded,currAniIx,elAniX,elAniY,mpAniX,mpAniY,mapdot,mpLineWidth,mpAniR,xmapoffset,ymapoffset,fileLoaded,actDocType,easyFit,zCount,zFrames,lastZoom,lastTransX,lastTransY,thisHRM,thisCAD,thisPWR,EasyFit,EFreader,inEasyFit,hrmscale,hrmoffset,pwrscale,pwroffset,cadscale,cadoffset,hrmmin,hrmmax,pwrmin,pwrmax,cadmin,cadmax,hrmAniX,hrmAniY,cadAniX,cadAniY,pwrAniX,pwrAniY,hrmavg,cadavg,pwravg,mouseMsgText,aniIndex,maplineedge;
 
 		EasyFit = window.easyFit.default;
 		EFreader = new FileReader();
@@ -416,6 +416,7 @@
 			hrmArray = [];
 			cadArray = [];
 			pwrArray = [];
+			cmlKCal = 0;
 			cmlDist = 0;
 			cmlTime = 0;
 			cmlElev = 0;
@@ -458,6 +459,9 @@
 				if(i > 0) { // first iteration: Initialize to zero.
 					// thereafter, calculate the difference and add too the cumulative values.
 					cmlTime=cmlTime+Math.abs(thisTimestamp-lastTimestamp);
+					
+					cmlKCal= cmlKCal+thisPWR* (Math.abs(thisTimestamp-lastTimestamp)); // ex: 200 watts * 1 hour * 3.6 = 720 kcal
+					
 					if(thisElev>lastElev){
 						cmlElev=cmlElev+(thisElev-lastElev);
 					} else if(thisElev<lastElev) {
@@ -914,7 +918,8 @@
 
 			pwrctx.fillStyle = AXIS_COLOR;
 			pwrctx.fillText(Math.round(pwrmax)+" w", AX_MX_LABEL_X, AX_MX_LABEL_Y);
-			pwrctx.fillText("Avg: "+Math.round(pwravg)+"w", AX_CT_LABEL_X,AX_CT_LABEL_Y);
+			pwrctx.fillText("Avg: "+Math.round(pwravg)+"w", AX_CT1_LABEL_X,AX_CT1_LABEL_Y);
+			pwrctx.fillText("kCal: "+Math.round(cmlKCal/1000000), AX_CT2_LABEL_X,AX_CT2_LABEL_Y);
 			pwrctx.fillText(Math.round(pwrmin)+" w", AX_MN_LABEL_X, AX_MN_LABEL_Y);
 			pwrctx.fillText("Power", AX_LABEL_X, AX_LABEL_Y);
 			pwrctx.stroke();
@@ -941,7 +946,7 @@
 			elvctx.fillText("Asc:   "+Math.round(cmlElev)+" "+elunit, ELV_ASCE_LABEL_X, ELV_ASCE_LABEL_Y);
 			elvctx.fillText("Desc: "+Math.round(cmlDesc)+" "+elunit, ELV_DESC_LABEL_X, ELV_DESC_LABEL_Y);
 			elvctx.stroke();
-
+			
 		// draw backgrounds last, and draw behind.
 			ctx.globalCompositeOperation = 'destination-over'
 			ctx.fillStyle = mapbg;
