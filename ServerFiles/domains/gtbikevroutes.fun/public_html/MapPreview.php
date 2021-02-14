@@ -1110,6 +1110,7 @@
 
 				xhttp.open("GET",gpxfilename,true)
 				xhttp.responseType = '';
+				xhttp.overrideMimeType('text/xml');
 				xhttp.send();
 
 			// Nuttin'.  Maybe this should transition to user mode?
