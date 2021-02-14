@@ -102,7 +102,7 @@ IF($RawText)
             $distmi = substr($ProcText,$st7,$ste7-$st7);
             $elevm = substr($ProcText,$st8,$ste8-$st8);
             $elevft = substr($ProcText,$st9,$ste9-$st9);
-            $desc = substr($ProcText,$st9,$ste9-$st9);
+            $desc = substr($ProcText,$st10,$ste10-$st10);
             // And finally build & run an insert query from that detail.
             $sql = "INSERT INTO RouteImportStaging (RouteName, Author, Map, Type, DistKM, DistMI, ElevM, ElevFT, Description, RouteDisplayName, UploadDateTime) VALUES ('$name','$author','$map','$type','$distkm','$distmi','$elevm','$elevft','$desc','$dispname',NOW())";
             if ($result = $conn->prepare($sql)) {

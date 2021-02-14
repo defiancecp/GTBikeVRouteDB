@@ -59,7 +59,8 @@
         if ($result = $conn->query($sql)) {
             if ($result->num_rows > 0) {
 				// now create a table to show results, and then cycle through each result row and build an html "tr" for each row and "td" for each displayed element.
-				echo '<div id="fltDescrip">Use this form to filter, or click on column headers for Elevation, Distance, or Rating to sort. The <img id="smallMpIcn" src="images/map.png"/> icon means a route preview is available on this ride detail page.</div>';
+				echo '<div id="fltDescrip">Use this form to filter, or click on column headers for Elevation, Distance, or Rating to sort. The <img id="smallMpIcn" src="images/map.png"/> icon means a route preview is available on this ride detail page.<br><br>';
+				echo '<b>You can now view your GT Bike V rides mapped on the GTA V Map, using the <a class="link" href="https://gtbikevroutes.fun/MapPreview.php" >GT Bike V ride viewer.</a> </b><br></div> ';
 				echo '<table id="tblSummary" class="table table-dark table-striped">';
 
 				// Filter Controls (sort is with real header row):
@@ -365,7 +366,6 @@ function downloadResource(url, filename) {
   <div id="bottombanner">
     <p id="intro">Here you'll find the current tracked list of routes included in the <a class="link" href="https://github.com/gtbikev/courses">GTBike V course repository.</a><br>Be sure to check the repository out if you have interest in building your own routes, or to submit issues with routes.<br>For general discussion about the mod or routes, come visit the community <a class="link" href="https://www.facebook.com/groups/1089053124812221">Facebook group.</a><br>
 	For issues with this site, development details, of just to take a look at how it all comes together, this project is maintained on <a class="link" href="https://github.com/defiancecp/GTBikeVRouteDB">Github.</a><br>When you stop by, be sure to take a look at the readme for the latest list of attributions and thanks.<br>And finally, these courses all utilize the brilliant <a class="link" href="gta5-mods.com/scripts/gt-bike-v">GT Bike V mod</a> for GTA V.<br><br>
-	<b>You can now view your GT Bike V rides mapped on the GTA V Map, using the <a class="link" href="https://gtbikevroutes.fun/MapPreview.php" >GT Bike V ride viewer.</a> </b>
 	</p>
 </div>
 </body>
