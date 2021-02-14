@@ -16,6 +16,7 @@ CREATE TABLE Routes (
 	UploadDateTime datetime NOT NULL DEFAULT current_timestamp(),
 	UpdateDateTime datetime NOT NULL DEFAULT current_timestamp(),
 	Active int(11) NOT NULL DEFAULT 1,
+    RouteDisplayName varchar(255) NOT NULL,
 	PRIMARY KEY (RouteKey),
 	UNIQUE KEY RouteName (RouteName)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

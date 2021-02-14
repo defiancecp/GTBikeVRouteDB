@@ -12,6 +12,7 @@ BEGIN
         INNER JOIN (SELECT * FROM RouteImportStaging UNION ALL SELECT * FROM RouteImportDefaults) Incoming
             ON Main.RouteName = Incoming.RouteName
     SET
+        Main.RouteDisplayName = Incoming.RouteDisplayName,
         Main.Author = Incoming.Author,
         Main.Description = Incoming.Description,
         Main.DistanceKM = Incoming.DistKM,
@@ -26,6 +27,7 @@ BEGIN
 		Main.Active = 1
 	WHERE
         Main.Author <> Incoming.Author
+        OR Main.RouteDisplayName <> Incoming.RouteDisplayName
         OR Main.Description <> Incoming.Description
         OR Main.DistanceKM <> Incoming.DistKM
         OR Main.DistanceMI <> Incoming.DistMI
@@ -46,6 +48,7 @@ BEGIN
 
     INSERT INTO Routes (
         RouteName,
+        RouteDisplayName,
         Author,
         Description,
         DistanceKM,
@@ -58,6 +61,7 @@ BEGIN
         )
     SELECT
         NewData.RouteName,
+        NewData.RouteDisplayName,
         NewData.Author,
         NewData.Description,
         NewData.DistKM,

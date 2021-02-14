@@ -13,6 +13,7 @@ CREATE TABLE RouteImportStaging (
 	ElevFT decimal(10,1) NOT NULL,
 	`Description` varchar(4000) NOT NULL,
 	UploadDateTime datetime NOT NULL,
+    RouteDisplayName varchar(255) NOT NULL,
 	UNIQUE KEY RouteName (RouteName)
 );
 

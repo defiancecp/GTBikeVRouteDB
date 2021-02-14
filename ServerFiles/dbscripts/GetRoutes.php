@@ -6,7 +6,7 @@
 
 <?php
 
-include('/home/u544302174/dbscripts/dbconfig.php');
+include('./dbconfig.php');
 
 echo "Starting. <br>";
 
@@ -90,18 +90,21 @@ IF($RawText)
             $ste8 = strpos ($ProcText, "</td>" , $st8);
             $st9 = strpos ($ProcText, "<td>" , $ste8)+4;
             $ste9 = strpos ($ProcText, "</td>" , $st9);
+            $st10 = strpos ($ProcText, "<td>" , $ste9)+4;
+            $ste10 = strpos ($ProcText, "</td>" , $st10);
             // and use those locations to pull cell data into variables
             $name = substr($ProcText,$st1,$ste1-$st1);
-            $author = substr($ProcText,$st2,$ste2-$st2);
-            $map = substr($ProcText,$st3,$ste3-$st3);
-            $type = substr($ProcText,$st4,$ste4-$st4);
-            $distkm = substr($ProcText,$st5,$ste5-$st5);
-            $distmi = substr($ProcText,$st6,$ste6-$st6);
-            $elevm = substr($ProcText,$st7,$ste7-$st7);
-            $elevft = substr($ProcText,$st8,$ste8-$st8);
+            $dispname = substr($ProcText,$st2,$ste2-$st2);
+            $author = substr($ProcText,$st3,$ste3-$st3);
+            $map = substr($ProcText,$st4,$ste4-$st4);
+            $type = substr($ProcText,$st5,$ste5-$st5);
+            $distkm = substr($ProcText,$st6,$ste6-$st6);
+            $distmi = substr($ProcText,$st7,$ste7-$st7);
+            $elevm = substr($ProcText,$st8,$ste8-$st8);
+            $elevft = substr($ProcText,$st9,$ste9-$st9);
             $desc = substr($ProcText,$st9,$ste9-$st9);
             // And finally build & run an insert query from that detail.
-            $sql = "INSERT INTO RouteImportStaging (RouteName, Author, Map, Type, DistKM, DistMI, ElevM, ElevFT, Description, UploadDateTime) VALUES ('$name','$author','$map','$type','$distkm','$distmi','$elevm','$elevft','$desc',NOW())";
+            $sql = "INSERT INTO RouteImportStaging (RouteName, Author, Map, Type, DistKM, DistMI, ElevM, ElevFT, Description, RouteDisplayName, UploadDateTime) VALUES ('$name','$author','$map','$type','$distkm','$distmi','$elevm','$elevft','$desc','$dispname',NOW())";
             if ($result = $conn->prepare($sql)) {
                 $result->execute();
                 $result->store_result();
@@ -112,6 +115,18 @@ IF($RawText)
             } else {
                 echo "Error: " . $sql . "<br>" . $conn->error;
             }
+			$fitfile = "https://github.com/gtbikev/courses/raw/master/fit/".$name.".fit";
+			$fittgt = "../domains/gtbikevroutes.fun/public_html/gpx/".$name.".fit";
+			
+			if(!@copy($fitfile,$fittgt))
+			{
+				$errors= error_get_last();
+				echo "Fit file NOT loaded for ".$name."; copy error (not present?)".$errors['type'];
+				echo "<br />\n".$errors['message'];
+				echo "<br />\n";
+			} else {
+				echo "Fit file for ".$name." found in repository and loaded.";
+			}
         }
     }
 
@@ -135,7 +150,7 @@ ELSE // here's what happens when no table is found.
     $IsolatedText = NULL;
 }
 
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>
 
 </body>

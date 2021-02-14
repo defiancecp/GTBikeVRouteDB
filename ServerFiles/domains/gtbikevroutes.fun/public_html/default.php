@@ -97,7 +97,7 @@
                     }
                     $mapstring = "";
 					if(file_exists ("./gpx/".$row["RouteName"].".gpx") OR file_exists ("./gpx/".$row["RouteName"].".fit"))  {$mapstring = '    <img id ="grdMap" src="images/map.png"/>';};
-                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a>'.$mapstring.'</td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><iframe id="linkIFrame" src="'.$ratinglink.'" class="embed-responsive-item"></iframe></td><td><img src=/images/dl.png class="link" id="tallDlIcn" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td id="hdnCol">'.$row["CurrentRating"].'</td><td id="hdnCol">'.$row["DistanceKM"].'</td><td id="hdnCol">'.$row["DistanceMI"].'</td><td id="hdnCol">'.$row["ElevationM"].'</td><td id="hdnCol">'.$row["ElevationFT"].'</td></tr>';
+                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteDisplayName"].'</a>'.$mapstring.'</td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><iframe id="linkIFrame" src="'.$ratinglink.'" class="embed-responsive-item"></iframe></td><td><img src=/images/dl.png class="link" id="tallDlIcn" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td><td id="hdnCol">'.$row["CurrentRating"].'</td><td id="hdnCol">'.$row["DistanceKM"].'</td><td id="hdnCol">'.$row["DistanceMI"].'</td><td id="hdnCol">'.$row["ElevationM"].'</td><td id="hdnCol">'.$row["ElevationFT"].'</td></tr>';
 				}
 					// all tr's done, close it up.
 				echo "</table>"; // table opener & header row
@@ -151,7 +151,7 @@
                         $velevation = $row["ElevationFT"]."ft";
                         $vdistance = $row["DistanceMI"]."mi";
                     }
-                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" id="linkIFrame"></iframe></td><td><img src=/images/dl.png class="link" id="tallDlIcn" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td></tr>';
+                    echo '<tr><td><a class="link" href="default.php'.$mettag.'&route='.$row["RouteName"].'">'.$row["RouteDisplayName"].'</a></td><td>'.$row["Author"].'</td><td>'.$row["Type"].'</td><td>'.$vdistance.'</td><td>'.$velevation.'</td><td><iframe src="'.$ratinglink.'" class="embed-responsive-item" id="linkIFrame"></iframe></td><td><img src=/images/dl.png class="link" id="tallDlIcn" onclick="downloadResource(\'https://raw.githubusercontent.com/gtbikev/courses/master/courses/'.$row["RouteName"].'.json\',\''.$row["RouteName"].'.json\')"></td></tr>';
 					echo '<tr><td colspan="8">'.$row["Description"].'</td></tr>';
  
 					// but for the map link, if there's a GPX file for this route, skip the map and use route preview instead.

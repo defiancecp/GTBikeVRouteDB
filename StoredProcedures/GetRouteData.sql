@@ -9,6 +9,7 @@ BEGIN
 
 	SELECT
         rt.RouteName,
+        rt.RouteDisplayName,
         rt.Author,
         rt.Map,
         rt.Type,
@@ -38,6 +39,7 @@ BEGIN
         AND rt.Active = 1
     GROUP BY
         rt.RouteName,
+        rt.RouteDisplayName,
         rt.Author,
         rt.Map,
         rt.Type,
