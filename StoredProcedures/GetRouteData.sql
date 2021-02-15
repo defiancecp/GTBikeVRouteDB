@@ -49,7 +49,9 @@ BEGIN
         rt.ElevationFT,
         rt.Description,
         rt.UploadDateTime,
-        rt.UpdateDateTime;
+        rt.UpdateDateTime
+	ORDER BY
+        rt.RouteDisplayName;
 
 END //
 DELIMITER ;
