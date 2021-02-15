@@ -2,26 +2,30 @@
 <html>
 <body>
 
-<h1>Load from git courses list into db to summarize current list in sortable/browsable form.  Currently picked up from a readme, but once API is available I'll switch to that </h1>
+<h1>Load from git courses list into db to summarize current list in sortable/browsable form.</h1>
 
 <?php
 
-include('./dbconfig.php');
+include('../../../dbscripts/dbconfig.php');
 
-echo "Starting. <br>";
+echo "Starting. <br />\n";
 
 $sql = "TRUNCATE TABLE RouteImportStaging";
 $conn = myConnection();
-
 
 if ($result = $conn->prepare($sql)) {
     $result->execute();
     $result->store_result();
     $result->free_result();
-    echo "Staging table cleared. <br>";
+    echo "Staging table cleared. <br />\n";
 } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+    echo "Error: " . $sql . "<br />\n" . $conn->error;
 }
+
+echo "Next we'll load each course into the db and pick up its associated .fit file.<br />\n";
+
+
+
 
 // Now we parse the table.
 // First, skip ahead until we find the table marker
@@ -35,6 +39,9 @@ WHILE ($RawText AND $EndPos === false )
     $EndPos = strpos($RawText, "COURSE_TABLE_BEGIN");
 }
 // Now, if it's never found, this will be false, otherwise we go on starting row before table.
+
+echo "New list loaded.  Now to process it. <br />\n";
+
 IF($RawText)
 {
     $RawText = fgets($RawFile); // get next row, first row after marker
@@ -43,14 +50,13 @@ IF($RawText)
         {
             $RawText = fgets($RawFile); // get next row, first row after marker
             $RowPos = strpos($RawText, "</tr>"); //skip to end of header row; this returns false until then
-
         }
 
     $EndPos = strpos($RawText, "COURSE_TABLE_END");
 // Now we should be at the end of the header row.  Ingest full table row of data at a time, looping until end mark
     WHILE ($RawText AND $EndPos === false)
         {    
-
+		echo "Reading data... <br />\n";
 
         $RawText = fgets($RawFile);
         $RowPos = strpos($RawText, "</tr>");
@@ -61,6 +67,7 @@ IF($RawText)
         {
             $RawText .= fgets($RawFile); // append each time.
             $RowPos = strpos($RawText, "</tr>");
+			echo "Reading a row... <br />\n";
         }
         // good - now the whole row is in a string.  
         // remove escape chars:
@@ -103,6 +110,7 @@ IF($RawText)
             $elevm = substr($ProcText,$st8,$ste8-$st8);
             $elevft = substr($ProcText,$st9,$ste9-$st9);
             $desc = substr($ProcText,$st10,$ste10-$st10);
+			echo "Loaded a row into a query, running to insert. <br />\n";
             // And finally build & run an insert query from that detail.
             $sql = "INSERT INTO RouteImportStaging (RouteName, Author, Map, Type, DistKM, DistMI, ElevM, ElevFT, Description, RouteDisplayName, UploadDateTime) VALUES ('$name','$author','$map','$type','$distkm','$distmi','$elevm','$elevft','$desc','$dispname',NOW())";
             if ($result = $conn->prepare($sql)) {
@@ -111,12 +119,12 @@ IF($RawText)
                 $result->free_result();
                 echo "Records for ";
                 echo $name;
-                echo " inserted. <br>";
+                echo " inserted. <br />\n";
             } else {
-                echo "Error: " . $sql . "<br>" . $conn->error;
+                echo "Error: " . $sql . "<br />\n" . $conn->error;
             }
 			$fitfile = "https://github.com/gtbikev/courses/raw/master/fit/".$name.".fit";
-			$fittgt = "../domains/gtbikevroutes.fun/public_html/gpx/".$name.".fit";
+			$fittgt = "./gpx/".$name.".fit";
 			
 			if(!@copy($fitfile,$fittgt))
 			{
@@ -125,20 +133,22 @@ IF($RawText)
 				echo "<br />\n".$errors['message'];
 				echo "<br />\n";
 			} else {
-				echo "Fit file for ".$name." found in repository and loaded.";
+				echo "Fit file for ".$name." found in repository and loaded.<br />\n";
 			}
         }
+		echo "All rows inserted. <br />\n";
     }
 
+	echo "Now process data from staging into main table. <br />\n";
     $sql = "CALL ProcessImportedRoutes();";
     if ($result = $conn->prepare($sql)) {
         $result->execute();
         $result->store_result();
         $result->free_result();
         $result->close();
-        echo "New Data Processed. <br>";
+        echo "New Data Processed - DONE! <br />\n";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $sql . "<br />\n" . $conn->error;
     }    
 
     mysqli_close($conn);
@@ -146,11 +156,10 @@ IF($RawText)
 }
 ELSE // here's what happens when no table is found.
 {
-    ECHO("Something went wrong finding the table <br>");
+    ECHO("Something went wrong finding the table <br />\n");
     $IsolatedText = NULL;
 }
 
-//mysqli_close($conn);
 ?>
 
 </body>
